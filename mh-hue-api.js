@@ -48,8 +48,8 @@ module.exports = function(RED) {
             .then(function(response)
             {
                 response.data.data.forEach((resource) => {
-		    node.events.emit(resource.id, resource);
-	        });
+                    node.events.emit(resource.id, resource);
+                });
             });
         }
 
