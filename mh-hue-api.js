@@ -8,19 +8,19 @@ module.exports = function(RED) {
 
     function HueApi(config) {
         RED.nodes.createNode(this,config);
-	const node = this;
+        const node = this;
 
         this.id = config.id;
-	this.name = config.name;
-	this.host = config.host;
-	this.key = config.key;
+        this.name = config.name;
+        this.host = config.host;
+        this.key = config.key;
 
         this.events = new events.EventEmitter();
 
         this.subscribe = function(id,callback) {
-	    console.log("HueApi["+config.name+"]().subscribe() id:", id);
+            console.log("HueApi["+config.name+"]().subscribe() id:", id);
             this.events.on(id,callback);
-	}
+        }
 
         this.unsubscribe = function(id) {
             this.events.off(id);
@@ -59,25 +59,25 @@ module.exports = function(RED) {
             return result.data;
         }
 
-	this.get = async function(url) {
+        this.get = async function(url) {
             const promise = this.request(url,"GET");
             var result = await promise;
             return result.data;
         }
 
-	this.post = async function(url,data) {
+        this.post = async function(url,data) {
             const promise = this.request(url,"POST",data);
             var result = await promise;
             return result.data;
         }
 
-	this.put = async function(url,data) {
+        this.put = async function(url,data) {
             const promise = this.request(url,"PUT",data);
             var result = await promise;
             return result.data;
         }
 
-	this.update();
+        this.update();
     }
 
     RED.nodes.registerType("mh-hue-api",HueApi);
