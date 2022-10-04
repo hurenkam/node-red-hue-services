@@ -1,0 +1,34 @@
+<script type="text/javascript">
+    RED.nodes.registerType('mh-hue-api',{
+        category: 'config',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""},
+            host: {value:"",required:true},
+            key:  {value:"",required:true}
+        },
+        label: function() {
+            return this.name||this.key + "@" + this.host;
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="mh-hue-api">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-host"><i class="fa fa-tag"></i> Host</label>
+        <input type="text" id="node-config-input-host" placeholder="Host">
+    </div>
+    <div class="form-row">
+        <label for="node-input-key"><i class="fa fa-tag"></i> Key</label>
+        <input type="text" id="node-config-input-key" placeholder="Key">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="mh-hue-api">
+    <p>A simple node that converts the message payloads into all lower-case characters</p>
+</script>
+
