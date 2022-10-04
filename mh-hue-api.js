@@ -8,8 +8,7 @@ module.exports = function(RED) {
 
     function HueApi(config) {
         RED.nodes.createNode(this,config);
-	console.log("HueApi["+config.name+"]() constructed with config:");
-	console.log(config);
+	const node = this;
 
         this.id = config.id;
 	this.name = config.name;
@@ -17,8 +16,6 @@ module.exports = function(RED) {
 	this.key = config.key;
 
         this.events = new events.EventEmitter();
-
-	const node = this;
 
         this.subscribe = function(id,callback) {
 	    console.log("HueApi["+config.name+"]().subscribe() id:", id);
@@ -31,13 +28,12 @@ module.exports = function(RED) {
 
         this.request = function(url,method="GET",data=null)  {
             var realurl = "https://" + config.host + url;
-	    //console.log("HueApi["+config.name+"].request() url:", realurl);
             var request = {
                 "method": method,
                 "url": realurl,
                 "headers": {
                     "Content-Type": "application/json; charset=utf-8",
-                    "hue-application-key": "tStn4dcA-gXxP5PEWfgaoF0ShunGp8wTE1GEosqw"
+                    "hue-application-key": node.key
                 },
                 "httpsAgent": new https.Agent({ rejectUnauthorized: false })
             }
@@ -83,6 +79,7 @@ module.exports = function(RED) {
 
 	this.update();
     }
+
     RED.nodes.registerType("mh-hue-api",HueApi);
 }
 
