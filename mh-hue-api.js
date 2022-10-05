@@ -87,10 +87,10 @@ module.exports = function(RED) {
         this.eventsource.onmessage = function(event) {
             const messages = JSON.parse(event.data);
             messages.forEach((message) => {
-		message.data.forEach((item) => {
+                message.data.forEach((item) => {
                     node.events.emit(item.id, item);
-		});
-	    });
+                });
+            });
         }
 
         this.update();
