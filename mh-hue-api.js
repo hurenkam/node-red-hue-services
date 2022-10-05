@@ -78,6 +78,28 @@ module.exports = function(RED) {
             return result.data;
         }
 
+        this.getServices = function(url) {
+            return new Promise(function(resolve,reject) {
+                node.request(url,"GET")
+	        .then(function(result) {
+                    console.log("HueApi[].getServices() result:");
+                    console.log(result.data.data[0].services);
+                    resolve(result.data.data[0].services);
+                });
+	    });
+        }
+
+        this.getChildren = function(url) {
+            return new Promise(function(resolve,reject) {
+                this.request(url,"GET")
+	        .then(function(result) {
+                    console.log("HueApi[].getChildren() result:");
+                    console.log(result.data.data[0].children);
+                    resolve(result.data.data[0].children);
+                });
+	    });
+        }
+
         var sseURL = "https://" + this.host + "/eventstream/clip/v2";
         this.eventsource = new EventSource(sseURL, {
             headers: { 'hue-application-key': this.key },
