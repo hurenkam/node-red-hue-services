@@ -3,6 +3,7 @@ module.exports = function(RED) {
     const events = require('events');
     const axios = require('axios');
     const https = require('https');
+    const EventSource = require('eventsource');
 
     "use strict";
 
@@ -75,6 +76,21 @@ module.exports = function(RED) {
             const promise = this.request(url,"PUT",data);
             var result = await promise;
             return result.data;
+        }
+
+        var sseURL = "https://" + this.host + "/eventstream/clip/v2";
+        this.eventsource = new EventSource(sseURL, {
+            headers: { 'hue-application-key': this.key },
+            https: { rejectUnauthorized: false },
+        });
+
+        this.eventsource.onmessage = function(event) {
+            const messages = JSON.parse(event.data);
+            messages.forEach((message) => {
+		message.data.forEach((item) => {
+                    node.events.emit(item.id, item);
+		});
+	    });
         }
 
         this.update();
