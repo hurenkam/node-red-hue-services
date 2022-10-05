@@ -82,8 +82,8 @@ module.exports = function(RED) {
             return new Promise(function(resolve,reject) {
                 node.request(url,"GET")
 	        .then(function(result) {
-                    console.log("HueApi[].getServices() result:");
-                    console.log(result.data.data[0].services);
+                    //console.log("HueApi[].getServices() result:");
+                    //console.log(result.data.data[0].services);
                     resolve(result.data.data[0].services);
                 });
 	    });
@@ -93,8 +93,8 @@ module.exports = function(RED) {
             return new Promise(function(resolve,reject) {
                 this.request(url,"GET")
 	        .then(function(result) {
-                    console.log("HueApi[].getChildren() result:");
-                    console.log(result.data.data[0].children);
+                    //console.log("HueApi[].getChildren() result:");
+                    //console.log(result.data.data[0].children);
                     resolve(result.data.data[0].children);
                 });
 	    });
