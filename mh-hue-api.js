@@ -53,42 +53,41 @@ module.exports = function(RED) {
 
                 var request = node.requestQ.shift();
                 node.request(request.url, request.method, request.data)
-		.then(function(result) {
+                .then(function(result) {
                     request.resolve(result.data);
-		})
+                })
                 .catch((error) => {
                     console.log("HueApi["+node.name+"].handleRequest(" + request.url + ") error: " + error.request.res.statusMessage + " (" + error.request.res.statusCode + ")");
-		});
+                });
 
-		// if a request was handled, then wait for at least 1000ms before handling next request
+                // if a request was handled, then wait for at least 1000ms before handling next request
                 setTimeout(node.handleRequest,1000); 
 
-	    } else {
+            } else {
 
-		// if no request was pending, then wait 100ms before checking again
+                // if no request was pending, then wait 100ms before checking again
                 setTimeout(node.handleRequest,100); 
-	    }
-	}
+            }
+        }
 
         this.get = function(url) {
             console.log("HueApi["+node.name+"].get(" + url + ")");
             return new Promise(function(resolve,reject) {
                 node.requestQ.push({ url: url, method: "GET", data: null, resolve: resolve, reject: reject });
-	    });
+            });
         }
 
         this.put = function(url,data) {
             console.log("HueApi["+node.name+"].put(" + url + ")");
             return new Promise(function(resolve,reject) {
                 node.requestQ.push({ url: url, method: "PUT", data: data, resolve: resolve, reject: reject });
-	    });
+            });
         }
 
         this.update = function() {
             console.log("HueApi["+node.name+"].update()");
             this.get("/clip/v2/resource")
-            .then(function(response)
-            {
+            .then(function(response) {
                 response.data.forEach((resource) => {
                     node.events.emit(resource.id, resource);
                 });
@@ -100,8 +99,8 @@ module.exports = function(RED) {
             return new Promise(function(resolve,reject) {
                 node.requestQ.push({ url: url, method: "GET", data: null, resolve: function(result) {
                     resolve(result.data[0].services);
-		}, reject: reject });
-	    });
+                }, reject: reject });
+            });
         }
 
         var sseURL = "https://" + this.host + "/eventstream/clip/v2";
