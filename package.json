@@ -16,6 +16,7 @@
     "nodes": {
       "mh-hue-api": "mh-hue-api.js",
       "mh-hue-grouped-light": "mh-hue-grouped-light.js",
+      "mh-hue-motion-sensor": "mh-hue-motion-sensor.js",
       "mh-hue-light": "mh-hue-light.js",
       "mh-hue-room": "mh-hue-room.js"
     }
