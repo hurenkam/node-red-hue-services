@@ -20,14 +20,15 @@ module.exports = function(RED) {
 
         this.subscribe = function(id,callback) {
             console.log("HueApi["+config.name+"]().subscribe() id:", id);
-            this.events.on(id,callback);
+            node.events.on(id,callback);
         }
 
         this.unsubscribe = function(id) {
-            this.events.off(id);
+            node.events.off(id);
         }
 
-        this.request = function(url,method="GET",data=null)  {
+        this.request = async function(url,method="GET",data=null)  {
+            console.log("HueApi["+node.name+"].request(" + url + "," + method + "," + data + ")");
             var realurl = "https://" + config.host + url;
             var request = {
                 "method": method,
@@ -41,62 +42,65 @@ module.exports = function(RED) {
             if (data) {
                 request["data"] = data;
             }
+
             return axios(request);
         }
 
+        this.requestQ = [];
+        this.handleRequest = function() {
+            if (node.requestQ.length > 0) {
+                console.log("HueApi["+node.name+"].handleRequest() pending: " + node.requestQ.length);
+
+                var request = node.requestQ.shift();
+                node.request(request.url, request.method, request.data)
+		.then(function(result) {
+                    request.resolve(result.data);
+		})
+                .catch((error) => {
+                    console.log("HueApi["+node.name+"].handleRequest(" + request.url + ") error: " + error.request.res.statusMessage + " (" + error.request.res.statusCode + ")");
+		});
+
+		// if a request was handled, then wait for at least 1000ms before handling next request
+                setTimeout(node.handleRequest,1000); 
+
+	    } else {
+
+		// if no request was pending, then wait 100ms before checking again
+                setTimeout(node.handleRequest,100); 
+	    }
+	}
+
+        this.get = function(url) {
+            console.log("HueApi["+node.name+"].get(" + url + ")");
+            return new Promise(function(resolve,reject) {
+                node.requestQ.push({ url: url, method: "GET", data: null, resolve: resolve, reject: reject });
+	    });
+        }
+
+        this.put = function(url,data) {
+            console.log("HueApi["+node.name+"].put(" + url + ")");
+            return new Promise(function(resolve,reject) {
+                node.requestQ.push({ url: url, method: "PUT", data: data, resolve: resolve, reject: reject });
+	    });
+        }
+
         this.update = function() {
-            this.request("/clip/v2/resource")
+            console.log("HueApi["+node.name+"].update()");
+            this.get("/clip/v2/resource")
             .then(function(response)
             {
-                response.data.data.forEach((resource) => {
+                response.data.forEach((resource) => {
                     node.events.emit(resource.id, resource);
                 });
             });
         }
 
-        this.del = async function(url) {
-            const promise = this.request(url,"DELETE");
-            var result = await promise;
-            return result.data;
-        }
-
-        this.get = async function(url) {
-            const promise = this.request(url,"GET");
-            var result = await promise;
-            return result.data;
-        }
-
-        this.post = async function(url,data) {
-            const promise = this.request(url,"POST",data);
-            var result = await promise;
-            return result.data;
-        }
-
-        this.put = async function(url,data) {
-            const promise = this.request(url,"PUT",data);
-            var result = await promise;
-            return result.data;
-        }
-
         this.getServices = function(url) {
+            console.log("HueApi["+node.name+"].getServices(" + url + ")");
             return new Promise(function(resolve,reject) {
-                node.request(url,"GET")
-	        .then(function(result) {
-                    //console.log("HueApi[].getServices() result:");
-                    //console.log(result.data.data[0].services);
-                    resolve(result.data.data[0].services);
-                });
-	    });
-        }
-
-        this.getChildren = function(url) {
-            return new Promise(function(resolve,reject) {
-                this.request(url,"GET")
-	        .then(function(result) {
-                    //console.log("HueApi[].getChildren() result:");
-                    //console.log(result.data.data[0].children);
-                    resolve(result.data.data[0].children);
-                });
+                node.requestQ.push({ url: url, method: "GET", data: null, resolve: function(result) {
+                    resolve(result.data[0].services);
+		}, reject: reject });
 	    });
         }
 
@@ -116,6 +120,7 @@ module.exports = function(RED) {
         }
 
         this.update();
+        setTimeout(node.handleRequest,1000); 
     }
 
     RED.nodes.registerType("mh-hue-api",HueApi);

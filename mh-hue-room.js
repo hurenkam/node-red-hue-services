@@ -37,7 +37,7 @@ module.exports = function(RED) {
         .then(function(services) {
                 services.forEach((service) => {
                     if (!node.services[service.rtype]) node.services[service.rtype]=[];
-                    node.services[service.rtype].push(service.rid);
+                    if (!node.services[service.rtype].includes(service.rid)) node.services[service.rtype].push(service.rid);
                     node.bridge.subscribe(service.rid,node.onUpdate);
                 });
             });

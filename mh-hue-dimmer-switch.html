@@ -1,0 +1,36 @@
+<script type="text/javascript">
+    RED.nodes.registerType('mh-hue-dimmer-switch',{
+        category: 'hue',
+        color: '#a6bbcf',
+        defaults: {
+            name:   {value:""},
+            bridge: {type:"mh-hue-api", required: true},
+            rid:    {value:"", required: true}
+        },
+        inputs:0,
+        outputs:1,
+        icon: "font-awesome/sensor",
+        label: function() {
+            return this.name||"mh-hue-dimmer-switch";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="mh-hue-dimmer-switch">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-bridge"><i class="fa fa-tag"></i> Bridge</label>
+        <input type="text" id="node-input-bridge" style="width: calc(100% - 105px)">
+    </div>
+    <div class="form-row">
+        <label for="node-input-rid"><i class="fa fa-tag"></i> Rid</label>
+        <input type="text" id="node-input-rid" style="width: calc(100% - 105px)">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="mh-hue-dimmer-switch">
+    <p>A simple node that converts the message payloads into all lower-case characters</p>
+</script>

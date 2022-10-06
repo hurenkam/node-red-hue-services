@@ -1,15 +1,15 @@
 module.exports = function(RED) {
     "use strict";
 
-    function HueMotionSensor(config) {
+    function HueDimmerSwitch(config) {
         RED.nodes.createNode(this,config);
         const node = this;
 
         this.name = config.name;
-        this.sensor = config.sensor;
+        this.rid = config.rid;
         this.services = {};
         this.bridge = RED.nodes.getNode(config.bridge);
-        this.url = "/clip/v2/resource/device/" + this.sensor;
+        this.url = "/clip/v2/resource/device/" + this.rid;
 
         this.onUpdate = function(resource) {
             node.send({ payload: resource });
@@ -25,5 +25,5 @@ module.exports = function(RED) {
         });
     }
 
-    RED.nodes.registerType("mh-hue-motion-sensor",HueMotionSensor);
+    RED.nodes.registerType("mh-hue-dimmer-switch",HueDimmerSwitch);
 }

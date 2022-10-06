@@ -15,6 +15,7 @@
   "node-red": {
     "nodes": {
       "mh-hue-api": "mh-hue-api.js",
+      "mh-hue-dimmer-switch": "mh-hue-dimmer-switch.js",
       "mh-hue-grouped-light": "mh-hue-grouped-light.js",
       "mh-hue-motion-sensor": "mh-hue-motion-sensor.js",
       "mh-hue-light": "mh-hue-light.js",
@@ -23,6 +24,7 @@
   },
   "dependencies": {
     "axios": "^0.26.1",
-    "eventsource": "^2.0.0"
+    "eventsource": "^2.0.0",
+    "limiter": "^1.0.0"
   }
 }
