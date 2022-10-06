@@ -7,13 +7,14 @@
             bridge: {type:"mh-hue-api", required: true},
             light:  {value:"", required: true}
         },
-        color: "#C0DEED",
+        color: "#E7E7AE",
         inputs:1,
         outputs:1,
         icon: "light.svg",
         label: function() {
-            return this.name||"mh-hue-light";
-        }
+            return this.name||"Light";
+        },
+        paletteLabel: "Light"
     });
 </script>
 
