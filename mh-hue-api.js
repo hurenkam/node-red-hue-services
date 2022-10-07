@@ -118,6 +118,14 @@ module.exports = function(RED) {
             });
         }
 
+	this.on('close', function() {
+            console.log("HueApi["+node.name+"].on('close')");
+            if (node.eventsource != null) {
+                node.eventsource.close();
+            };
+            node.eventsource = null;
+        });
+
         this.update();
         setTimeout(node.handleRequest,1000); 
     }
