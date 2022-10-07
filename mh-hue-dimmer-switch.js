@@ -17,6 +17,9 @@ module.exports = function(RED) {
 
         this.onUpdate = function(resource) {
             if ((!resource.startup) || (resource.startup === false)) {
+                if (resource.type === "button") {
+                    resource.button.index = node.services[resource.type].indexOf(resource.id);
+                }
                 node.send({ payload: resource });
             }
 
