@@ -10,6 +10,7 @@ module.exports = function(RED) {
     function HueApi(config) {
         RED.nodes.createNode(this,config);
         const node = this;
+        const throttle = 500;
 
         this.id = config.id;
         this.name = config.name;
@@ -61,7 +62,7 @@ module.exports = function(RED) {
                 });
 
                 // if a request was handled, then wait for at least 1000ms before handling next request
-                setTimeout(node.handleRequest,1000); 
+                setTimeout(node.handleRequest,throttle); 
 
             } else {
 

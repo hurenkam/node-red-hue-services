@@ -1,23 +1,23 @@
 <script type="text/javascript">
-    RED.nodes.registerType('mh-hue-dimmer-switch',{
-        category: 'hue devices',
+    RED.nodes.registerType('mh-hue-zone',{
+        category: 'hue services',
         defaults: {
             name:   {value:""},
             bridge: {type:"mh-hue-api", required: true},
             rid:    {value:"", required: true}
         },
-        color: "#C7E9C0",
-        inputs:0,
+        color: "#E7E7AE",
+        inputs:1,
         outputs:1,
-        icon: "font-awesome/fa-circle-o",
+        icon: "light.svg",
         label: function() {
-            return this.name||"Hue Dimmer Switch";
+            return this.name||"Zone";
         },
-        paletteLabel: "Hue Dimmer Switch"
+        paletteLabel: "Zone"
     });
 </script>
 
-<script type="text/html" data-template-name="mh-hue-dimmer-switch">
+<script type="text/html" data-template-name="mh-hue-zone">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -27,11 +27,12 @@
         <input type="text" id="node-input-bridge" style="width: calc(100% - 105px)">
     </div>
     <div class="form-row">
-        <label for="node-input-rid"><i class="fa fa-tag"></i> Rid</label>
+        <label for="node-input-rid"><i class="fa fa-tag"></i> Zone</label>
         <input type="text" id="node-input-rid" style="width: calc(100% - 105px)">
     </div>
 </script>
 
-<script type="text/html" data-help-name="mh-hue-dimmer-switch">
+<script type="text/html" data-help-name="mh-hue-zone">
     <p>A simple node that converts the message payloads into all lower-case characters</p>
 </script>
+
