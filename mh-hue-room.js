@@ -6,15 +6,17 @@ module.exports = function(RED) {
         const node = this;
 
         this.name = config.name;
-        this.room = config.room;
+        this.rid = config.rid;
         this.services = {};
         this.bridge = RED.nodes.getNode(config.bridge);
-        this.url = "/clip/v2/resource/room/" + this.room;
+        this.url = "/clip/v2/resource/room/" + this.rid;
 
         this.state = { on: false, brightness: 0 };
 	
         this.onUpdate = function(resource) {
-            node.send({ payload: resource });
+            if ((!resource.startup) || (resource.startup === false)) {
+                node.send({ payload: resource });
+            }
 
             if (resource.type === "grouped_light") {
                 if (resource.on) {
@@ -33,14 +35,16 @@ module.exports = function(RED) {
             }
         }
 
-        this.bridge.getServices(this.url)
-        .then(function(services) {
+        setTimeout(() => {
+            this.bridge.getServicesByTypeAndId("device",this.rid)
+            .then(function(services) {
                 services.forEach((service) => {
                     if (!node.services[service.rtype]) node.services[service.rtype]=[];
                     if (!node.services[service.rtype].includes(service.rid)) node.services[service.rtype].push(service.rid);
                     node.bridge.subscribe(service.rid,node.onUpdate);
                 });
-            });
+            });  
+        }, 5000);
 
         this.on('input', function(msg) {
             if (msg.service) {

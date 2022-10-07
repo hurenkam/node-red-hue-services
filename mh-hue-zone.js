@@ -14,7 +14,9 @@ module.exports = function(RED) {
         this.state = { on: false, brightness: 0 };
 	
         this.onUpdate = function(resource) {
-            node.send({ payload: resource });
+            if ((!resource.startup) || (resource.startup === false)) {
+                node.send({ payload: resource });
+            }
 
             if (resource.type === "grouped_light") {
                 if (resource.on) {
@@ -33,14 +35,17 @@ module.exports = function(RED) {
             }
         }
 
-        this.bridge.getServices(this.url)
-        .then(function(services) {
+        setTimeout(() => {
+            this.bridge.getServicesByTypeAndId("device",this.rid)
+            .then(function(services) {
                 services.forEach((service) => {
                     if (!node.services[service.rtype]) node.services[service.rtype]=[];
                     if (!node.services[service.rtype].includes(service.rid)) node.services[service.rtype].push(service.rid);
                     node.bridge.subscribe(service.rid,node.onUpdate);
                 });
-            });
+            });   
+        }, 5000);
+
 
         this.on('input', function(msg) {
             if (msg.service) {
@@ -61,6 +66,7 @@ module.exports = function(RED) {
 
                     }
                 }
+
             } else {
 
                 // if msg does not contain a service identifier, then assume it is meant for all

@@ -10,6 +10,8 @@ module.exports = function(RED) {
     function HueApi(config) {
         RED.nodes.createNode(this,config);
         const node = this;
+
+        // throttle to 1 request per 500 ms
         const throttle = 500;
 
         this.id = config.id;
@@ -61,12 +63,12 @@ module.exports = function(RED) {
                     console.log("HueApi["+node.name+"].handleRequest(" + request.url + ") error: " + error.request.res.statusMessage + " (" + error.request.res.statusCode + ")");
                 });
 
-                // if a request was handled, then wait for at least 1000ms before handling next request
+                // if a request was handled, then wait throttle time before handling next request
                 setTimeout(node.handleRequest,throttle); 
 
             } else {
 
-                // if no request was pending, then wait 100ms before checking again
+                // if no request was pending, then check again soon
                 setTimeout(node.handleRequest,100); 
             }
         }
@@ -85,11 +87,17 @@ module.exports = function(RED) {
             });
         }
 
+        const resourceTypesToBeCached = ["device","room","zone"];
+        this.cachedServicesById = {}
         this.update = function() {
             console.log("HueApi["+node.name+"].update()");
-            this.get("/clip/v2/resource")
+            node.get("/clip/v2/resource")
             .then(function(response) {
                 response.data.forEach((resource) => {
+                    if (resourceTypesToBeCached.includes(resource.type)) {
+                        node.cachedServicesById[resource.id] = resource.services; 
+		    }
+                    resource["startup"]=true;
                     node.events.emit(resource.id, resource);
                 });
             });
@@ -102,6 +110,24 @@ module.exports = function(RED) {
                     resolve(result.data[0].services);
                 }, reject: reject });
             });
+        }
+
+        this.getServicesByTypeAndId = function(type,id) {
+            if (Object.keys(node.cachedServicesById).includes(id)) {
+                console.log("HueApi["+node.name+"].getServicesByTypeAndId(" + type + "," + id + "): returning cached value...");
+                return new Promise(function(resolve,reject) {
+                    resolve(node.cachedServicesById[id]);
+	        });
+	    } else {
+                console.log("HueApi["+node.name+"].getServicesByTypeAndId(" + type + "," + id + "): not in cache, fetching now...");
+                var url = "/clip/v2/resource/"+type+"/"+id;
+                return new Promise(function(resolve,reject) {
+                    node.requestQ.push({ url: url, method: "GET", data: null, resolve: function(result) {
+                        node.cachedServicesById[id] = result.data[0].services; 
+                        resolve(result.data[0].services);
+                    }, reject: reject });
+                });
+            }
         }
 
         var sseURL = "https://" + this.host + "/eventstream/clip/v2";
@@ -119,7 +145,7 @@ module.exports = function(RED) {
             });
         }
 
-	this.on('close', function() {
+        this.on('close', function() {
             console.log("HueApi["+node.name+"].on('close')");
             if (node.eventsource != null) {
                 node.eventsource.close();
@@ -127,10 +153,14 @@ module.exports = function(RED) {
             node.eventsource = null;
         });
 
+        // Schedule an update immediately, and one 10 seconds later.
+        // Assumption is that by than all devices will have subscribed
+        // their services and can thus receive an initial update.
         this.update();
-        setTimeout(node.handleRequest,1000); 
+        setTimeout(node.update,10000);
+
+        this.handleRequest();
     }
 
     RED.nodes.registerType("mh-hue-api",HueApi);
 }
-

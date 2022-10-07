@@ -15,6 +15,7 @@
   "node-red": {
     "nodes": {
       "mh-hue-api": "mh-hue-api.js",
+      "mh-hue-lutron-aurora": "mh-hue-lutron-aurora.js",
       "mh-hue-dimmer-switch": "mh-hue-dimmer-switch.js",
       "mh-hue-motion-sensor": "mh-hue-motion-sensor.js",
       "mh-hue-light": "mh-hue-light.js",

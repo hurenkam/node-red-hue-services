@@ -13,7 +13,9 @@ module.exports = function(RED) {
         this.state = { on: false, brightness: 0 };
 	
         this.onUpdate = function(resource) {
-            node.send({ payload: resource});
+            if ((!resource.startup) || (resource.startup === false)) {
+                node.send({ payload: resource });
+            }
 
             if (resource.on) {
                 node.state.on = resource.on.on;
