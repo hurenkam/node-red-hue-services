@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    RED.nodes.registerType('mh-hue-dimmer-switch',{
+    RED.nodes.registerType('mh-hue-wall-switch',{
         category: 'hue devices',
         defaults: {
             name:   {value:""},
@@ -11,16 +11,16 @@
         outputs:1,
         icon: "font-awesome/fa-circle-o",
         label: function() {
-            return this.name||"Hue Dimmer Switch";
+            return this.name||"Hue Wall Switch";
         },
-        paletteLabel: "Hue Dimmer Switch",
+        paletteLabel: "Hue Wall Switch",
         oneditprepare: function() {
-            console.log("mh-hue-dimmer-switch.oneditprepare()");
+            console.log("mh-hue-wall-switch.oneditprepare()");
             const scope = this;
             let options = [];
 
             function inputUUID() {
-                console.log("mh-hue-dimmer-switch.oneditprepare.inputUUID()");
+                console.log("mh-hue-wall-switch.oneditprepare.inputUUID()");
 
                 var current = $('#node-input-uuid').val();
                 $('#input-select-uuid').empty();
@@ -33,10 +33,10 @@
             }
 
             function findUUID() {
-                console.log("mh-hue-dimmer-switch.oneditprepare.findUUID()");
+                console.log("mh-hue-wall-switch.oneditprepare.findUUID()");
 
                 // Add a notification on top of the page indicating that we are busy...
-                var notification = RED.notify("Searching for Hue Dimmer Switch devices...", { type: "compact", modal: true, fixed: true });
+                var notification = RED.notify("Searching for Lutron Aurora devices...", { type: "compact", modal: true, fixed: true });
 
                 var current = $('#node-input-uuid').val();
 
@@ -48,7 +48,7 @@
                 $.get("mh-hue/options", { 
                     bridge: bridgeConfig.bridge, 
                     type: "device", 
-                    models: ["RWL020","RWL021"]
+                    models: ["RDM001","RDM004"]
                 })
                 .done( function(data) {
                     var options = JSON.parse(data);
@@ -58,7 +58,7 @@
                     if(options.length <= 0)
                     {
                         notification.close();
-                        RED.notify("No Hue Dimmer Switch devices found.", { type: "error" });
+                        RED.notify("No Hue Wall Switch devices found.", { type: "error" });
                         return false;
                     }
 
@@ -81,7 +81,7 @@
                 })
                 .fail(function()
                 {
-                    console.log("mh-hue-dimmer-switch.oneditprepare.findUUID(): failed");
+                    console.log("mh-hue-wall-switch.oneditprepare.findUUID(): failed");
 
                     // Remove the notification
                     notification.close();
@@ -101,7 +101,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="mh-hue-dimmer-switch">
+<script type="text/html" data-template-name="mh-hue-wall-switch">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -123,6 +123,6 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="mh-hue-dimmer-switch">
+<script type="text/html" data-help-name="mh-hue-wall-switch">
     <p>A simple node that converts the message payloads into all lower-case characters</p>
 </script>
