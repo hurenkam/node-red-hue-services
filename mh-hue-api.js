@@ -153,6 +153,27 @@ module.exports = function(RED) {
             node.eventsource = null;
         });
 
+        RED.httpAdmin.get('/mh-hue/bridges', async function(req, res, next)
+        {
+            console.log("HueApi["+node.name+"].get(\"/mh-hue/bridges()\")");
+            console.log(req.query);
+
+            // on error
+            res.status(500).send(JSON.stringify(error));
+        });
+
+        RED.httpAdmin.get('/mh-hue/resources', async function(req, res, next)
+        {
+            console.log("HueApi["+node.name+"].get(\"/mh-hue/resources()\")");
+            console.log(req.query);
+
+            // { label: "name of the resource", value: "uuid of the resource" }
+            var options = [];
+
+            // on success
+            res.end(JSON.stringify(Object(options)));
+        });
+
         // Schedule an update immediately, and one 10 seconds later.
         // Assumption is that by than all devices will have subscribed
         // their services and can thus receive an initial update.

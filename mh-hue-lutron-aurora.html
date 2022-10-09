@@ -4,7 +4,7 @@
         defaults: {
             name:   {value:""},
             bridge: {type:"mh-hue-api", required: true},
-            rid:    {value:"", required: true}
+            uuid:   {value:"", required: true}
         },
         color: "#C7E9C0",
         inputs:0,
@@ -13,22 +13,113 @@
         label: function() {
             return this.name||"Lutron Aurora";
         },
-        paletteLabel: "Lutron Aurora"
+        paletteLabel: "Lutron Aurora",
+        oneditprepare: function() {
+            console.log("mh-hue-lutron-aurora.oneditprepare()");
+            const scope = this;
+            let options = [];
+
+            function inputUUID() {
+                console.log("mh-hue-lutron-aurora.oneditprepare.inputUUID()");
+
+                var current = $('#node-input-uuid').val();
+                $('#input-select-uuid').empty();
+                $('#input-select-uuid').append('<input type="text" id="node-input-uuid" placeholder="00000000-0000-0000-0000-000000000000" style="width: 100%" value="'+current+'" />');
+
+                var button = $("#input-select-uuid-search");
+                var icon = button.find("i");
+                icon.removeClass("fa-pencil");
+                icon.addClass("fa-search");
+            }
+
+            function findUUID() {
+                console.log("mh-hue-lutron-aurora.oneditprepare.findUUID()");
+
+                // Add a notification on top of the page indicating that we are busy...
+                var notification = RED.notify("Searching for Lutron Aurora devices...", { type: "compact", modal: true, fixed: true });
+
+                var current = $('#node-input-uuid').val();
+
+                var bridgeConfig = RED.nodes.node($('#node-input-bridge option:selected').val());
+                if(!bridgeConfig) { return false; }
+
+                // retrieve the options list from the bridge config node
+                // restrict the list to resources of type 'device' and with model_id 'Z3-1BRL'
+                $.get("mh-hue/options", { 
+                    bridge: bridgeConfig.bridge, 
+                    type: "device", 
+                    models: ["Z3-1BRL"] 
+                })
+                .done( function(data) {
+                    var options = JSON.parse(data);
+                    console.log("result: ");
+                    console.log(options);
+
+                    if(options.length <= 0)
+                    {
+                        notification.close();
+                        RED.notify("No Lutron Aurora devices found.", { type: "error" });
+                        return false;
+                    }
+
+                    $("#node-input-uuid").typedInput({
+                        types: [
+                            {
+                                value: current,
+                                options: options
+                            }
+                        ]
+                    });
+
+                    var button = $("#input-select-uuid-search");
+                    var icon = button.find("i");
+                    icon.removeClass("fa-search");
+                    icon.addClass("fa-pencil");
+
+                    // Remove the notification
+                    notification.close();
+                })
+                .fail(function()
+                {
+                    console.log("failed");
+
+                    // Remove the notification
+                    notification.close();
+                    RED.notify("unknown error", "error");
+                });
+            }
+
+            $('#input-select-uuid-search').click(function()
+            {
+                if($('#input-select-uuid').find(".red-ui-typedInput-container").length > 0) {
+                    inputUUID();
+                } else {
+                    findUUID();
+                }
+            });
+        }
     });
 </script>
 
 <script type="text/html" data-template-name="mh-hue-lutron-aurora">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
+        <input type="text" id="node-input-name" style="width: calc(100% - 105px)">
     </div>
     <div class="form-row">
-        <label for="node-input-bridge"><i class="fa fa-tag"></i> Bridge</label>
+        <label for="node-input-bridge"><i class="fa fa-server"></i> Bridge</label>
         <input type="text" id="node-input-bridge" style="width: calc(100% - 105px)">
     </div>
     <div class="form-row">
-        <label for="node-input-rid"><i class="fa fa-tag"></i> Rid</label>
-        <input type="text" id="node-input-rid" style="width: calc(100% - 105px)">
+        <label for="node-input-uuid"><i class="fa fa-tag"></i> UUID</label>
+        <div style="display: inline-flex; width: calc(100% - 105px)">
+            <div id="input-select-uuid" style="flex-grow: 1;">
+                <input type="text" id="node-input-uuid" style="width: 100%">
+            </div>
+            <button id="input-select-uuid-search" type="button" class="red-ui-button" style="margin-left: 10px;">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
     </div>
 </script>
 
