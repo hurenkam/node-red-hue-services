@@ -89,6 +89,7 @@ module.exports = function(RED) {
 
         const resourceTypesToBeCached = ["device","room","zone"];
         this.cachedServicesById = {}
+        this.cachedResourcesById = {}
         this.update = function() {
             console.log("HueApi["+node.name+"].update()");
             node.get("/clip/v2/resource")
@@ -96,7 +97,8 @@ module.exports = function(RED) {
                 response.data.forEach((resource) => {
                     if (resourceTypesToBeCached.includes(resource.type)) {
                         node.cachedServicesById[resource.id] = resource.services; 
-		    }
+                        node.cachedResourcesById[resource.id] = resource;
+		            }
                     resource["startup"]=true;
                     node.events.emit(resource.id, resource);
                 });
@@ -162,13 +164,32 @@ module.exports = function(RED) {
             res.status(500).send(JSON.stringify(error));
         });
 
-        RED.httpAdmin.get('/mh-hue/resources', async function(req, res, next)
+        RED.httpAdmin.get('/mh-hue/options', async function(req, res, next)
         {
-            console.log("HueApi["+node.name+"].get(\"/mh-hue/resources()\")");
+            console.log("HueApi["+node.name+"].get(\"/mh-hue/options()\")");
             console.log(req.query);
 
-            // { label: "name of the resource", value: "uuid of the resource" }
             var options = [];
+            Object.keys(node.cachedResourcesById).forEach(function(key) {
+                var service = node.cachedResourcesById[key];
+
+                if (service.type === req.query.type)
+                {
+                    if (service.type === "device")
+                    {
+                        if (req.query.models.includes(service.product_data.model_id))
+                        {
+                            options.push({ 
+                                label: service.metadata.name, 
+                                value: service.id 
+                            });
+                        }
+                    } else {
+                        console.log ("type " + service.type + "is not yet supported");
+                    }
+                }
+            });
+            console.log(options);
 
             // on success
             res.end(JSON.stringify(Object(options)));
