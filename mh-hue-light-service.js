@@ -1,7 +1,7 @@
 module.exports = function(RED) {
     "use strict";
 
-    function HueLight(config) {
+    function HueLightService(config) {
         RED.nodes.createNode(this,config);
         const node = this;
 
@@ -38,6 +38,6 @@ module.exports = function(RED) {
         });
     }
 
-    RED.nodes.registerType("mh-hue-light",HueLight);
+    RED.nodes.registerType("mh-hue-light-service",HueLightService);
 }
 

@@ -6,10 +6,10 @@ module.exports = function(RED) {
         const node = this;
 
         this.name = config.name;
-        this.rid = config.rid;
+        this.uuid = config.uuid;
         this.services = {};
         this.bridge = RED.nodes.getNode(config.bridge);
-        this.url = "/clip/v2/resource/room/" + this.rid;
+        this.url = "/clip/v2/resource/room/" + this.uuid;
 
         this.state = { on: false, brightness: 0 };
 	
@@ -36,7 +36,7 @@ module.exports = function(RED) {
         }
 
         setTimeout(() => {
-            this.bridge.getServicesByTypeAndId("device",this.rid)
+            this.bridge.getServicesByTypeAndId("device",this.uuid)
             .then(function(services) {
                 services.forEach((service) => {
                     if (!node.services[service.rtype]) node.services[service.rtype]=[];

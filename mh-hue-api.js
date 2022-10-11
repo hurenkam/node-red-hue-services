@@ -181,10 +181,19 @@ module.exports = function(RED) {
                         {
                             options.push({ 
                                 label: service.metadata.name, 
-                                value: service.id 
+                                value: service.id
                             });
                         }
-                    } else {
+                    }
+                    else if ((service.type === "room") || (service.type === "zone"))
+                    {
+                        options.push({ 
+                            label: service.metadata.name, 
+                            value: service.id
+                        });
+                    }
+                    else
+                    {
                         console.log ("type " + service.type + "is not yet supported");
                     }
                 }

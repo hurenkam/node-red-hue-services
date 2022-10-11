@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    RED.nodes.registerType('mh-hue-light',{
+    RED.nodes.registerType('mh-hue-light-service',{
         category: 'hue services',
         defaults: {
             name:   {value:""},
@@ -11,13 +11,13 @@
         outputs:1,
         icon: "light.svg",
         label: function() {
-            return this.name||"Light";
+            return this.name||"Light Service";
         },
-        paletteLabel: "Light"
+        paletteLabel: "Light Service"
     });
 </script>
 
-<script type="text/html" data-template-name="mh-hue-light">
+<script type="text/html" data-template-name="mh-hue-light-service">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -32,7 +32,6 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="mh-hue-light">
+<script type="text/html" data-help-name="mh-hue-light-service">
     <p>A simple node that converts the message payloads into all lower-case characters</p>
 </script>
-
