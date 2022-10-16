@@ -47,33 +47,39 @@ module.exports = function(RED) {
         }, 5000);
 
         this.on('input', function(msg) {
-            if (msg.service) {
-                if ( (msg.service.rtype) && (node.services[msg.service.rtype]) ) {
-                    if ( (msg.service.rid) && (node.services[msg.service.rtype].includes(msg.service.rid))) {
+            //console.log("HueRoom.on('input'): ");
+            //console.log(msg);
 
-                        // if msg contains rtype and rid, then address the specific service
-                        const url = "/clip/v2/resource/" + msg.service.rtype + "/" + msg.service.rid;
+            if (msg.rtypes) {
+                // if msg contains a list of rtypes
+                // then forward the msg to all services that have a matching rtype
+                for (const [key, value] of Object.entries(node.services)) {
+                    const url = "/clip/v2/resource/" + key + "/" + value;
+                    if (msg.rtypes.includes(key)) {
                         node.bridge.put(url,msg.payload);
-
-                    } else {
-
-                        // otherwise address all services of rtype associated with this node
-                        node.services[msg.service.rtype].forEach((rid) => {
-                            const url = "/clip/v2/resource/" + msg.service.rtype + "/" + rid;
-                            node.bridge.put(url,msg.payload);
-                        });
-
                     }
                 }
-            } else {
+            }
 
-                // if msg does not contain a service identifier, then assume it is meant for all
-                // services registered with this node
+            if (msg.rids) {
+                // if msg contains a list of rids
+                // then forward the msg to all services that have a matching rid
+                for (const [key, value] of Object.entries(node.services)) {
+                    const url = "/clip/v2/resource/" + key + "/" + value;
+                    if (msg.rids.includes(value)) {
+                        node.bridge.put(url,msg.payload);
+                    }
+                }
+            }
+
+            if (!(msg.rids) && !(msg.rtypes))
+            {
+                // if msg does not contain a list of rids or rtypes
+                // then assume it is meant for all services registered with htis node
                 for (const [key, value] of Object.entries(node.services)) {
                     const url = "/clip/v2/resource/" + key + "/" + value;
                     node.bridge.put(url,msg.payload);
                 }
-
             }
         });
     }

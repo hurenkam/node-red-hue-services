@@ -67,7 +67,7 @@ module.exports = function(RED) {
                 text += node.button.last_event;
             }
 
-            if (node.relative_rotary!=null) {
+            if ((node.relative_rotary!=null) && (node.relative_rotary.last_event != null) && (node.relative_rotary.last_event.rotation != null)) {
                 if (node.relative_rotary.last_event.rotation.direction === "clock_wise") {
                     text += ">>";
                 } else {

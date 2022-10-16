@@ -6,7 +6,7 @@
             bridge: {type:"mh-hue-api", required: true},
             uuid:   {value:"", required: true}
         },
-        color: "#C7E9C0",
+        color: "#FDF0C2",
         inputs:1,
         outputs:1,
         icon: "light.svg",
@@ -33,20 +33,17 @@
             }
 
             function findUUID() {
-                console.log("mh-hue-light.oneditprepare.findUUID()");
 
                 // Add a notification on top of the page indicating that we are busy...
                 var notification = RED.notify("Searching for Hue Light devices...", { type: "compact", modal: true, fixed: true });
-
                 var current = $('#node-input-uuid').val();
-
                 var bridgeConfig = RED.nodes.node($('#node-input-bridge option:selected').val());
                 if(!bridgeConfig) { return false; }
 
                 // retrieve the options list from the bridge config node
                 // restrict the list to resources of type 'device' and with model_id 'Z3-1BRL'
-                $.get("mh-hue/options", { 
-                    bridge: bridgeConfig.bridge, 
+                $.get("mh-hue/options", {
+                    bridge_id: bridgeConfig.id,
                     type: "device", 
                     models: [
                         "440400982842",       // Hue play
@@ -71,8 +68,6 @@
                 })
                 .done( function(data) {
                     var options = JSON.parse(data);
-                    console.log("result: ");
-                    console.log(options);
 
                     if(options.length <= 0)
                     {

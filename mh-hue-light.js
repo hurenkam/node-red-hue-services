@@ -63,18 +63,56 @@ module.exports = function(RED) {
             node.status({fill: fill, shape: shape, text: text});
         }
 
-        setTimeout(() => {
-            this.bridge.getServicesByTypeAndId("device",this.uuid)
-            .then(function(services) {
-                services.forEach((service) => {
-                    if (!node.services[service.rtype]) node.services[service.rtype]=[];
-                    if (!node.services[service.rtype].includes(service.rid)) node.services[service.rtype].push(service.rid);
-                    node.bridge.subscribe(service.rid,node.onUpdate);
+        if (this.uuid)
+        {
+            setTimeout(() => {
+                node.bridge.getServicesByTypeAndId("device",node.uuid)
+                .then(function(services) {
+                    services.forEach((service) => {
+                        if (!node.services[service.rtype]) node.services[service.rtype]=[];
+                        if (!node.services[service.rtype].includes(service.rid)) node.services[service.rtype].push(service.rid);
+                        node.bridge.subscribe(service.rid,node.onUpdate);
+                    });
                 });
-            });
-        }, 5000);
-
+            }, 5000);
+        }
+        
         this.on('input', function(msg) {
+            //console.log("HueLight.on('input'): ");
+            //console.log(msg);
+
+            if (msg.rtypes) {
+                // if msg contains a list of rtypes
+                // then forward the msg to all services that have a matching rtype
+                for (const [key, value] of Object.entries(node.services)) {
+                    const url = "/clip/v2/resource/" + key + "/" + value;
+                    if (msg.rtypes.includes(key)) {
+                        node.bridge.put(url,msg.payload);
+                    }
+                }
+            }
+
+            if (msg.rids) {
+                // if msg contains a list of rids
+                // then forward the msg to all services that have a matching rid
+                for (const [key, value] of Object.entries(node.services)) {
+                    const url = "/clip/v2/resource/" + key + "/" + value;
+                    if (msg.rids.includes(value)) {
+                        node.bridge.put(url,msg.payload);
+                    }
+                }
+            }
+
+            if (!(msg.rids) && !(msg.rtypes))
+            {
+                // if msg does not contain a list of rids or rtypes
+                // then assume it is meant for all services registered with htis node
+                for (const [key, value] of Object.entries(node.services)) {
+                    const url = "/clip/v2/resource/" + key + "/" + value;
+                    node.bridge.put(url,msg.payload);
+                }
+            }
+/*
             if (msg.service) {
                 if ( (msg.service.rtype) && (node.services[msg.service.rtype]) ) {
                     if ( (msg.service.rid) && (node.services[msg.service.rtype].includes(msg.service.rid))) {
@@ -103,6 +141,7 @@ module.exports = function(RED) {
                 }
 
             }
+*/            
         });
     }
 

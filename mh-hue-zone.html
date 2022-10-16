@@ -46,13 +46,11 @@
                 // retrieve the options list from the bridge config node
                 // restrict the list to resources of type 'device' and with model_id 'Z3-1BRL'
                 $.get("mh-hue/options", { 
-                    bridge: bridgeConfig.bridge, 
+                    bridge_id: bridgeConfig.id, 
                     type: "zone"
                 })
                 .done( function(data) {
                     var options = JSON.parse(data);
-                    console.log("result: ");
-                    console.log(options);
 
                     if(options.length <= 0)
                     {

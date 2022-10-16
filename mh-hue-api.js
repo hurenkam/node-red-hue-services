@@ -6,6 +6,7 @@ module.exports = function(RED) {
     const EventSource = require('eventsource');
 
     "use strict";
+    var bridges = {};
 
     function HueApi(config) {
         RED.nodes.createNode(this,config);
@@ -16,8 +17,12 @@ module.exports = function(RED) {
 
         this.id = config.id;
         this.name = config.name;
-        this.host = config.host;
+        this.host = config.ip;
         this.key = config.key;
+
+        bridges[this.id] = { id: this.id, name: this.name, instance: this };
+        console.log("HueApi() Registered bridges:")
+        console.log(bridges);
 
         this.events = new events.EventEmitter();
 
@@ -31,8 +36,9 @@ module.exports = function(RED) {
         }
 
         this.request = async function(url,method="GET",data=null)  {
-            console.log("HueApi["+node.name+"].request(" + url + "," + method + "," + data + ")");
-            var realurl = "https://" + config.host + url;
+            var realurl = "https://" + node.host + url;
+            console.log("HueApi["+node.name+"].request(" + realurl + "," + method + "," + data + ")");
+
             var request = {
                 "method": method,
                 "url": realurl,
@@ -61,6 +67,7 @@ module.exports = function(RED) {
                 })
                 .catch((error) => {
                     console.log("HueApi["+node.name+"].handleRequest(" + request.url + ") error: " + error.request.res.statusMessage + " (" + error.request.res.statusCode + ")");
+                    //console.log(error.request);
                 });
 
                 // if a request was handled, then wait throttle time before handling next request
@@ -88,6 +95,45 @@ module.exports = function(RED) {
         }
 
         const resourceTypesToBeCached = ["device","room","zone"];
+        this.registeredBridgesByIP = {}
+
+        this.addBridge = function (name, ip, key, resources = {}) {
+            if (!(ip in Object.keys(node.registeredBridgesByIP))) {
+                node.registeredBridgesByIP[ip] = { name: name, ip: ip, key: key, resources: resources };
+            }
+        }
+
+        this.updateBridgeResources = function(ip) {
+            if (!(ip in Object.keys(node.registeredBridgesByIP)))
+                return
+            
+            console.log("HueApi["+node.name+"].update()");
+            node.get("/clip/v2/resource")
+            .then(function(response) {
+                response.data.forEach((resource) => {
+                    if (resourceTypesToBeCached.includes(resource.type)) {
+                        node.cachedServicesById[resource.id] = resource.services; 
+                        node.cachedResourcesById[resource.id] = resource;
+		            }
+                    resource["startup"]=true;
+                    node.events.emit(resource.id, resource);
+                });
+            });
+        }
+
+        this.updateBridgeResource = function(ip, resource) {
+            if (!(ip in Object.keys(node.registeredBridgesByIP)))
+                return
+
+            var bridge = node.registeredBridgesByIP[ip];
+
+            if (!(resource.id in Object.keys(bridge.resources))) {
+                bridge.resources[resource.id] = resource;
+            } else {
+                console.log("HueApi.updateBridgeResource(" + ip + "," + resource.id +"):  update of existing resource not yet supported.");
+            }
+        }
+
         this.cachedServicesById = {}
         this.cachedResourcesById = {}
         this.update = function() {
@@ -155,55 +201,6 @@ module.exports = function(RED) {
             node.eventsource = null;
         });
 
-        RED.httpAdmin.get('/mh-hue/bridges', async function(req, res, next)
-        {
-            console.log("HueApi["+node.name+"].get(\"/mh-hue/bridges()\")");
-            console.log(req.query);
-
-            // on error
-            res.status(500).send(JSON.stringify(error));
-        });
-
-        RED.httpAdmin.get('/mh-hue/options', async function(req, res, next)
-        {
-            console.log("HueApi["+node.name+"].get(\"/mh-hue/options()\")");
-            console.log(req.query);
-
-            var options = [];
-            Object.keys(node.cachedResourcesById).forEach(function(key) {
-                var service = node.cachedResourcesById[key];
-
-                if (service.type === req.query.type)
-                {
-                    if (service.type === "device")
-                    {
-                        if (req.query.models.includes(service.product_data.model_id))
-                        {
-                            options.push({ 
-                                label: service.metadata.name, 
-                                value: service.id
-                            });
-                        }
-                    }
-                    else if ((service.type === "room") || (service.type === "zone"))
-                    {
-                        options.push({ 
-                            label: service.metadata.name, 
-                            value: service.id
-                        });
-                    }
-                    else
-                    {
-                        console.log ("type " + service.type + "is not yet supported");
-                    }
-                }
-            });
-            console.log(options);
-
-            // on success
-            res.end(JSON.stringify(Object(options)));
-        });
-
         // Schedule an update immediately, and one 10 seconds later.
         // Assumption is that by than all devices will have subscribed
         // their services and can thus receive an initial update.
@@ -214,4 +211,156 @@ module.exports = function(RED) {
     }
 
     RED.nodes.registerType("mh-hue-api",HueApi);
+
+
+    RED.httpAdmin.get('/mh-hue/getbridges', async function(req, res, next)
+    {
+        console.log("HueApi.get(\"/mh-hue/getbridges()\")");
+        //console.log(req.query);
+
+        var request = {
+            "method": "GET",
+            "url": "https://discovery.meethue.com",
+            "headers": {
+                "Content-Type": "application/json; charset=utf-8"
+            },
+            "httpsAgent": new https.Agent({ rejectUnauthorized: false }),
+        };
+
+        var bridges = {};
+        axios(request)
+        .then(function(response)
+        {
+            for (var i = response.data.length - 1; i >= 0; i--)
+            {
+                var ipAddress = response.data[i].internalipaddress;
+                bridges[ipAddress] = { ip: ipAddress, name: ipAddress };
+            }
+
+            res.end(JSON.stringify(Object.values(bridges)));
+        })
+        .catch(function(error) {
+            console.log("HueApi["+node.name+"].get(\"/mh-hue/getbridges()\") error: " + error.request.res.statusMessage + " (" + error.request.res.statusCode + ")");
+            //console.log("HueApi["+node.name+"].get(\"/mh-hue/getbridges()\") error:");
+            //console.log(error);
+            //res.send(error);
+            res.end(JSON.stringify(Object.values(bridges)));
+        });
+    });
+
+    RED.httpAdmin.get('/mh-hue/getbridgename', function(req, res, next)
+    {
+        console.log("HueApi.get(\"/mh-hue/getbridgename()\")");
+        //console.log(req.query);
+
+        if(!req.query.ip)
+        {
+            return res.status(500).send("Missing IP in request.");
+        }
+        else
+        {
+            var request = {
+                "method": "GET",
+                "url": "https://" + req.query.ip + "/api/config",
+                "headers": { 
+                    "Content-Type": "application/json; charset=utf-8" 
+                },
+                "httpsAgent": new https.Agent({ rejectUnauthorized: false })
+            }
+
+            axios(request)
+            .then(function(response)
+            {
+                res.end(response.data.name);
+            })
+            .catch(function(error) {
+                res.send(error);
+            });
+        }
+    });
+
+    RED.httpAdmin.get('/mh-hue/registerbridge', function(req, rescope, next)
+    {
+        console.log("HueApi.get(\"/mh-hue/registerbridge()\")");
+
+        if(!req.query.ip)
+        {
+            return rescope.status(500).send("Missing bridge ip.");
+        }
+        else
+        {
+            var request = {
+                "method": "POST",
+                "url": "http://"+req.query.ip+"/api",
+                "headers": {
+                    "Content-Type": "application/json; charset=utf-8"
+                },
+                "data": {
+                    "devicetype": "mh-hue (" + Math.floor((Math.random() * 100) + 1) + ")"
+                },
+                "httpsAgent": new https.Agent({ rejectUnauthorized: false })
+            };
+
+            axios(request)
+            .then(function(response)
+            {
+                var bridge = response.data;
+                if(bridge[0].error)
+                {
+                    rescope.end("error");
+                }
+                else
+                {
+                    rescope.end(JSON.stringify(bridge));
+                }
+            })
+            .catch(function(error) {
+                rescope.status(500).send(error);
+            });
+        }
+    });
+
+    RED.httpAdmin.get('/mh-hue/options', async function(req, res, next)
+    {
+        console.log("HueApi.get(\"/mh-hue/options()\") req.query:");
+        console.log(req.query);
+
+        var bridge = bridges[req.query.bridge_id].instance;
+        console.log("HueApi["+bridge.name+"].get(\"/mh-hue/options()\")");
+
+        var options = [];
+        Object.keys(bridge.cachedResourcesById).forEach(function(key) {
+            var service = bridge.cachedResourcesById[key];
+
+            if (service.type === req.query.type)
+            {
+                if (service.type === "device")
+                {
+                    if (req.query.models.includes(service.product_data.model_id))
+                    {
+                        options.push({ 
+                            label: service.metadata.name, 
+                            value: service.id
+                        });
+                    }
+                }
+                else if ((service.type === "room") || (service.type === "zone"))
+                {
+                    options.push({ 
+                        label: service.metadata.name, 
+                        value: service.id
+                    });
+                }
+                else
+                {
+                    console.log ("type " + service.type + "is not yet supported");
+                }
+            }
+        });
+
+        //console.log(options);
+
+        // on success
+        res.end(JSON.stringify(Object(options)));
+    });
 }

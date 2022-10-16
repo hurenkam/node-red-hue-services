@@ -3,27 +3,199 @@
         category: 'config',
         defaults: {
             name: {value:""},
-            host: {value:"",required:true},
+            //host: {value:"",required:true},
+            ip:   {value:"",required:true},
             key:  {value:"",required:true}
         },
         label: function() {
             return this.name||this.key + "@" + this.host;
-        }
+        },
+		oneditprepare: function()
+		{
+			const scope = this;
+			let options = [];
+
+			function manualInput()
+			{
+				// GET CURRENT SELECTED VALUE
+				var current = $('#node-config-input-ip').val();
+
+				// REMOVE SELECT FIELD
+				$('#input-select-toggle').empty();
+
+				// CREATE NEW INPUT FIELD
+				$('#input-select-toggle').append('<input type="text" id="node-config-input-ip" placeholder="X.X.X.X[:PORT]" style="width: 100%" value="'+current+'" />');
+
+				// CHANGE BUTTON ICON
+				var button = $("#node-config-input-scan");
+				var buttonIcon = button.find("i");
+				buttonIcon.removeClass("fa-pencil");
+				buttonIcon.addClass("fa-search");
+			}
+
+			function searchAndSelect()
+			{
+				// GET CURRENT SELECTED VALUE
+				var current = $('#node-config-input-ip').val();
+
+				// TRIGGER SEARCHING NOTIFICATION
+				var notification = RED.notify("Searching for Hue Bridge devices...", { type: "compact", modal: true, fixed: true });
+
+				// GET THE SENSORS
+				$.get('mh-hue/getbridges')
+				.done( function(data) {
+				    var allResources = JSON.parse(data);
+				    if(allResources.length <= 0)
+				    {
+				        notification.close();
+				        RED.notify("No Hue Bridge devices found!", { type: "error" });
+				        return false;
+				    }
+
+				    // SET OPTIONS
+				    allResources.forEach(function(resource)
+				    {
+				        options[resource.ip] = { value: resource.ip, label: resource.ip };
+				    });
+
+				    // SELECT CURRENT VALUE
+				    $("#node-config-input-ip").typedInput({
+				        types: [
+				            {
+				                value: current,
+				                options: Object.values(options)
+				            }
+				        ]
+				    });
+
+				    // CHANGE BUTTON ICON
+				    var button = $("#node-config-input-scan");
+				    var buttonIcon = button.find("i");
+				    buttonIcon.removeClass("fa-search");
+				    buttonIcon.addClass("fa-pencil");
+
+				    // CLOSE SEARCH NOTIFICATION
+				    notification.close();
+				})
+				.fail(function()
+				{
+				    notification.close();
+				    RED.notify("Unknown error while trying to retrieve Hue Bridge device list!", "error");
+				});
+			}
+
+			// CHANGED BRIDGE IP? -> GET NAME (IF POSSIBLE)
+			$(document).off('change', '#node-config-input-ip');
+			$(document).on('change', '#node-config-input-ip', function(e)
+			{
+				let currentBridgeIP = $(e.currentTarget).val();
+				if(currentBridgeIP.length > 3)
+				{
+					// TRIGGER SEARCHING NOTIFICATION
+					var notification = RED.notify("Connecting to the Hue Bridge...", { type: "compact", modal: true, fixed: true });
+
+					$.ajax({
+						url: 'mh-hue/getbridgename',
+						type: "GET",
+						data: { ip: currentBridgeIP },
+						timeout: 3000
+					})
+					.done( function(data)
+					{
+						$('#node-config-input-name').val(data);
+						setTimeout(function() { notification.close(); }, 500);
+					})
+					.fail(function(err)
+					{
+						// CLOSE SEARCH NOTIFICATION
+						notification.close();
+
+						RED.notify("Unable to connect to the Hue Bridge " + err.statusText, "error");
+					});
+				}
+			});
+
+			// TOGGLE SELECT/INPUT FIELD
+			$('#node-config-input-scan').click(function()
+			{
+				if($('#input-select-toggle').find(".red-ui-typedInput-container").length > 0)
+				{
+				    manualInput();
+				}
+				else
+				{
+				    searchAndSelect();
+				}
+			});
+
+			$('#node-config-input-register').click(function()
+			{
+				if(!$('#node-config-input-ip').val())
+				{
+					RED.notify("Select a bridge first.", "error");
+				}
+				else
+				{
+					$('#node-config-input-key').val("");
+					$('#node-config-input-key').attr("placeholder", "Waiting");
+
+					RED.notify("Please press the button on the Hue Bridge.");
+
+					setTimeout(function()
+					{
+						$.get('mh-hue/registerbridge', { ip: $('#node-config-input-ip').val() } )
+						.done( function(data)
+						{
+							if(data == "error")
+							{
+								RED.notify("Failed to register with the bridge, please try again.", "error");
+								$('#node-config-input-key').attr("placeholder", "");
+							}
+							else
+							{
+								var userdata = JSON.parse(data);
+								$('#node-config-input-key').val(userdata[0].success.username);
+								RED.notify("Succesfully registered the bridge.");
+							}
+						}).fail(function(err)
+						{
+							RED.notify(err.responseText, "error");
+						});
+					}, 20000);
+				}
+			});
+		}
     });
 </script>
 
 <script type="text/html" data-template-name="mh-hue-api">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-        <input type="text" id="node-config-input-name" placeholder="Name">
+        <div style="display: inline-flex; width: calc(100% - 105px)">
+            <input type="text" id="node-config-input-name" placeholder="MyBridge" style="width: 100%">
+        </div>
     </div>
     <div class="form-row">
-        <label for="node-input-host"><i class="fa fa-tag"></i> Host</label>
-        <input type="text" id="node-config-input-host" placeholder="Host">
+        <label for="node-config-input-ip"><i class="fa fa-server"></i> Bridge IP</label>
+        <div style="display: inline-flex; width: calc(100% - 105px)">
+            <div id="input-select-toggle" style="flex-grow: 1;">
+                <input type="text" id="node-config-input-ip" placeholder="X.X.X.X[:PORT]" style="width: 100%"/>
+            </div>
+            <button id="node-config-input-scan" type="button" class="red-ui-button" style="margin-left: 10px;">
+                <i class="fa fa-search"></i>
+            </button>
+       </div>
     </div>
     <div class="form-row">
         <label for="node-input-key"><i class="fa fa-tag"></i> Key</label>
-        <input type="text" id="node-config-input-key" placeholder="Key">
+        <div style="display: inline-flex; width: calc(100% - 105px)">
+            <div id="input-select-toggle" style="flex-grow: 1;">
+                <input type="text" id="node-config-input-key" placeholder="MyKey" style="width: 100%">
+            </div>
+            <button id="node-config-input-register" type="button" class="red-ui-button" style="margin-left: 10px;">
+                <i class="fa fa-user-circle-o"></i>
+            </button>		
+        </div>
     </div>
 </script>
 
