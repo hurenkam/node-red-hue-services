@@ -20,6 +20,7 @@
       "mh-hue-wall-switch": "mh-hue-wall-switch.js",
       "mh-hue-motion-sensor": "mh-hue-motion-sensor.js",
       "mh-hue-motion-behavior": "mh-hue-motion-behavior.js",
+      "mh-hue-scene": "mh-hue-scene.js",
       "mh-hue-light": "mh-hue-light.js",
       "mh-hue-zone": "mh-hue-zone.js",
       "mh-hue-room": "mh-hue-room.js"

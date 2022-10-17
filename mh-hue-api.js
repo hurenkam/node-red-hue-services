@@ -94,7 +94,7 @@ module.exports = function(RED) {
             });
         }
 
-        const resourceTypesToBeCached = ["device","room","zone"];
+        const resourceTypesToBeCached = ["device","room","zone","scene"];
         this.registeredBridgesByIP = {}
 
         this.addBridge = function (name, ip, key, resources = {}) {
@@ -322,11 +322,9 @@ module.exports = function(RED) {
 
     RED.httpAdmin.get('/mh-hue/options', async function(req, res, next)
     {
-        console.log("HueApi.get(\"/mh-hue/options()\") req.query:");
-        console.log(req.query);
-
         var bridge = bridges[req.query.bridge_id].instance;
         console.log("HueApi["+bridge.name+"].get(\"/mh-hue/options()\")");
+        console.log(req.query);
 
         var options = [];
         Object.keys(bridge.cachedResourcesById).forEach(function(key) {
@@ -344,7 +342,9 @@ module.exports = function(RED) {
                         });
                     }
                 }
-                else if ((service.type === "room") || (service.type === "zone"))
+                else if ( (service.type === "room") 
+                       || (service.type === "zone") 
+                       || (service.type === "scene") )
                 {
                     options.push({ 
                         label: service.metadata.name, 
