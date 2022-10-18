@@ -7,6 +7,8 @@ module.exports = function(RED) {
 
         this.name = config.name;
         this.uuid = config.uuid;
+        this.multi = config.multi;
+        this.state = config.state;
         this.services = {};
         this.bridge = RED.nodes.getNode(config.bridge);
         this.url = "/clip/v2/resource/device/" + this.uuid;
@@ -17,8 +19,24 @@ module.exports = function(RED) {
 
         this.onUpdate = function(resource) {
             if ((!resource.startup) || (resource.startup === false)) {
-                resource.index = node.services[resource.type].indexOf(resource.id);
-                node.send({ payload: resource });
+                var index = node.services[resource.type].indexOf(resource.id);
+                resource.index = index;
+                var msg = [{ payload: resource }];
+
+                if (resource.type === "button")
+                {
+                    if (node.multi) {
+                        for (let i = 0; i < index; i++) {
+                            msg.unshift(null);
+                        }
+                    }
+                    node.send(msg);
+                } else if (node.state) {
+                    if (node.multi) {
+                        msg.unshift(null,null,null,null);
+                    }
+                    node.send(msg);
+                }
             }
 
             if (resource.type === "zigbee_connectivity") {

@@ -2,18 +2,24 @@
     RED.nodes.registerType('mh-hue-lutron-aurora',{
         category: 'foh devices',
         defaults: {
-            name:   {value:""},
-            bridge: {type:"mh-hue-api", required: true},
-            uuid:   {value:"", required: true}
+            name:    {value:""},
+            bridge:  {type:"mh-hue-api", required: true},
+            uuid:    {value:"", required: true},
+            state:   {value:true},
+            multi:   {value:false},
+            outputs: {value:1},
         },
         color: "#C7E9C0",
         inputs:0,
-        outputs:1,
         icon: "font-awesome/fa-circle-o",
         label: function() {
             return this.name||"Lutron Aurora";
         },
         paletteLabel: "Lutron Aurora",
+        oneditsave: function () {
+            var scope = this;
+            scope.outputs = $("#node-input-multi").prop('checked') ? ($("#node-input-state").prop('checked') ? 3: 2) : 1;
+        },
         oneditprepare: function() {
             console.log("mh-hue-lutron-aurora.oneditprepare()");
             const scope = this;
@@ -117,6 +123,22 @@
             <button id="input-select-uuid-search" type="button" class="red-ui-button" style="margin-left: 10px;">
                 <i class="fa fa-search"></i>
             </button>
+        </div>
+    </div>
+    <div class="form-row">
+        <div style="display: inline-flex; width: calc(100% - 105px)">
+            <input type="checkbox" id="node-input-state" style="flex: 15px;">
+            <span style="width: 100%; margin-left: 10px;">
+                Status events
+            </span>
+        </div>
+    </div>
+    <div class="form-row">
+        <div style="display: inline-flex; width: calc(100% - 105px)">
+            <input type="checkbox" id="node-input-multi" style="flex: 15px;">
+            <span style="width: 100%; margin-left: 10px;">
+                Seperate outputs
+            </span>
         </div>
     </div>
 </script>
