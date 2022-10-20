@@ -8,7 +8,6 @@ module.exports = function(RED) {
         this.name = config.name;
         this.uuid = config.uuid;
         this.multi = config.multi;
-        this.state = config.state;
         this.services = [];
         this.bridge = RED.nodes.getNode(config.bridge);
         this.url = "/clip/v2/resource/device/" + this.uuid;

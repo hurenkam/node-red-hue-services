@@ -5,7 +5,6 @@
             name:    {value:""},
             bridge:  {type:"mh-hue-api", required: true},
             uuid:    {value:"", required: true},
-            state:   {value:true},
             multi:   {value:false},
             outputs: {value:1},
             outputLabels: {value:["output"]}
@@ -146,16 +145,6 @@
             <button id="input-select-uuid-search" type="button" class="red-ui-button" style="margin-left: 10px;">
                 <i class="fa fa-search"></i>
             </button>
-        </div>
-    </div>
-    <div class="form-row">
-        <div style="display: inline-flex; width: calc(100% - 105px)">
-            <div id="input-select-state" style="flex-grow: 1;">
-                <input type="checkbox" id="node-input-state" style="flex: 15px;">
-            </div>
-            <span style="width: 100%; margin-left: 10px;">
-                Status events
-            </span>
         </div>
     </div>
     <div class="form-row">
