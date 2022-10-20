@@ -165,8 +165,8 @@ module.exports = function(RED) {
                 console.log("HueApi["+node.name+"].getServicesByTypeAndId(" + type + "," + id + "): returning cached value...");
                 return new Promise(function(resolve,reject) {
                     resolve(node.cachedServicesById[id]);
-	        });
-	    } else {
+	            });
+	        } else {
                 console.log("HueApi["+node.name+"].getServicesByTypeAndId(" + type + "," + id + "): not in cache, fetching now...");
                 var url = "/clip/v2/resource/"+type+"/"+id;
                 return new Promise(function(resolve,reject) {
@@ -334,7 +334,7 @@ module.exports = function(RED) {
             {
                 if (service.type === "device")
                 {
-                    if (req.query.models.includes(service.product_data.model_id))
+                    if (!(req.query.models) || (req.query.models.includes(service.product_data.model_id)))
                     {
                         options.push({ 
                             label: service.metadata.name, 
@@ -362,5 +362,17 @@ module.exports = function(RED) {
 
         // on success
         res.end(JSON.stringify(Object(options)));
+    });
+
+    RED.httpAdmin.get('/mh-hue/deviceservices', async function(req, res, next)
+    {
+        var bridge = bridges[req.query.bridge_id].instance;
+        console.log("HueApi["+bridge.name+"].get(\"/mh-hue/deviceservices()\")");
+        console.log(req.query);
+
+        var services = bridge.cachedResourcesById[req.query.uuid].services;
+
+        // on success
+        res.end(JSON.stringify(Object(services)));
     });
 }
