@@ -52,9 +52,8 @@
 
                 // retrieve the options list from the bridge config node
                 // restrict the list to resources of type 'device' and with model_id 'Z3-1BRL'
-                $.get("mh-hue/options", { 
+                $.get("mh-hue/getSortedDeviceOptions", { 
                     bridge_id: bridgeConfig.id, 
-                    type: "device", 
                     models: ["RWL020","RWL021"]
                 })
                 .done( function(data) {

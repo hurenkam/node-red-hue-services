@@ -24,7 +24,7 @@
             var multi = $("#node-input-multi").prop('checked');
             if ((uuid) && (bridgeConfig))
             { 
-                $.get("mh-hue/deviceservices", { 
+                $.get("mh-hue/getSortedDeviceServices", { 
                     bridge_id: bridgeConfig.id, 
                     uuid: uuid,
                 })
@@ -74,9 +74,8 @@
 
                 // retrieve the options list from the bridge config node
                 // restrict the list to resources of type 'device' and with model_id 'Z3-1BRL'
-                $.get("mh-hue/options", { 
-                    bridge_id: bridgeConfig.id, 
-                    type: "device", 
+                $.get("mh-hue/getSortedDeviceOptions", { 
+                    bridge_id: bridgeConfig.id
                 })
                 .done( function(data) {
                     var options = JSON.parse(data);

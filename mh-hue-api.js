@@ -178,6 +178,66 @@ module.exports = function(RED) {
             }
         }
 
+        this.getSortedOptions = function(type, models)
+        {
+            console.log("HueApi["+node.name+"].getSortedOptions(" + type + "," + models + ")");
+    
+            var options = [];
+            Object.keys(node.cachedResourcesById).forEach(function(key) {
+                var service = node.cachedResourcesById[key];
+    
+                if (service.type === type)
+                {
+                    if (service.type === "device")
+                    {
+                        if (!(models) || (models.includes(service.product_data.model_id)))
+                        {
+                            options.push({ 
+                                label: service.metadata.name, 
+                                value: service.id
+                            });
+                        }
+                    }
+                    else if ( (service.type === "room") 
+                           || (service.type === "zone") 
+                           || (service.type === "scene") )
+                    {
+                        options.push({ 
+                            label: service.metadata.name, 
+                            value: service.id
+                        });
+                    }
+                    else
+                    {
+                        console.log ("type " + service.type + "is not yet supported");
+                    }
+                }
+            });
+
+            options.sort(function(a,b) {
+                if (a.label > b.label) return 1;
+                if (a.label < b.label) return -1;
+                return 0;
+            });
+
+            return options;
+        };
+    
+        this.getSortedDeviceServices = function(uuid)
+        {
+            console.log("HueApi["+node.name+"].getSortedDeviceServices("+uuid+")");
+
+            var services = node.cachedResourcesById[uuid].services;
+    
+            services.sort(function(a,b) {
+                if (a.rtype > b.rtype) return 1;
+                if (a.rtype < b.rtype) return -1;
+                return 0;
+            });
+
+            return services;
+        };
+
         var sseURL = "https://" + this.host + "/eventstream/clip/v2";
         this.eventsource = new EventSource(sseURL, {
             headers: { 'hue-application-key': this.key },
@@ -320,59 +380,38 @@ module.exports = function(RED) {
         }
     });
 
-    RED.httpAdmin.get('/mh-hue/options', async function(req, res, next)
+    RED.httpAdmin.get('/mh-hue/getSortedDeviceOptions', async function(req, res, next)
     {
         var bridge = bridges[req.query.bridge_id].instance;
-        console.log("HueApi["+bridge.name+"].get(\"/mh-hue/options()\")");
-        console.log(req.query);
-
-        var options = [];
-        Object.keys(bridge.cachedResourcesById).forEach(function(key) {
-            var service = bridge.cachedResourcesById[key];
-
-            if (service.type === req.query.type)
-            {
-                if (service.type === "device")
-                {
-                    if (!(req.query.models) || (req.query.models.includes(service.product_data.model_id)))
-                    {
-                        options.push({ 
-                            label: service.metadata.name, 
-                            value: service.id
-                        });
-                    }
-                }
-                else if ( (service.type === "room") 
-                       || (service.type === "zone") 
-                       || (service.type === "scene") )
-                {
-                    options.push({ 
-                        label: service.metadata.name, 
-                        value: service.id
-                    });
-                }
-                else
-                {
-                    console.log ("type " + service.type + "is not yet supported");
-                }
-            }
-        });
-
-        //console.log(options);
-
-        // on success
+        var options = bridge.getSortedOptions("device",req.query.models);
         res.end(JSON.stringify(Object(options)));
     });
 
-    RED.httpAdmin.get('/mh-hue/deviceservices', async function(req, res, next)
+    RED.httpAdmin.get('/mh-hue/getSortedRoomOptions', async function(req, res, next)
     {
         var bridge = bridges[req.query.bridge_id].instance;
-        console.log("HueApi["+bridge.name+"].get(\"/mh-hue/deviceservices()\")");
-        console.log(req.query);
+        var options = bridge.getSortedOptions("room",null);
+        res.end(JSON.stringify(Object(options)));
+    });
 
-        var services = bridge.cachedResourcesById[req.query.uuid].services;
+    RED.httpAdmin.get('/mh-hue/getSortedZoneOptions', async function(req, res, next)
+    {
+        var bridge = bridges[req.query.bridge_id].instance;
+        var options = bridge.getSortedOptions("zone",null);
+        res.end(JSON.stringify(Object(options)));
+    });
 
-        // on success
+    RED.httpAdmin.get('/mh-hue/getSortedSceneOptions', async function(req, res, next)
+    {
+        var bridge = bridges[req.query.bridge_id].instance;
+        var options = bridge.getSortedOptions("scene",null);
+        res.end(JSON.stringify(Object(options)));
+    });
+
+    RED.httpAdmin.get('/mh-hue/getSortedDeviceServices', async function(req, res, next)
+    {
+        var bridge = bridges[req.query.bridge_id].instance;
+        var services = bridge.getSortedDeviceServices(req.query.uuid);
         res.end(JSON.stringify(Object(services)));
     });
 }

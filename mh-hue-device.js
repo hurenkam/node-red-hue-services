@@ -14,62 +14,62 @@ module.exports = function(RED) {
 
         this.onUpdate = function(resource) {
             if ((!resource.startup) || (resource.startup === false)) {
-                var index = node.services.indexOf(resource.id);
-                var msg = [{ index: index, payload: resource }];
+                var msg = [];
+                var index = 0;
 
-                if (node.multi) {
-                    for (let i = 0; i < index; i++) {
-                        msg.unshift(null);
-                    }
+                // Find the service that matches the resource id,
+                // and update index and msg accordingly
+                while ((index < node.services.length) && (node.services[index].rid != resource.id))
+                {
+                    if (node.multi) msg.push(null);
+                    index += 1;
                 }
-                node.send(msg);
+
+                // if resource id was found then send the message
+                if (index < node.services.length) {
+                    msg.push({ index: index, payload: resource });
+                    node.send(msg);
+                }
             }
         }
 
-        setTimeout(() => {
-            this.bridge.getServicesByTypeAndId("device",this.uuid)
-            .then(function(services) {
-                services.forEach((service) => {
-                    if (!node.services.includes(service.rid)) node.services.push(service.rid);
-                    node.bridge.subscribe(service.rid,node.onUpdate);
-                });
-            });
-        }, 5000);
-
         this.on('input', function(msg) {
-
-            if (msg.rtypes) {
-                // if msg contains a list of rtypes
-                // then forward the msg to all services that have a matching rtype
-                for (const [key, value] of Object.entries(node.services)) {
-                    const url = "/clip/v2/resource/" + key + "/" + value;
-                    if (msg.rtypes.includes(key)) {
-                        node.bridge.put(url,msg.payload);
-                    }
-                }
-            }
-
             if (msg.rids) {
                 // if msg contains a list of rids
                 // then forward the msg to all services that have a matching rid
-                for (const [key, value] of Object.entries(node.services)) {
-                    const url = "/clip/v2/resource/" + key + "/" + value;
-                    if (msg.rids.includes(value)) {
+                node.services.forEach(service => {
+                    const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
+                    if (msg.rids.includes(service.rid)) {
                         node.bridge.put(url,msg.payload);
                     }
-                }
-            }
-
-            if (!(msg.rids) && !(msg.rtypes))
-            {
+                });
+            } else if (msg.rtypes) {
+                // else if msg contains a list of rtypes
+                // then forward the msg to all services that have a matching rtype
+                node.services.forEach(service => {
+                    const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
+                    if (msg.rtypes.includes(service.rtype)) {
+                        node.bridge.put(url,msg.payload);
+                    }
+                });
+            } else {
                 // if msg does not contain a list of rids or rtypes
-                // then assume it is meant for all services registered with htis node
-                for (const [key, value] of Object.entries(node.services)) {
-                    const url = "/clip/v2/resource/" + key + "/" + value;
+                // then assume it is meant for all services
+                node.services.forEach(service => {
+                    const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
                     node.bridge.put(url,msg.payload);
-                }
+                });
             }
         });
+
+        // allow the api some time to startup
+        // then subscribe to events for each service of this device
+        setTimeout(() => {
+            node.services = node.bridge.getSortedDeviceServices(node.uuid);
+            node.services.forEach(service => {
+                node.bridge.subscribe(service.rid,node.onUpdate);
+            });
+        }, 5000);
     }
 
     RED.nodes.registerType("mh-hue-device",HueDevice);
