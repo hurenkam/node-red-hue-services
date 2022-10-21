@@ -10,13 +10,54 @@ class Base {
         this.bridge = bridge;
         this.url = "/clip/v2/resource/device/" + this.uuid;
 
+        this.power_state = null;
+        this.zigbee_connectivity = null;
+        //console.log(this);
+
         setTimeout(() => {
             console.log("Base["+this.name+"].constructor.onTimeout()");
+            //console.log(this);
             this.services = this.bridge.getSortedDeviceServices(this.uuid);
             this.services.forEach(service => {
                 this.bridge.subscribe(service.rid,this.onUpdate.bind(this));
             });
         }, 5000);
+    }
+
+    getStatusFill() {
+        if (this.power_state!=null) {
+            if (this.power_state.battery_state === "normal") {
+                return "green";
+            } else {
+                return "red";
+            }
+        }
+
+        return "grey";
+    }
+
+    getStatusText() {
+        if (this.power_state!=null) {
+            return this.power_state.battery_level + "%";
+        }
+
+        return "";
+    }
+
+    getStatusShape() {
+        if (this.zigbee_connectivity==="connected") {
+            return "dot";
+        }
+
+        return "ring";
+    }
+
+    updateStatus() {
+        this.node.status({
+            fill:  this.getStatusFill(), 
+            shape: this.getStatusShape(), 
+            text:  this.getStatusText()
+        });
     }
 
     onUpdate(resource) {
@@ -39,6 +80,14 @@ class Base {
                 msg.push({ index: index, payload: resource });
                 this.node.send(msg);
             }
+        }
+
+        if (resource.type === "zigbee_connectivity") {
+            this.zigbee_connectivity = resource.status;
+        }
+
+        if (resource.type === "device_power") {
+            this.power_state = resource.power_state;
         }
     }
 

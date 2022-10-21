@@ -1,6 +1,29 @@
 module.exports = function(RED) {
     "use strict";
 
+    const LutronAurora = require('./src/LutronAurora');
+
+    function LutronAuroraNode(config) {
+        RED.nodes.createNode(this,config);
+        this.base = new LutronAurora(this,config,RED.nodes.getNode(config.bridge));
+        const node = this;
+
+        this.on('input', function(msg) { 
+            node.base.onInput(msg); 
+        });
+
+        this.on('close', function() { 
+            node.base.onClose(); 
+        });
+    }
+
+    RED.nodes.registerType("mh-hue-lutron-aurora",LutronAuroraNode);
+}
+
+/*
+module.exports = function(RED) {
+    "use strict";
+
     function LutronAurora(config) {
         RED.nodes.createNode(this,config);
         const node = this;
@@ -115,3 +138,4 @@ module.exports = function(RED) {
 
     RED.nodes.registerType("mh-hue-lutron-aurora",LutronAurora);
 }
+*/
