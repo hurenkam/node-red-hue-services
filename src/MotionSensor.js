@@ -1,6 +1,6 @@
-const Base = require('./Base');
+const Device = require('./Device');
 
-class MotionSensor extends Base {
+class MotionSensor extends Device {
     constructor(node,config,bridge) {
         super(node,config,bridge);
         console.log("MotionSensor[" + this.name + "].constructor()");

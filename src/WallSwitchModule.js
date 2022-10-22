@@ -1,6 +1,6 @@
-const Base = require('./Base');
+const Device = require('./Device');
 
-class WallSwitchModule extends Base {
+class WallSwitchModule extends Device {
     constructor(node,config,bridge) {
         super(node,config,bridge);
         console.log("WallSwitchModule[" + this.name + "].constructor()");

@@ -1,6 +1,6 @@
-const Base = require('./Base');
+const Device = require('./Device');
 
-class DimmerSwitch extends Base {
+class DimmerSwitch extends Device {
     constructor(node,config,bridge) {
         super(node,config,bridge);
         console.log("DimmerSwitch[" + this.name + "].constructor()");

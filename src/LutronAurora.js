@@ -1,6 +1,6 @@
-const Base = require('./Base');
+const Device = require('./Device');
 
-class LutronAurora extends Base {
+class LutronAurora extends Device {
     constructor(node,config,bridge) {
         super(node,config,bridge);
         console.log("LutronAurora[" + this.name + "].constructor()");
