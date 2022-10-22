@@ -4,11 +4,8 @@ class LutronAurora extends Device {
     constructor(node,config,bridge) {
         super(node,config,bridge);
         console.log("LutronAurora[" + this.name + "].constructor()");
-
         this.button = null;
         this.relative_rotary = null;
-
-        console.log(this);
     }
 
     onUpdate(resource) {

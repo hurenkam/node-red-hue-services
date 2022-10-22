@@ -4,12 +4,9 @@ class MotionSensor extends Device {
     constructor(node,config,bridge) {
         super(node,config,bridge);
         console.log("MotionSensor[" + this.name + "].constructor()");
-
         this.motion = null;
         this.temperature = null;
         this.light = null;
-
-        console.log(this);
     }
 
     onUpdate(resource) {

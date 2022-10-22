@@ -2,12 +2,13 @@ module.exports = function(RED) {
     "use strict";
 
     function HueMotionBehavior(config) {
+        console.log("HueMotionBehavior[" + config.name + "]()");
         RED.nodes.createNode(this,config);
         const node = this;
 
         this.config = config;
-        console.log("HueMotionBehavior() config:");
-        console.log(config);
+        //console.log("HueMotionBehavior() config:");
+        //console.log(config);
         this.motionTimeout = null;
         this.lightstate = { on: false, brightness: 0 }
         this.state = "idle";
