@@ -4,16 +4,44 @@
         defaults: {
             name:   {value:""},
             bridge: {type:"mh-hue-api", required: true},
-            uuid:   {value:"", required: true}
+            uuid:   {value:"", required: true},
+            multi:   {value:false},
+            outputs: {value:1}
         },
         color: "#C7E9C0",
         inputs:0,
-        outputs:1,
         icon: "font-awesome/fa-circle-o",
         label: function() {
             return this.name||"Hue Wall Switch";
         },
         paletteLabel: "Hue Wall Switch",
+        oneditsave: function () {
+            console.log("mh-hue-wall-switch.oneditsave()");
+            var scope = this;
+            var uuid = $('#node-input-uuid').val();
+            var bridgeConfig = RED.nodes.node($('#node-input-bridge option:selected').val());
+            var multi = $("#node-input-multi").prop('checked');
+            if ((uuid) && (bridgeConfig))
+            { 
+                $.get("mh-hue/getSortedDeviceServices", { 
+                    bridge_id: bridgeConfig.id, 
+                    uuid: uuid,
+                })
+                .done( function(data) {
+                    var services = JSON.parse(data);
+                    scope.outputs = services.length;
+                    scope.outputLabels = [];
+                    if (multi) {
+                        services.forEach(service => {
+                            scope.outputLabels.push(service.rtype);
+                        });
+                    } else {
+                        scope.outputs = 1;
+                        scope.outputLabels.push("output");
+                    }
+                });
+            }
+        },
         oneditprepare: function() {
             console.log("mh-hue-wall-switch.oneditprepare()");
             const scope = this;
@@ -116,6 +144,16 @@
             <button id="input-select-uuid-search" type="button" class="red-ui-button" style="margin-left: 10px;">
                 <i class="fa fa-search"></i>
             </button>
+        </div>
+    </div>
+    <div class="form-row">
+        <div style="display: inline-flex; width: calc(100% - 105px)">
+            <div id="input-select-multi" style="flex-grow: 1;">
+                <input type="checkbox" id="node-input-multi" style="flex: 15px;">
+            </div>
+            <span style="width: 100%; margin-left: 10px;">
+                Seperate outputs
+            </span>
         </div>
     </div>
 </script>
