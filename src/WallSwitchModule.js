@@ -12,7 +12,7 @@ class WallSwitchModule extends Device {
 
     onUpdate(resource) {
         super.onUpdate(resource);
-        console.log("WallSwitchModule["+this.name+"].onUpdate()");
+        //console.log("WallSwitchModule["+this.name+"].onUpdate()");
 
         if (resource.type === "button") {
             this.button = resource.button;

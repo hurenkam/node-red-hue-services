@@ -12,7 +12,7 @@ class DimmerSwitch extends Device {
 
     onUpdate(resource) {
         super.onUpdate(resource);
-        console.log("DimmerSwitch["+this.name+"].onUpdate()");
+        //console.log("DimmerSwitch["+this.name+"].onUpdate()");
 
         if (resource.type === "button") {
             this.button = resource.button;

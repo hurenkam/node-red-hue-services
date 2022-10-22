@@ -13,7 +13,7 @@ class LutronAurora extends Device {
 
     onUpdate(resource) {
         super.onUpdate(resource);
-        console.log("LutronAurora["+this.name+"].onUpdate()");
+        //console.log("LutronAurora["+this.name+"].onUpdate()");
 
         if (resource.type === "button") {
             this.button = resource.button;

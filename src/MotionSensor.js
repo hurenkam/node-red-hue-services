@@ -14,7 +14,7 @@ class MotionSensor extends Device {
 
     onUpdate(resource) {
         super.onUpdate(resource);
-        console.log("MotionSensor["+this.name+"].onUpdate()");
+        //console.log("MotionSensor["+this.name+"].onUpdate()");
 
         if (resource.type === "temperature") {
             this.temperature = resource.temperature;

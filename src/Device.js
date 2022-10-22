@@ -1,7 +1,7 @@
 class Device {
     constructor(node,config,bridge) {
         this.name = config.name;
-        console.log("Device["+this.name+"].constructor()");
+        //console.log("Device["+this.name+"].constructor()");
         this.node = node;
         this.config = config;
         this.uuid = config.uuid;
@@ -15,7 +15,7 @@ class Device {
         //console.log(this);
 
         setTimeout(() => {
-            console.log("Device["+this.name+"].constructor.onTimeout()");
+            //console.log("Device["+this.name+"].constructor.onTimeout()");
             //console.log(this);
             this.services = this.bridge.getSortedDeviceServices(this.uuid);
             this.services.forEach(service => {
@@ -61,7 +61,7 @@ class Device {
     }
 
     onUpdate(resource) {
-        console.log("Device["+this.name+"].onUpdate()");
+        //console.log("Device["+this.name+"].onUpdate()");
         //console.log(resource);
 
         if ((!resource.startup) || (resource.startup === false)) {
@@ -92,7 +92,7 @@ class Device {
     }
 
     onInput(msg) {
-        console.log("Device["+this.name+"].onInput()");
+        //console.log("Device["+this.name+"].onInput()");
         //console.log(msg);
 
         if (msg.rids)
@@ -119,7 +119,7 @@ class Device {
     }
 
     onClose() {
-        console.log("Device["+this.name+"].onClose()");
+        //console.log("Device["+this.name+"].onClose()");
         this.node = null;
         this.config = null;
         this.services = null;
