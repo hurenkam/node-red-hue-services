@@ -74,16 +74,25 @@ class ClipApi extends events.EventEmitter {
         return this._servicesByTypeAndId[rtype][rid];
     }
 
-    getSortedDeviceServices(uuid) {
-        console.log("ClipApi[" + this._name + "].getSortedDeviceServices(" + uuid + ")");
+    getSortedDeviceServices(uuid,rtype="device") {
+        console.log("ClipApi[" + this._name + "].getSortedDeviceServices(" + uuid + "," + rtype + ")");
 
-        var services = this._servicesByTypeAndId["device"][uuid].services;
+        var services = [];
 
-        services.sort(function (a, b) {
-            if (a.rtype > b.rtype) return 1;
-            if (a.rtype < b.rtype) return -1;
-            return 0;
-        });
+        var providers = this._servicesByTypeAndId[rtype];
+        if (providers) {
+            var provider = providers[uuid];
+            if (provider) {
+                services = provider.services;
+                if (services) {
+                    services.sort(function (a, b) {
+                        if (a.rtype > b.rtype) return 1;
+                        if (a.rtype < b.rtype) return -1;
+                        return 0;
+                    });
+                }
+            }
+        }
 
         return services;
     }
