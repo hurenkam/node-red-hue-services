@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    RED.nodes.registerType('mh-hue-motion-behavior',{
+    RED.nodes.registerType('MotionBehaviorNode',{
         category: 'hue behavior',
         defaults: {
             name: {value:""},
@@ -28,7 +28,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="mh-hue-motion-behavior">
+<script type="text/html" data-template-name="MotionBehaviorNode">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -47,6 +47,6 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="mh-hue-motion-behavior">
+<script type="text/html" data-help-name="MotionBehaviorNode">
     <p>A simple node that converts the message payloads into all lower-case characters</p>
 </script>
