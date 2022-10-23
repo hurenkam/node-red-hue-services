@@ -5,7 +5,6 @@ module.exports = function(RED) {
         constructor(config) {
             console.log("MotionBehaviorNode[" + config.name + "].constructor()");
             RED.nodes.createNode(this,config);
-            const node = this;
 
             this.config = config;
             this.motionTimeout = null;
@@ -80,7 +79,7 @@ module.exports = function(RED) {
             }
             var timeout = this.config.timeout * 1000;
             console.log("MotionBehaviorNode[" + this.config.name + "].updateMotionTimeout(): " + timeout);
-            this.motionTimeout = setTimeout(this.onMotionTimeout,timeout);
+            this.motionTimeout = setTimeout(() => this.onMotionTimeout(),timeout);
         }
 
         onMotionTimeout() {

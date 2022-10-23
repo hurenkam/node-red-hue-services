@@ -1,9 +1,9 @@
 <script type="text/javascript">
-    RED.nodes.registerType('mh-hue-scene',{
+    RED.nodes.registerType('SceneNode',{
         category: 'hue services',
         defaults: {
             name:   {value:""},
-            bridge: {type:"mh-hue-api", required: true},
+            bridge: {type:"BridgeConfigNode", required: true},
             uuid:   {value:"", required: true}
         },
         color: "#FFAAAA",
@@ -15,12 +15,12 @@
         },
         paletteLabel: "Scene",
         oneditprepare: function() {
-            console.log("mh-hue-scene.oneditprepare()");
+            console.log("SceneNode.oneditprepare()");
             const scope = this;
             let options = [];
 
             function inputUUID() {
-                console.log("mh-hue-scene.oneditprepare.inputUUID()");
+                console.log("SceneNode.oneditprepare.inputUUID()");
 
                 var current = $('#node-input-uuid').val();
                 $('#input-select-uuid').empty();
@@ -33,20 +33,21 @@
             }
 
             function findUUID() {
-                console.log("mh-hue-scene.oneditprepare.findUUID()");
+                console.log("SceneNode.oneditprepare.findUUID()");
 
                 // Add a notification on top of the page indicating that we are busy...
                 var notification = RED.notify("Searching for Scenes...", { type: "compact", modal: true, fixed: true });
 
                 var current = $('#node-input-uuid').val();
 
-                var bridgeConfig = RED.nodes.node($('#node-input-bridge option:selected').val());
-                if(!bridgeConfig) { return false; }
+                var bridge = RED.nodes.node($('#node-input-bridge option:selected').val());
+                if(!bridge) { return false; }
 
                 // retrieve the options list from the bridge config node
                 // restrict the list to resources of type 'device' and with model_id 'Z3-1BRL'
-                $.get("mh-hue/getSortedSceneOptions", { 
-                    bridge_id: bridgeConfig.id
+                $.get("BridgeConfigNode/GetSortedResourceOptions", {
+                    type: 'scene',
+                    bridge_id: bridge.id
                 })
                 .done( function(data) {
                     var options = JSON.parse(data);
@@ -77,7 +78,7 @@
                 })
                 .fail(function()
                 {
-                    console.log("mh-hue-scene.oneditprepare.findUUID(): failed");
+                    console.log("SceneNode.oneditprepare.findUUID(): failed");
 
                     // Remove the notification
                     notification.close();
@@ -97,7 +98,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="mh-hue-scene">
+<script type="text/html" data-template-name="SceneNode">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -119,6 +120,6 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="mh-hue-scene">
+<script type="text/html" data-help-name="SceneNode">
     <p>A simple node that converts the message payloads into all lower-case characters</p>
 </script>
