@@ -1,6 +1,7 @@
 module.exports = function (RED) {
     var settings = RED.settings;
     "use strict";
+    var bridges = {};
 
     const ClipApi = require('../src/ClipApi');
 
@@ -12,6 +13,7 @@ module.exports = function (RED) {
         console.log(config);
 
         this.clip = new ClipApi(config.name, config.ip, config.key);
+        bridges[this.id] = { id: this.id, name: config.name, instance: this };
     }
 
     RED.nodes.registerType("BridgeConfigNode", BridgeConfigNode);
@@ -26,5 +28,8 @@ module.exports = function (RED) {
 
     RED.httpAdmin.get('/BridgeConfigNode/GetSortedResourceOptions', async function (req, res, next) {
         console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetSortedResourceOptions()\")");
+        var clip = bridges[req.query.bridge_id].instance.clip;
+        var options = clip.getSortedResourceOptions(req.query.type, req.query.models);
+        res.end(JSON.stringify(Object(options)));
     });
 }

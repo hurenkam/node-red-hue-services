@@ -51,8 +51,34 @@ class ClipApi extends events.EventEmitter {
         return this._servicesByTypeAndId[rtype][rid];
     }
 
-    getSortedServices(rtype,rid) {
-        return this._servicesByTypeAndId[rtype][rid];
+    getSortedResourceOptions(type, models) {
+        console.log("ClipApi[" + this._name + "].getSortedOptions(" + type + "," + models + ")");
+        const supported = ["device", "room", "zone", "scene"];
+        var options = [];
+
+        if (!supported.includes(type)) {
+            console.log("Type " + type + "is not supported");
+            return options;
+        }
+
+        var services = this._servicesByTypeAndId[type];
+        Object.keys(services).forEach((id) => {
+            var service = this._servicesByTypeAndId[type][id];
+            if (!(models) || (models.includes(service.product_data.model_id))) {
+                options.push({
+                    label: service.metadata.name,
+                    value: service.id
+                });
+            }
+        });
+
+        options.sort(function (a, b) {
+            if (a.label > b.label) return 1;
+            if (a.label < b.label) return -1;
+            return 0;
+        });
+
+        return options;
     }
 }
 
