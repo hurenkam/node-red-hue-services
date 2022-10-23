@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    RED.nodes.registerType('mh-hue-device',{
+    RED.nodes.registerType('DeviceNode',{
         category: 'hue devices',
         defaults: {
             name:    {value:""},
@@ -17,7 +17,7 @@
         },
         paletteLabel: "Generic Device",
         oneditsave: function () {
-            console.log("mh-hue-device.oneditsave()");
+            console.log("DeviceNode.oneditsave()");
             var scope = this;
             var uuid = $('#node-input-uuid').val();
             var bridgeConfig = RED.nodes.node($('#node-input-bridge option:selected').val());
@@ -44,12 +44,12 @@
             }
         },
         oneditprepare: function() {
-            console.log("mh-hue-device.oneditprepare()");
+            console.log("DeviceNode.oneditprepare()");
             const scope = this;
             let options = [];
 
             function inputUUID() {
-                console.log("mh-hue-device.oneditprepare.inputUUID()");
+                console.log("DeviceNode.oneditprepare.inputUUID()");
 
                 var current = $('#node-input-uuid').val();
                 $('#input-select-uuid').empty();
@@ -62,7 +62,7 @@
             }
 
             function findUUID() {
-                console.log("mh-hue-device.oneditprepare.findUUID()");
+                console.log("DeviceNode.oneditprepare.findUUID()");
 
                 // Add a notification on top of the page indicating that we are busy...
                 var notification = RED.notify("Searching for Hue Dimmer Switch devices...", { type: "compact", modal: true, fixed: true });
@@ -106,7 +106,7 @@
                 })
                 .fail(function()
                 {
-                    console.log("mh-hue-device.oneditprepare.findUUID(): failed");
+                    console.log("DeviceNode.oneditprepare.findUUID(): failed");
 
                     // Remove the notification
                     notification.close();
@@ -126,7 +126,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="mh-hue-device">
+<script type="text/html" data-template-name="DeviceNode">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -158,6 +158,6 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="mh-hue-device">
+<script type="text/html" data-help-name="DeviceNode">
     <p>A simple node that converts the message payloads into all lower-case characters</p>
 </script>

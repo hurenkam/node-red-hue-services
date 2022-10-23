@@ -10,5 +10,5 @@ module.exports = function(RED) {
         }
     }
 
-    RED.nodes.registerType("mh-hue-wall-switch",WallSwitchModuleNode);
+    RED.nodes.registerType("WallSwitchModuleNode",WallSwitchModuleNode);
 }

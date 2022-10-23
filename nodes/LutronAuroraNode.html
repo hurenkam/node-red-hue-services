@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    RED.nodes.registerType('mh-hue-lutron-aurora',{
+    RED.nodes.registerType('LutronAuroraNode',{
         category: 'foh devices',
         defaults: {
             name:    {value:""},
@@ -16,7 +16,7 @@
         },
         paletteLabel: "Lutron Aurora",
         oneditsave: function () {
-            console.log("mh-hue-lutron-aurora.oneditsave()");
+            console.log("LutronAuroraNode.oneditsave()");
             var scope = this;
             var uuid = $('#node-input-uuid').val();
             var bridgeConfig = RED.nodes.node($('#node-input-bridge option:selected').val());
@@ -43,12 +43,12 @@
             }
         },
         oneditprepare: function() {
-            console.log("mh-hue-lutron-aurora.oneditprepare()");
+            console.log("LutronAuroraNode.oneditprepare()");
             const scope = this;
             let options = [];
 
             function inputUUID() {
-                console.log("mh-hue-lutron-aurora.oneditprepare.inputUUID()");
+                console.log("LutronAuroraNode.oneditprepare.inputUUID()");
 
                 var current = $('#node-input-uuid').val();
                 $('#input-select-uuid').empty();
@@ -61,7 +61,7 @@
             }
 
             function findUUID() {
-                console.log("mh-hue-lutron-aurora.oneditprepare.findUUID()");
+                console.log("LutronAuroraNode.oneditprepare.findUUID()");
 
                 // Add a notification on top of the page indicating that we are busy...
                 var notification = RED.notify("Searching for Lutron Aurora devices...", { type: "compact", modal: true, fixed: true });
@@ -106,7 +106,7 @@
                 })
                 .fail(function()
                 {
-                    console.log("mh-hue-lutron-aurora.oneditprepare.findUUID(): failed");
+                    console.log("LutronAuroraNode.oneditprepare.findUUID(): failed");
 
                     // Remove the notification
                     notification.close();
@@ -126,7 +126,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="mh-hue-lutron-aurora">
+<script type="text/html" data-template-name="LutronAuroraNode">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" style="width: calc(100% - 105px)">
@@ -158,6 +158,6 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="mh-hue-lutron-aurora">
+<script type="text/html" data-help-name="LutronAuroraNode">
     <p>A simple node that converts the message payloads into all lower-case characters</p>
 </script>

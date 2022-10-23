@@ -10,5 +10,5 @@ module.exports = function(RED) {
         }
     }
 
-    RED.nodes.registerType("mh-hue-dimmer-switch",DimmerSwitchNode);
+    RED.nodes.registerType("DimmerSwitchNode",DimmerSwitchNode);
 }

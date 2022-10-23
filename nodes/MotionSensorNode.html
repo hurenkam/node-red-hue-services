@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    RED.nodes.registerType('mh-hue-motion-sensor',{
+    RED.nodes.registerType('MotionSensorNode',{
         category: 'hue devices',
         defaults: {
             name:    {value:""},
@@ -17,7 +17,7 @@
         },
         paletteLabel: "Hue Motion Sensor",
         oneditsave: function () {
-            console.log("mh-hue-motion-sensor.oneditsave()");
+            console.log("MotionSensorNode.oneditsave()");
             var scope = this;
             var uuid = $('#node-input-uuid').val();
             var bridgeConfig = RED.nodes.node($('#node-input-bridge option:selected').val());
@@ -44,12 +44,12 @@
             }
         },
         oneditprepare: function() {
-            console.log("mh-hue-motion-sensor.oneditprepare()");
+            console.log("MotionSensorNode.oneditprepare()");
             const scope = this;
             let options = [];
 
             function inputUUID() {
-                console.log("mh-hue-motion-sensor.oneditprepare.inputUUID()");
+                console.log("MotionSensorNode.oneditprepare.inputUUID()");
 
                 var current = $('#node-input-uuid').val();
                 $('#input-select-uuid').empty();
@@ -62,7 +62,7 @@
             }
 
             function findUUID() {
-                console.log("mh-hue-motion-sensor.oneditprepare.findUUID()");
+                console.log("MotionSensorNode.oneditprepare.findUUID()");
 
                 // Add a notification on top of the page indicating that we are busy...
                 var notification = RED.notify("Searching for Hue (Outdoor) Motion Sensor devices...", { type: "compact", modal: true, fixed: true });
@@ -107,7 +107,7 @@
                 })
                 .fail(function()
                 {
-                    console.log("mh-hue-motion-sensor.oneditprepare.findUUID(): failed");
+                    console.log("MotionSensorNode.oneditprepare.findUUID(): failed");
 
                     // Remove the notification
                     notification.close();
@@ -127,7 +127,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="mh-hue-motion-sensor">
+<script type="text/html" data-template-name="MotionSensorNode">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -159,6 +159,6 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="mh-hue-motion-sensor">
+<script type="text/html" data-help-name="MotionSensorNode">
     <p>A simple node that converts the message payloads into all lower-case characters</p>
 </script>

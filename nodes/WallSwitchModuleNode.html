@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    RED.nodes.registerType('mh-hue-wall-switch',{
+    RED.nodes.registerType('WallSwitchModuleNode',{
         category: 'hue devices',
         defaults: {
             name:   {value:""},
@@ -16,7 +16,7 @@
         },
         paletteLabel: "Hue Wall Switch",
         oneditsave: function () {
-            console.log("mh-hue-wall-switch.oneditsave()");
+            console.log("WallSwitchModuleNode.oneditsave()");
             var scope = this;
             var uuid = $('#node-input-uuid').val();
             var bridgeConfig = RED.nodes.node($('#node-input-bridge option:selected').val());
@@ -43,12 +43,12 @@
             }
         },
         oneditprepare: function() {
-            console.log("mh-hue-wall-switch.oneditprepare()");
+            console.log("WallSwitchModuleNode.oneditprepare()");
             const scope = this;
             let options = [];
 
             function inputUUID() {
-                console.log("mh-hue-wall-switch.oneditprepare.inputUUID()");
+                console.log("WallSwitchModuleNode.oneditprepare.inputUUID()");
 
                 var current = $('#node-input-uuid').val();
                 $('#input-select-uuid').empty();
@@ -61,7 +61,7 @@
             }
 
             function findUUID() {
-                console.log("mh-hue-wall-switch.oneditprepare.findUUID()");
+                console.log("WallSwitchModuleNode.oneditprepare.findUUID()");
 
                 // Add a notification on top of the page indicating that we are busy...
                 var notification = RED.notify("Searching for Lutron Aurora devices...", { type: "compact", modal: true, fixed: true });
@@ -106,7 +106,7 @@
                 })
                 .fail(function()
                 {
-                    console.log("mh-hue-wall-switch.oneditprepare.findUUID(): failed");
+                    console.log("WallSwitchModuleNode.oneditprepare.findUUID(): failed");
 
                     // Remove the notification
                     notification.close();
@@ -126,7 +126,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="mh-hue-wall-switch">
+<script type="text/html" data-template-name="WallSwitchModuleNode">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -158,6 +158,6 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="mh-hue-wall-switch">
+<script type="text/html" data-help-name="WallSwitchModuleNode">
     <p>A simple node that converts the message payloads into all lower-case characters</p>
 </script>

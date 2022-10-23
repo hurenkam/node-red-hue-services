@@ -10,5 +10,5 @@ module.exports = function(RED) {
         }
     }
 
-    RED.nodes.registerType("mh-hue-device",DeviceNode);
+    RED.nodes.registerType("DeviceNode",DeviceNode);
 }

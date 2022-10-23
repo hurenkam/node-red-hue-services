@@ -10,5 +10,5 @@ module.exports = function(RED) {
         }
     }
 
-    RED.nodes.registerType("mh-hue-lutron-aurora",LutronAuroraNode);
+    RED.nodes.registerType("LutronAuroraNode",LutronAuroraNode);
 }

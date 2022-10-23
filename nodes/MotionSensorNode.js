@@ -10,5 +10,5 @@ module.exports = function(RED) {
         }
     }
 
-    RED.nodes.registerType("mh-hue-motion-sensor",MotionSensorNode);
+    RED.nodes.registerType("MotionSensorNode",MotionSensorNode);
 }
