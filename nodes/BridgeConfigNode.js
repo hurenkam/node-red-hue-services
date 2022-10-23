@@ -26,6 +26,13 @@ module.exports = function (RED) {
         console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetHueApplicationKey()\")");
     });
 
+    RED.httpAdmin.get('/BridgeConfigNode/GetSortedDeviceServices', async function (req, res, next) {
+        console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetSortedDeviceServices()\")");
+        var clip = bridges[req.query.bridge_id].instance.clip;
+        var services = clip.getSortedDeviceServices(req.query.uuid);
+        res.end(JSON.stringify(Object(services)));
+    });
+
     RED.httpAdmin.get('/BridgeConfigNode/GetSortedResourceOptions', async function (req, res, next) {
         console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetSortedResourceOptions()\")");
         var clip = bridges[req.query.bridge_id].instance.clip;
