@@ -17,7 +17,30 @@ class ClipApi extends events.EventEmitter {
         this._eventsource.onmessage = (event) => this._onStreamEvent(event);
     
         this._servicesByTypeAndId = {};
-        this.updateDevicesAndServices();        
+        this.updateDevicesAndServices();
+    }
+
+    destructor() {
+        if (this._eventsource != null) {
+            this._eventsource.close();
+        };
+        this._eventsource = null;
+    }
+
+    get(url) {
+        return this._rest.get(url);
+    }
+
+    put(url, data) {
+        return this._rest.put(url,data);
+    }
+
+    post(url, data) {
+        return this._rest.post(url,data);
+    }
+
+    delete(url, data) {
+        return this._rest.delete(url,data);
     }
 
     _onStreamEvent(event) {

@@ -8,12 +8,17 @@ module.exports = function (RED) {
     function BridgeConfigNode(config) {
         RED.nodes.createNode(this, config);
         this._config = config;
-        const node = this;
         console.log("BridgeConfigNode[" + config.name + "].constructor()")
         console.log(config);
 
         this.clip = new ClipApi(config.name, config.ip, config.key);
         bridges[this.id] = { id: this.id, name: config.name, instance: this };
+
+        this.on('close', function () {
+            console.log("BridgeConfigNode[" + this._config.name + "].on('close')");
+            this.clip.destructor();
+            this.clip = null;
+        });
     }
 
     RED.nodes.registerType("BridgeConfigNode", BridgeConfigNode);

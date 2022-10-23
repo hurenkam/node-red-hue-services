@@ -1,7 +1,17 @@
 module.exports = function(RED) {
     "use strict";
 
-    function HueLight(config) {
+    const Light = require('../src/Light');
+
+    class LightNode extends Light {
+        constructor(config) {
+            super(RED, RED.nodes.getNode(config.bridge).clip, config);
+            console.log("LightNode[" + config.name + "].constructor()");
+        }
+    }
+    
+/*
+    function LightNode(config) {
         RED.nodes.createNode(this,config);
         const node = this;
 
@@ -114,6 +124,6 @@ module.exports = function(RED) {
             }
         });
     }
-
-    RED.nodes.registerType("mh-hue-light",HueLight);
+*/
+    RED.nodes.registerType("LightNode",LightNode);
 }

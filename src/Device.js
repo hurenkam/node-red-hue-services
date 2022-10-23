@@ -10,27 +10,31 @@ class Device {
         this.power_state = null;
         this.zigbee_connectivity = null;
 
-        this.clip.once(this.config.uuid, (event) => {
-            console.log("Device["+config.name+"].once(" + this.config.uuid + ")");
-            console.log(event);
+        if (this.clip) {
+            this.clip.once(this.config.uuid, (event) => {
+                console.log("Device["+config.name+"].clip.once(" + this.config.uuid + ")");
+                console.log(event);
 
-            this.services = event.resource.services;
-            this.services.forEach((service) => {
-                this.clip.on(service.rid, (event) => {
-                    //console.log("Device["+config.name+"].on(" + service.rid + ")");
-                    //console.log(event);
-                    this.onUpdate(event.resource);
-                    this.updateStatus();
+                this.services = event.resource.services;
+                this.services.forEach((service) => {
+                    this.clip.on(service.rid, (event) => {
+                        //console.log("Device["+config.name+"].clip.on(" + service.rid + ")");
+                        //console.log(event);
+                        this.onUpdate(event.resource);
+                        this.updateStatus();
+                    });
                 });
             });
-        })
+        }
 
         const local = this;
         this.on('input', function(msg) { 
+            console.log("Device["+config.name+"].on('input')");
             local.onInput(msg); 
         });
 
         this.on('close', function() { 
+            console.log("Device["+config.name+"].on('close')");
             local.onClose(); 
         });
     }
@@ -83,15 +87,17 @@ class Device {
 
             // Find the service that matches the resource id,
             // and update index and msg accordingly
-            while ((index < this.services.length) && (this.services[index].rid != resource.id)) {
-                if (this.multi) msg.push(null);
-                index += 1;
-            }
+            if (this.services) {
+                while ((index < this.services.length) && (this.services[index].rid != resource.id)) {
+                    if (this.multi) msg.push(null);
+                    index += 1;
+                }
 
-            // if resource id was found then send the message
-            if (index < this.services.length) {
-                msg.push({ index: index, payload: resource });
-                this.send(msg);
+                // if resource id was found then send the message
+                if (index < this.services.length) {
+                    msg.push({ index: index, payload: resource });
+                    this.send(msg);
+                }
             }
         }
 
@@ -105,8 +111,8 @@ class Device {
     }
 
     onInput(msg) {
-        //console.log("Device["+this.name+"].onInput()");
-        //console.log(msg);
+        console.log("Device["+this.name+"].onInput()");
+        console.log(msg);
 
         if (msg.rids)
         {
