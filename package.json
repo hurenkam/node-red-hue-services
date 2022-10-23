@@ -24,8 +24,8 @@
       "MotionBehaviorNode": "nodes/MotionBehaviorNode.js",
       "SceneNode": "nodes/SceneNode.js",
       "LightNode": "nodes/LightNode.js",
-      "mh-hue-zone": "mh-hue-zone.js",
-      "mh-hue-room": "mh-hue-room.js"
+      "mh-hue-zone": "nodes/ZoneNode.js",
+      "mh-hue-room": "nodes/RoomNode.js"
     }
   },
   "dependencies": {
