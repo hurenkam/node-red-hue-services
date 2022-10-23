@@ -1,21 +1,14 @@
 module.exports = function(RED) {
     "use strict";
+    
+    const Device = require('./src/Device');
 
-    const Base = require('./src/Base');
-
-    function HueDevice(config) {
-        RED.nodes.createNode(this,config);
-        this.base = new Base(this,config,RED.nodes.getNode(config.bridge));
-        const node = this;
-
-        this.on('input', function(msg) { 
-            node.base.onInput(msg); 
-        });
-
-        this.on('close', function() { 
-            node.base.onClose(); 
-        });
+    class DeviceNode extends Device {
+        constructor(config) {
+            super(RED, RED.nodes.getNode(config.bridge).clip, config);
+            console.log("DeviceNode[" + config.name + "].constructor()");
+        }
     }
 
-    RED.nodes.registerType("mh-hue-device",HueDevice);
+    RED.nodes.registerType("mh-hue-device",DeviceNode);
 }

@@ -1,9 +1,9 @@
 const Device = require('./Device');
 
 class DimmerSwitch extends Device {
-    constructor(node,config,bridge) {
-        super(node,config,bridge);
-        console.log("DimmerSwitch[" + this.name + "].constructor()");
+    constructor(RED,clip,config) {
+        super(RED,clip,config);
+        console.log("DimmerSwitch[" + config.name + "].constructor()");
         this.button = null;
     }
 

@@ -1,9 +1,9 @@
 const Device = require('./Device');
 
 class MotionSensor extends Device {
-    constructor(node,config,bridge) {
-        super(node,config,bridge);
-        console.log("MotionSensor[" + this.name + "].constructor()");
+    constructor(RED,clip,config) {
+        super(RED,clip,config);
+        console.log("MotionSensor[" + config.name + "].constructor()");
         this.motion = null;
         this.temperature = null;
         this.light = null;

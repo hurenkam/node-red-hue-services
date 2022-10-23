@@ -11,7 +11,7 @@ module.exports = function (RED) {
         console.log("BridgeConfigNode[" + config.name + "].constructor()")
         console.log(config);
 
-        this._api = new ClipApi(config.name, config.ip, config.key);
+        this.clip = new ClipApi(config.name, config.ip, config.key);
     }
 
     RED.nodes.registerType("BridgeConfigNode", BridgeConfigNode);

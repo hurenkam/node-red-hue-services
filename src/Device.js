@@ -1,27 +1,38 @@
 class Device {
-    constructor(node,config,bridge) {
-        this.name = config.name;
-        //console.log("Device["+this.name+"].constructor()");
-        this.node = node;
+    constructor(RED,clip,config) {
+        console.log("Device[" + config.name + "].constructor()");
         this.config = config;
-        this.uuid = config.uuid;
-        this.multi = config.multi;
+        this.clip = clip;
+        RED.nodes.createNode(this,config);
+
         this.services = [];
-        this.bridge = bridge;
-        this.url = "/clip/v2/resource/device/" + this.uuid;
 
         this.power_state = null;
         this.zigbee_connectivity = null;
-        //console.log(this);
 
-        setTimeout(() => {
-            //console.log("Device["+this.name+"].constructor.onTimeout()");
-            //console.log(this);
-            this.services = this.bridge.getSortedDeviceServices(this.uuid);
-            this.services.forEach(service => {
-                this.bridge.subscribe(service.rid,this.onUpdate.bind(this));
+        this.clip.once(this.config.uuid, (event) => {
+            console.log("Device["+config.name+"].once(" + this.config.uuid + ")");
+            console.log(event);
+
+            this.services = event.resource.services;
+            this.services.forEach((service) => {
+                this.clip.on(service.rid, (event) => {
+                    //console.log("Device["+config.name+"].on(" + service.rid + ")");
+                    //console.log(event);
+                    this.onUpdate(event.resource);
+                    this.updateStatus();
+                });
             });
-        }, 5000);
+        })
+
+        const local = this;
+        this.on('input', function(msg) { 
+            local.onInput(msg); 
+        });
+
+        this.on('close', function() { 
+            local.onClose(); 
+        });
     }
 
     getStatusFill() {
@@ -53,7 +64,9 @@ class Device {
     }
 
     updateStatus() {
-        this.node.status({
+        //console.log("Device[" + this.config.name + "].updateStatus()");
+        
+        this.status({
             fill:  this.getStatusFill(), 
             shape: this.getStatusShape(), 
             text:  this.getStatusText()
@@ -61,7 +74,7 @@ class Device {
     }
 
     onUpdate(resource) {
-        //console.log("Device["+this.name+"].onUpdate()");
+        //console.log("Device[" + this.config.name + "].onUpdate()");
         //console.log(resource);
 
         if ((!resource.startup) || (resource.startup === false)) {
@@ -78,7 +91,7 @@ class Device {
             // if resource id was found then send the message
             if (index < this.services.length) {
                 msg.push({ index: index, payload: resource });
-                this.node.send(msg);
+                this.send(msg);
             }
         }
 
@@ -100,30 +113,29 @@ class Device {
             this.services.forEach(service => {
                 if (msg.rids.includes(service.rid)) {
                     const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
-                    this.bridge.put(url,msg.payload);
+                    this.clip.put(url,msg.payload);
                 }
             });
         } else if (msg.rtypes) {
             this.services.forEach(service => {
                 if (msg.rtypes.includes(service.rtype)) {
                     const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
-                    this.bridge.put(url,msg.payload);
+                    this.clip.put(url,msg.payload);
                 }
             });
         } else {
             this.services.forEach(service => {
                 const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
-                this.bridge.put(url,msg.payload);
+                this.clip.put(url,msg.payload);
             });
         }
     }
 
     onClose() {
         //console.log("Device["+this.name+"].onClose()");
-        this.node = null;
         this.config = null;
+        this.clip = null;
         this.services = null;
-        this.bridge = null;
     }
 }
 

@@ -3,18 +3,11 @@ module.exports = function(RED) {
 
     const DimmerSwitch = require('./src/DimmerSwitch');
 
-    function DimmerSwitchNode(config) {
-        RED.nodes.createNode(this,config);
-        this.base = new DimmerSwitch(this,config,RED.nodes.getNode(config.bridge));
-        const node = this;
-
-        this.on('input', function(msg) { 
-            node.base.onInput(msg); 
-        });
-
-        this.on('close', function() { 
-            node.base.onClose(); 
-        });
+    class DimmerSwitchNode extends DimmerSwitch {
+        constructor(config) {
+            super(RED, RED.nodes.getNode(config.bridge).clip, config);
+            console.log("DimmerSwitchNode[" + config.name + "].constructor()");
+        }
     }
 
     RED.nodes.registerType("mh-hue-dimmer-switch",DimmerSwitchNode);

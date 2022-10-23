@@ -1,13 +1,10 @@
 const Device = require('./Device');
 
 class WallSwitchModule extends Device {
-    constructor(node,config,bridge) {
-        super(node,config,bridge);
-        console.log("WallSwitchModule[" + this.name + "].constructor()");
-
+    constructor(RED,clip,config) {
+        super(RED,clip,config);
+        console.log("WallSwitchModule[" + config.name + "].constructor()");
         this.button = null;
-
-        console.log(this);
     }
 
     onUpdate(resource) {

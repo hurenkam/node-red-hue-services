@@ -14,6 +14,7 @@
   "license": "GPL-2.0-only",
   "node-red": {
     "nodes": {
+      "BridgeConfigNode": "nodes/BridgeConfigNode.js",
       "mh-hue-api": "mh-hue-api.js",
       "mh-hue-device": "mh-hue-device.js",
       "mh-hue-lutron-aurora": "mh-hue-lutron-aurora.js",

@@ -47,6 +47,10 @@ class ClipApi extends events.EventEmitter {
         });
     }
 
+    getResource(rtype,rid) {
+        return this._servicesByTypeAndId[rtype][rid];
+    }
+
     getSortedServices(rtype,rid) {
         return this._servicesByTypeAndId[rtype][rid];
     }
