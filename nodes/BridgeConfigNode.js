@@ -21,23 +21,98 @@ module.exports = function (RED) {
                 this.clip = null;
             });
         }
-
-        getHueApplicationKey() {
-            console.log("BridgeConfigNode[" + this._config.name + "].getHueApplicationKey()");
-        }
     }
 
     RED.nodes.registerType("BridgeConfigNode", BridgeConfigNode);
 
     RED.httpAdmin.get('/BridgeConfigNode/DiscoverBridges', async function (req, res, next) {
         console.log("BridgeConfigNode.get(\"/BridgeConfigNode/DiscoverBridges()\")");
+
+        var request = {
+            "method": "GET",
+            "url": "https://discovery.meethue.com",
+            "headers": {
+                "Content-Type": "application/json; charset=utf-8"
+            },
+            "httpsAgent": new https.Agent({ rejectUnauthorized: false }),
+        };
+
+        var bridges = {};
+        axios(request)
+        .then(function (response) {
+            for (var i = response.data.length - 1; i >= 0; i--) {
+                var ipAddress = response.data[i].internalipaddress;
+                bridges[ipAddress] = { ip: ipAddress, name: ipAddress };
+            }
+
+            res.end(JSON.stringify(Object.values(bridges)));
+        })
+        .catch(function (error) {
+            console.log("BridgeConfigNode[" + node.name + "].get(\"/BridgeConfigNode/DiscoverBridges()\") error: " + error.request.res.statusMessage + " (" + error.request.res.statusCode + ")");
+            res.end(JSON.stringify(Object.values(bridges)));
+
+        });
+    });
+
+    RED.httpAdmin.get('/BridgeConfigNode/GetBridgeName', async function (req, res, next) {
+        console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetBridgeName()\")");
+
+        if (!req.query.ip) {
+            return res.status(500).send("Missing IP in request.");
+        }
+        else {
+            var request = {
+                "method": "GET",
+                "url": "https://" + req.query.ip + "/api/config",
+                "headers": {
+                    "Content-Type": "application/json; charset=utf-8"
+                },
+                "httpsAgent": new https.Agent({ rejectUnauthorized: false })
+            }
+
+            axios(request)
+            .then(function (response) {
+                res.end(response.data.name);
+            })
+            .catch(function (error) {
+                res.send(error);
+            });
+        }
     });
 
     RED.httpAdmin.get('/BridgeConfigNode/GetHueApplicationKey', async function (req, res, next) {
         console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetHueApplicationKey()\")");
-        var bridge = bridges[req.query.bridge_id].instance;
-        var key = bridge.getHueApplicationKey();
-        res.end(JSON.stringigy(Object(key)));
+
+        if (!req.query.ip) {
+            return res.status(500).send("Missing bridge ip.");
+        }
+        else {
+            var request = {
+                "method": "POST",
+                "url": "http://" + req.query.ip + "/api",
+                "headers": {
+                    "Content-Type": "application/json; charset=utf-8"
+                },
+                "data": {
+                    "devicetype": "mh-hue (" + Math.floor((Math.random() * 100) + 1) + ")"
+                },
+                "httpsAgent": new https.Agent({ rejectUnauthorized: false })
+            };
+
+            axios(request)
+            .then(function (response) {
+                var bridge = response.data;
+                if (bridge[0].error) {
+                    res.end("error");
+                }
+                else {
+                    res.end(JSON.stringify(bridge));
+                }
+            })
+            .catch(function (error) {
+                res.status(500).send(error);
+            });
+        }
     });
 
     RED.httpAdmin.get('/BridgeConfigNode/GetSortedDeviceServices', async function (req, res, next) {
