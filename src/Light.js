@@ -25,7 +25,7 @@ class Light extends Device {
     }
 
     getStatusFill() {
-        var fill = super.getStatusFill();
+        var fill = super.getStatusFill() || "grey";
 
         if (this.state.on) {
             fill = "yellow";

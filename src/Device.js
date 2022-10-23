@@ -1,43 +1,14 @@
-class Device {
+Resource = require("./Resource");
+
+class Device extends Resource {
     constructor(RED,clip,config) {
+        super(RED,clip,config);
         console.log("Device[" + config.name + "].constructor()");
-        this.config = config;
-        this.clip = clip;
-        RED.nodes.createNode(this,config);
 
         this.services = [];
 
         this.power_state = null;
         this.zigbee_connectivity = null;
-
-        if (this.clip) {
-            this.clip.once(this.config.uuid, (event) => {
-                console.log("Device["+config.name+"].clip.once(" + this.config.uuid + ")");
-                console.log(event);
-
-                this.services = this.clip.getSortedDeviceServices(this.config.uuid);
-
-                this.services.forEach((service) => {
-                    this.clip.on(service.rid, (event) => {
-                        //console.log("Device["+config.name+"].clip.on(" + service.rid + ")");
-                        //console.log(event);
-                        this.onUpdate(event.resource);
-                        this.updateStatus();
-                    });
-                });
-            });
-        }
-
-        const local = this;
-        this.on('input', function(msg) { 
-            console.log("Device["+config.name+"].on('input')");
-            local.onInput(msg); 
-        });
-
-        this.on('close', function() { 
-            console.log("Device["+config.name+"].on('close')");
-            local.onClose(); 
-        });
     }
 
     getStatusFill() {
@@ -48,33 +19,35 @@ class Device {
                 return "red";
             }
         }
-
-        return "grey";
+        return super.getStatusFill();
     }
 
     getStatusText() {
         if (this.power_state!=null) {
             return this.power_state.battery_level + "%";
         }
-
-        return "";
+        return super.getStatusText();
     }
 
     getStatusShape() {
         if (this.zigbee_connectivity==="connected") {
             return "dot";
         }
-
-        return "ring";
+        return super.getStatusShape();
     }
 
-    updateStatus() {
-        //console.log("Device[" + this.config.name + "].updateStatus()");
-        
-        this.status({
-            fill:  this.getStatusFill(), 
-            shape: this.getStatusShape(), 
-            text:  this.getStatusText()
+    onInitialUpdate(event) {
+        super.onInitialUpdate(event);
+
+        this.services = this.clip.getSortedDeviceServices(this.config.uuid);
+
+        this.services.forEach((service) => {
+            this.clip.on(service.rid, (event) => {
+                //console.log("Device["+config.name+"].clip.on(" + service.rid + ")");
+                //console.log(event);
+                this.onUpdate(event.resource);
+                this.updateStatus();
+            });
         });
     }
 
@@ -82,23 +55,21 @@ class Device {
         //console.log("Device[" + this.config.name + "].onUpdate()");
         //console.log(resource);
 
-        if ((!resource.startup) || (resource.startup === false)) {
-            var msg = [];
-            var index = 0;
+        var msg = [];
+        var index = 0;
 
-            // Find the service that matches the resource id,
-            // and update index and msg accordingly
-            if (this.services) {
-                while ((index < this.services.length) && (this.services[index].rid != resource.id)) {
-                    if (this.config.multi) msg.push(null);
-                    index += 1;
-                }
+        // Find the service that matches the resource id,
+        // and update index and msg accordingly
+        if (this.services) {
+            while ((index < this.services.length) && (this.services[index].rid != resource.id)) {
+                if (this.config.multi) msg.push(null);
+                index += 1;
+            }
 
-                // if resource id was found then send the message
-                if (index < this.services.length) {
-                    msg.push({ index: index, payload: resource });
-                    this.send(msg);
-                }
+            // if resource id was found then send the message
+            if (index < this.services.length) {
+                msg.push({ index: index, payload: resource });
+                this.send(msg);
             }
         }
 
@@ -109,6 +80,8 @@ class Device {
         if (resource.type === "device_power") {
             this.power_state = resource.power_state;
         }
+
+        super.onUpdate(resource);
     }
 
     onInput(msg) {
@@ -136,13 +109,14 @@ class Device {
                 this.clip.put(url,msg.payload);
             });
         }
+
+        super.onInput(msg);
     }
 
     onClose() {
         //console.log("Device["+this.name+"].onClose()");
-        this.config = null;
-        this.clip = null;
         this.services = null;
+        super.onClose();
     }
 }
 
