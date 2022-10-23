@@ -1,7 +1,7 @@
 module.exports = function(RED) {
     "use strict";
 
-    const WallSwitchModule = require('./src/WallSwitchModule');
+    const WallSwitchModule = require('../src/WallSwitchModule');
 
     class WallSwitchModuleNode extends WallSwitchModule {
         constructor(config) {

@@ -1,7 +1,7 @@
 module.exports = function(RED) {
     "use strict";
 
-    const LutronAurora = require('./src/LutronAurora');
+    const LutronAurora = require('../src/LutronAurora');
 
     class LutronAuroraNode extends LutronAurora {
         constructor(config) {

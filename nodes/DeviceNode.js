@@ -1,7 +1,7 @@
 module.exports = function(RED) {
     "use strict";
     
-    const Device = require('./src/Device');
+    const Device = require('../src/Device');
 
     class DeviceNode extends Device {
         constructor(config) {

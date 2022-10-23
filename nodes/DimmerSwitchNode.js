@@ -1,7 +1,7 @@
 module.exports = function(RED) {
     "use strict";
 
-    const DimmerSwitch = require('./src/DimmerSwitch');
+    const DimmerSwitch = require('../src/DimmerSwitch');
 
     class DimmerSwitchNode extends DimmerSwitch {
         constructor(config) {

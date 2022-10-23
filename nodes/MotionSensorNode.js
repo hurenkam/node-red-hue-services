@@ -1,7 +1,7 @@
 module.exports = function(RED) {
     "use strict";
 
-    const MotionSensor = require('./src/MotionSensor');
+    const MotionSensor = require('../src/MotionSensor');
 
     class MotionSensorNode extends MotionSensor {
         constructor(config) {
