@@ -3,7 +3,7 @@
         category: 'hue services',
         defaults: {
             name:   {value:""},
-            bridge: {type:"mh-hue-api", required: true},
+            bridge: {type:"BridgeConfigNode", required: true},
             uuid:   {value:"", required: true}
         },
         color: "#E7E7AE",
@@ -40,13 +40,15 @@
 
                 var current = $('#node-input-uuid').val();
 
-                var bridgeConfig = RED.nodes.node($('#node-input-bridge option:selected').val());
-                if(!bridgeConfig) { return false; }
+                var bridge = RED.nodes.node($('#node-input-bridge option:selected').val());
+                if(!bridge) { return false; }
 
                 // retrieve the options list from the bridge config node
                 // restrict the list to resources of type 'device' and with model_id 'Z3-1BRL'
-                $.get("mh-hue/getSortedZoneOptions", { 
-                    bridge_id: bridgeConfig.id
+                //$.get("mh-hue/getSortedZoneOptions", { 
+                $.get("BridgeConfigNode/GetSortedResourceOptions", {
+                    type: 'zone',
+                    bridge_id: bridge.id
                 })
                 .done( function(data) {
                     var options = JSON.parse(data);

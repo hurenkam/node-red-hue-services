@@ -39,7 +39,7 @@ class Device extends Resource {
     onInitialUpdate(event) {
         super.onInitialUpdate(event);
 
-        this.services = this.clip.getSortedDeviceServices(this.config.uuid);
+        this.services = this.clip.getSortedDeviceServices(this.config.uuid,"device");
 
         this.services.forEach((service) => {
             this.clip.on(service.rid, (event) => {
