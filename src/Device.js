@@ -15,14 +15,8 @@ class Device {
                 console.log("Device["+config.name+"].clip.once(" + this.config.uuid + ")");
                 console.log(event);
 
-                var services = event.resource.services;
-                services.sort(function (a, b) {
-                    if (a.rtype > b.rtype) return 1;
-                    if (a.rtype < b.rtype) return -1;
-                    return 0;
-                });
+                this.services = this.clip.getSortedDeviceServices(this.config.uuid);
 
-                this.services = services;
                 this.services.forEach((service) => {
                     this.clip.on(service.rid, (event) => {
                         //console.log("Device["+config.name+"].clip.on(" + service.rid + ")");
@@ -118,8 +112,8 @@ class Device {
     }
 
     onInput(msg) {
-        console.log("Device["+this.name+"].onInput()");
-        console.log(msg);
+        //console.log("Device["+this.name+"].onInput()");
+        //console.log(msg);
 
         if (msg.rids)
         {
