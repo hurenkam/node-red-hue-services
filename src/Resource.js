@@ -1,8 +1,9 @@
 class Resource {
-    constructor(RED,clip,config) {
+    constructor(RED,clip,config,rtype=null) {
         console.log("Resource[" + config.name + "].constructor()");
         this.config = config;
         this.clip = clip;
+        this.rtype = rtype;
         RED.nodes.createNode(this,config);
 
         if (this.clip) {
@@ -50,6 +51,10 @@ class Resource {
     }
 
     onInput(msg) {
+        if ((this.rtype) && (this.config.uuid)) {
+            const url = "/clip/v2/resource/" + this.rtype + "/" + this.config.uuid;
+            this.clip.put(url,msg.payload);
+        }
     }
 
     onClose() {
