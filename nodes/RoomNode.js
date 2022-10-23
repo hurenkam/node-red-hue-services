@@ -1,7 +1,7 @@
 module.exports = function(RED) {
     "use strict";
 
-    function HueRoom(config) {
+    function RoomNode(config) {
         RED.nodes.createNode(this,config);
         const node = this;
 
@@ -84,5 +84,5 @@ module.exports = function(RED) {
         });
     }
 
-    RED.nodes.registerType("mh-hue-room",HueRoom);
+    RED.nodes.registerType("RoomNode",RoomNode);
 }

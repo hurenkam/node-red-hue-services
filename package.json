@@ -15,7 +15,6 @@
   "node-red": {
     "nodes": {
       "BridgeConfigNode": "nodes/BridgeConfigNode.js",
-      "mh-hue-api": "mh-hue-api.js",
       "DeviceNode": "nodes/DeviceNode.js",
       "LutronAuroraNode": "nodes/LutronAuroraNode.js",
       "DimmerSwitchNode": "nodes/DimmerSwitchNode.js",
@@ -24,8 +23,8 @@
       "MotionBehaviorNode": "nodes/MotionBehaviorNode.js",
       "SceneNode": "nodes/SceneNode.js",
       "LightNode": "nodes/LightNode.js",
-      "mh-hue-zone": "nodes/ZoneNode.js",
-      "mh-hue-room": "nodes/RoomNode.js"
+      "ZoneNode": "nodes/ZoneNode.js",
+      "RoomNode": "nodes/RoomNode.js"
     }
   },
   "dependencies": {

@@ -1,7 +1,7 @@
 module.exports = function(RED) {
     "use strict";
 
-    function HueZone(config) {
+    function ZoneNode(config) {
         RED.nodes.createNode(this,config);
         const node = this;
 
@@ -85,5 +85,5 @@ module.exports = function(RED) {
         });
     }
 
-    RED.nodes.registerType("mh-hue-zone",HueZone);
+    RED.nodes.registerType("ZoneNode",ZoneNode);
 }
