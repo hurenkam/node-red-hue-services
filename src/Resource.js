@@ -93,26 +93,28 @@ class Resource {
             this.clip.put(url,msg.payload);
         }
 
-        if (msg.rids)
-        {
-            this.services.forEach(service => {
-                if (msg.rids.includes(service.rid)) {
+        if (this.services) {
+            if (msg.rids)
+            {
+                this.services.forEach(service => {
+                    if (msg.rids.includes(service.rid)) {
+                        const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
+                        this.clip.put(url,msg.payload);
+                    }
+                });
+            } else if (msg.rtypes) {
+                this.services.forEach(service => {
+                    if (msg.rtypes.includes(service.rtype)) {
+                        const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
+                        this.clip.put(url,msg.payload);
+                    }
+                });
+            } else {
+                this.services.forEach(service => {
                     const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
                     this.clip.put(url,msg.payload);
-                }
-            });
-        } else if (msg.rtypes) {
-            this.services.forEach(service => {
-                if (msg.rtypes.includes(service.rtype)) {
-                    const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
-                    this.clip.put(url,msg.payload);
-                }
-            });
-        } else {
-            this.services.forEach(service => {
-                const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
-                this.clip.put(url,msg.payload);
-            });
+                });
+            }
         }
     }
 
