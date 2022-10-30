@@ -4,16 +4,10 @@
         defaults: {
             name: {value:""},
             motion: {
-                value: { 
-                    rtypes:  ["light", "grouped_light" ],
-                    payload: { on: { on: true } } 
-                } 
+                value: "{ \"rtypes\":  [\"light\", \"grouped_light\" ], \"payload\": { \"on\": { \"on\": true } } }"
             },
             nomotion: {
-                value: { 
-                    rtypes:  ["light", "grouped_light" ],
-                    payload: { on: { on: false } }
-                } 
+                value: "{ \"rtypes\":  [\"light\", \"grouped_light\" ], \"payload\": { \"on\": { \"on\": false } } }"
             },
             timeout: {value:300}
         },
@@ -24,7 +18,17 @@
         label: function() {
             return this.name||"Hue Motion Behavior";
         },
-        paletteLabel: "Hue Motion Behavior"
+        paletteLabel: "Hue Motion Behavior",
+        oneditprepare: function() {
+            $("#node-input-motion").typedInput({
+                type:"json",
+                types:["json"]
+            })
+            $("#node-input-nomotion").typedInput({
+                type:"json",
+                types:["json"]
+            })
+        }
     });
 </script>
 

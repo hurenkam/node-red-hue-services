@@ -67,7 +67,7 @@ module.exports = function(RED) {
                 if (this.state != "motindetected")
                 {
                     this.state = "motiondetected";
-                    this.send(this.config.motion);
+                    this.send(JSON.parse(this.config.motion));
                     this.updateStatus();
                 }
             }
@@ -85,7 +85,7 @@ module.exports = function(RED) {
         onMotionTimeout() {
             console.log("MotionBehaviorNode[" + this.config.name + "].onMotionTimeout()");
             //console.log(this.config.nomotion);
-            this.send(this.config.nomotion);
+            this.send(JSON.parse(this.config.nomotion));
             this.state = "idle";
             this.updateStatus();
         }
