@@ -2,11 +2,28 @@
     RED.nodes.registerType('DimmerSwitchNode',{
         category: 'hue devices',
         defaults: {
-            name:    {value:""},
-            bridge:  {type:"BridgeConfigNode", required: true},
-            uuid:    {value:"", required: true},
-            multi:   {value:false},
-            outputs: {value:1},
+            name:      { value:"" },
+            bridge:    { type: "BridgeConfigNode", required: true },
+            uuid:      { value:"", required: true },
+            multi:     { value: false },
+            translate: { value: false },
+            buttons:   { value: [ 
+                { 
+                    "initial_press": "{ \"payload\": { \"on\": { \"on\": true } } }\n"
+                },
+                { 
+                    "initial_press": "{ \"payload\": { \"dimming_delta\": { \"action\": \"up\", \"brightness_delta\": 25 } } }",
+                    "repeat":  "{ \"payload\": { \"dimming_delta\": { \"action\": \"up\", \"brightness_delta\": 25 } } }"
+                },
+                { 
+                    "initial_press": "{ \"payload\": { \"dimming_delta\": { \"action\": \"down\", \"brightness_delta\": 25 } } }",
+                    "repeat":  "{ \"payload\": { \"dimming_delta\": { \"action\": \"down\", \"brightness_delta\": 25 } } }"
+                },
+                {
+                    "initial_press": "{ \"payload\": { \"on\": { \"on\": off } } }"
+                }
+            ] },
+            outputs:   { value: 1 },
         },
         color: "#C7E9C0",
         inputs:0,
@@ -41,6 +58,13 @@
                     }
                 });
             }
+
+            for (var i = 0; i < 4; i++) {
+                ["initial_press","repeat","short_release","long_release"].forEach((item) => {
+                    this.buttons[i][item] = $("#node-input-button"+i+"-"+item).val();
+                });
+            }
+            
         },
         oneditprepare: function() {
             console.log("DimmerSwitchNode.oneditprepare()");
@@ -115,6 +139,32 @@
                 });
             }
 
+            var tabs = RED.tabs.create({
+                id: "button-tabs",
+                onchange: function(tab) {
+                    $("#button-tabs-content").children().hide();
+                    $("#" + tab.id).show();
+                }
+            });
+            tabs.addTab({
+                id: "button0-tab-body",
+                label: "On"
+            });
+            tabs.addTab({
+                id: "button1-tab-body",
+                label: "Dim Up"
+            });
+            tabs.addTab({
+                id: "button2-tab-body",
+                label: "Dim Down"
+            });
+            tabs.addTab({
+                id: "button3-tab-body",
+                label: "Off"
+            });
+
+            tabs.activateTab("button0-tab-body");
+
             $('#input-select-uuid-search').click(function()
             {
                 if($('#input-select-uuid').find(".red-ui-typedInput-container").length > 0) {
@@ -123,6 +173,32 @@
                     findUUID();
                 }
             });
+
+            $('#input-select-translate').change(function()
+            {
+                console.log("DimmerSwitchNode.oneditprepare.$('#input-select-translate').change()");
+                var translate = $("#node-input-translate").prop('checked');
+
+                if (translate==true) {
+                    $("#button-tabs-header").show();
+                    $("#button-tabs-content").show();
+                } else {
+                    $("#button-tabs-header").hide();
+                    $("#button-tabs-content").hide();
+                }
+
+            });
+
+            for (var i = 0; i < 4; i++) {
+                ["initial_press","repeat","short_release","long_release"].forEach((item) => {
+                    $("#node-input-button"+i+"-"+item).typedInput({
+                        type:"json",
+                        types:["json"]
+                    });
+                    $("#node-input-button"+i+"-"+item).typedInput("value",this.buttons[i][item]);
+                });
+            }
+
         }
     });
 </script>
@@ -157,6 +233,122 @@
             </span>
         </div>
     </div>
+    <div class="form-row">
+        <div style="display: inline-flex; width: calc(100% - 105px)">
+            <div id="input-select-translate" style="flex-grow: 1;">
+                <input type="checkbox" id="node-input-translate" style="flex: 15px;">
+            </div>
+            <span style="width: 100%; margin-left: 10px;">
+                Translate button output
+            </span>
+        </div>
+    </div>
+
+    <div id="button-tabs-header" style="display: inline-flex; width: calc(100% - 105px)">
+        <div class="form-row button-tabs-row">
+            <ul style="min-width: 600px; margin-bottom: 20px;" id="button-tabs"></ul>
+        </div>
+    </div>
+    <div id="button-tabs-content" style="min-height: calc(100% - 95px);">
+
+        <div id="button0-tab-body" style="display:none">
+
+            <div class="form-row">
+                <label for="node-input-button0-initial_press"><i class="fa fa-tag"></i> Initial press</label>
+                <input type="text" id="node-input-button0-initial_press" placeholder="">
+            </div>
+        
+            <div class="form-row">
+                <label for="node-input-button0-repeat"><i class="fa fa-tag"></i> Repeat</label>
+                <input type="text" id="node-input-button0-repeat" placeholder="">
+            </div>
+        
+            <div class="form-row">
+                <label for="node-input-button0-short_release"><i class="fa fa-tag"></i> Short release</label>
+                <input type="text" id="node-input-button0-short_release" placeholder="">
+            </div>
+        
+            <div class="form-row">
+                <label for="node-input-button0-long_release"><i class="fa fa-tag"></i> Long release</label>
+                <input type="text" id="node-input-button0-long_release" placeholder="">
+            </div>
+        
+        </div>
+
+        <div id="button1-tab-body" style="display:none">
+
+            <div class="form-row">
+                <label for="node-input-button1-initial_press"><i class="fa fa-tag"></i> Initial press</label>
+                <input type="text" id="node-input-button1-initial_press" placeholder="">
+            </div>
+        
+            <div class="form-row">
+                <label for="node-input-button1-repeat"><i class="fa fa-tag"></i> Repeat</label>
+                <input type="text" id="node-input-button1-repeat" placeholder="">
+            </div>
+        
+            <div class="form-row">
+                <label for="node-input-button1-short_release"><i class="fa fa-tag"></i> Short release</label>
+                <input type="text" id="node-input-button1-short_release" placeholder="">
+            </div>
+        
+            <div class="form-row">
+                <label for="node-input-button1-long_release"><i class="fa fa-tag"></i> Long release</label>
+                <input type="text" id="node-input-button1-long_release" placeholder="">
+            </div>
+        
+        </div>
+
+        <div id="button2-tab-body" style="display:none">
+
+            <div class="form-row">
+                <label for="node-input-button2-initial_press"><i class="fa fa-tag"></i> Initial press</label>
+                <input type="text" id="node-input-button2-initial_press" placeholder="">
+            </div>
+        
+            <div class="form-row">
+                <label for="node-input-button2-repeat"><i class="fa fa-tag"></i> Repeat</label>
+                <input type="text" id="node-input-button2-repeat" placeholder="">
+            </div>
+        
+            <div class="form-row">
+                <label for="node-input-button2-short_release"><i class="fa fa-tag"></i> Short release</label>
+                <input type="text" id="node-input-button2-short_release" placeholder="">
+            </div>
+        
+            <div class="form-row">
+                <label for="node-input-button2-long_release"><i class="fa fa-tag"></i> Long release</label>
+                <input type="text" id="node-input-button2-long_release" placeholder="">
+            </div>
+        
+        </div>
+
+        <div id="button3-tab-body" style="display:none">
+
+            <div class="form-row">
+                <label for="node-input-button3-initial_press"><i class="fa fa-tag"></i> Initial press</label>
+                <input type="text" id="node-input-button3-initial_press" placeholder="">
+            </div>
+        
+            <div class="form-row">
+                <label for="node-input-button3-repeat"><i class="fa fa-tag"></i> Repeat</label>
+                <input type="text" id="node-input-button3-repeat" placeholder="">
+            </div>
+        
+            <div class="form-row">
+                <label for="node-input-button3-short_release"><i class="fa fa-tag"></i> Short release</label>
+                <input type="text" id="node-input-button3-short_release" placeholder="">
+            </div>
+        
+            <div class="form-row">
+                <label for="node-input-button3-long_release"><i class="fa fa-tag"></i> Long release</label>
+                <input type="text" id="node-input-button3-long_release" placeholder="">
+            </div>
+        
+        </div>
+
+    </div>
+
 </script>
 
 <script type="text/html" data-help-name="DimmerSwitchNode">

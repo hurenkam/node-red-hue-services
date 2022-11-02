@@ -66,6 +66,12 @@ class Resource {
         //console.log("Resource["+this.config.name+"].onUpdate()");
         //console.log(resource);
 
+        this.onServicesUpdate(resource);
+
+        this.updateStatus();
+    }
+
+    onServicesUpdate(resource) {
         var msg = [];
         var index = 0;
 
@@ -84,7 +90,6 @@ class Resource {
             }
         }
 
-        this.updateStatus();
     }
 
     onInput(msg) {
