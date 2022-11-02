@@ -9,18 +9,18 @@
             translate: { value: false },
             buttons:   { value: [ 
                 { 
-                    "initial_press": "{ \"payload\": { \"on\": { \"on\": true } } }\n"
+                    "initial_press": "{ \"rtypes\":  [\"light\", \"grouped_light\" ], \"payload\": { \"on\": { \"on\": true } } }"
                 },
                 { 
-                    "initial_press": "{ \"payload\": { \"dimming_delta\": { \"action\": \"up\", \"brightness_delta\": 25 } } }",
-                    "repeat":  "{ \"payload\": { \"dimming_delta\": { \"action\": \"up\", \"brightness_delta\": 25 } } }"
+                    "initial_press": "{ \"rtypes\":  [\"light\", \"grouped_light\" ], \"payload\": { \"dimming_delta\": { \"action\": \"up\", \"brightness_delta\": 25 } } }",
+                    "repeat":  "{ \"rtypes\":  [\"light\", \"grouped_light\" ], \"payload\": { \"dimming_delta\": { \"action\": \"up\", \"brightness_delta\": 25 } } }"
                 },
                 { 
-                    "initial_press": "{ \"payload\": { \"dimming_delta\": { \"action\": \"down\", \"brightness_delta\": 25 } } }",
-                    "repeat":  "{ \"payload\": { \"dimming_delta\": { \"action\": \"down\", \"brightness_delta\": 25 } } }"
+                    "initial_press": "{ \"rtypes\":  [\"light\", \"grouped_light\" ], \"payload\": { \"dimming_delta\": { \"action\": \"down\", \"brightness_delta\": 25 } } }",
+                    "repeat":  "{ \"rtypes\":  [\"light\", \"grouped_light\" ], \"payload\": { \"dimming_delta\": { \"action\": \"down\", \"brightness_delta\": 25 } } }"
                 },
                 {
-                    "initial_press": "{ \"payload\": { \"on\": { \"on\": false } } }"
+                    "initial_press": "{ \"rtypes\":  [\"light\", \"grouped_light\" ], \"payload\": { \"on\": { \"on\": false } } }"
                 }
             ] },
             outputs:   { value: 1 },
