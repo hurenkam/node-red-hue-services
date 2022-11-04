@@ -217,15 +217,17 @@ class DeviceUI {
             })
             .done( function(data) {
                 var services = JSON.parse(data);
-                config.outputs = services.length;
-                config.outputLabels = [];
-                if (multi) {
-                    services.forEach(service => {
-                        config.outputLabels.push(service.rtype);
-                    });
-                } else {
-                    config.outputs = 1;
-                    config.outputLabels.push("output");
+                if (services.length > 0) {
+                    config.outputs = services.length;
+                    config.outputLabels = [];
+                    if (multi) {
+                        services.forEach(service => {
+                            config.outputLabels.push(service.rtype);
+                        });
+                    } else {
+                        config.outputs = 1;
+                        config.outputLabels.push("output");
+                    }
                 }
             });
         }
