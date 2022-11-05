@@ -184,15 +184,6 @@ class DeviceUI {
         this.build(config);
 
         var instance = this;
-        $('#input-select-uuid-search').click(function()
-        {
-            if($('#input-select-uuid').find(".red-ui-typedInput-container").length > 0) {
-                instance.selectText("uuid");
-            } else {
-                instance.selectResource();
-            }
-        });
-
         $('#input-select-bridge-search').click(function()
         {
             if($('#input-select-bridge').find(".red-ui-typedInput-container").length > 0) {
@@ -201,6 +192,17 @@ class DeviceUI {
                 instance.selectBridge();
             }
         });
+        instance.selectBridge();
+
+        $('#input-select-uuid-search').click(function()
+        {
+            if($('#input-select-uuid').find(".red-ui-typedInput-container").length > 0) {
+                instance.selectText("uuid");
+            } else {
+                instance.selectResource();
+            }
+        });
+        instance.selectResource();
     }
 
     onEditSave(config) {
