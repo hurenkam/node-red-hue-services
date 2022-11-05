@@ -30,27 +30,34 @@ class DeviceUI {
         console.log(this.config)
     }
 
-    build(config) {
-        console.log("DeviceUI.build()");
-        var template_root = document.getElementById("template-root");
-        if (!template_root) {
-            console.log("template-root not found.")
-            return;
-        }
+    textInput(parent,id,label,value) {
+        var item = document.createElement("div");
+        item.setAttribute("class","form-row");
+        item.innerHTML = '\
+            <label for="node-input-'+ id +'"><i class="fa fa-tag"></i> '+ label +'</label>\
+            <input type="text" id="node-input-'+ id +'" value="'+ value +'">';
+        parent.appendChild(item);
+    }
 
-        //=============================================
-        // Name
-        //=============================================
-        var name = document.createElement("div");
-        name.setAttribute("class","form-row");
-        name.innerHTML = '\
-            <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>\
-            <input type="text" id="node-input-name" placeholder="Name" value="' + config.name + '">';
-        template_root.appendChild(name);
+    checkboxInput(parent,id,label,value) {
+        var item = document.createElement("div");
+        item.setAttribute("class","form-row");
+        item.innerHTML = '\
+            <div style="display: inline-flex; width: calc(100% - 105px)">\
+                <div id="input-select-'+ id +'" style="flex-grow: 1;">\
+                    <input type="checkbox" id="node-input-'+ id +'" style="flex: 15px;"' + (value? ' checked="true"': '') + '">\
+                </div>\
+                <span style="width: 100%; margin-left: 10px;">\
+                    '+ label +'\
+                </span>\
+            </div>';
+        parent.appendChild(item);
+    }
 
-        //=============================================
-        // Bridge
-        //=============================================
+    selectInput(parent,id,label,value,options) {
+    }
+
+    bridgeInput(parent,id,label,value) {
 /*
         input to be replaced with select element
 
@@ -63,50 +70,40 @@ class DeviceUI {
             </div>
         </div>
         <select id="node-input-bridge" style="flex-grow: 1;">
-            <option value="................">Hallway Hue v2.1</option>
-            <option value="90381766f55e5824">MyBridge</option>
             <option value="_ADD_">Add new BridgeConfigNode...</option>
         </select>
-*/        
-        var bridge = document.createElement("div");
-        bridge.setAttribute("class","form-row");
-        bridge.innerHTML = '\
-            <label for="node-input-bridge"><i class="fa fa-tag"></i> Bridge</label>\
-            <input type="text" id="node-input-bridge" style="width: calc(100% - 105px)" value="' + config.bridge + '">';
-        template_root.appendChild(bridge);
+*/
+        this.textInput(parent,id,label,value);
+    }
 
-        //=============================================
-        // UUID
-        //=============================================
-        var uuid = document.createElement("div");
-        uuid.setAttribute("class","form-row");
-        uuid.innerHTML = '\
-            <label for="node-input-uuid"><i class="fa fa-tag"></i> UUID</label>\
+    uuidInput(parent,id,label,value) {
+        var item = document.createElement("div");
+        item.setAttribute("class","form-row");
+        item.innerHTML = '\
+            <label for="node-input-'+ id +'"><i class="fa fa-tag"></i> '+ label +'</label>\
             <div style="display: inline-flex; width: calc(100% - 105px)">\
-                <div id="input-select-uuid" style="flex-grow: 1;">\
-                    <input type="text" id="node-input-uuid" style="width: 100%" value="' + config.uuid + '">\
+                <div id="input-select-'+ id +'" style="flex-grow: 1;">\
+                    <input type="text" id="node-input-'+ id +'" style="width: 100%" value="' + value + '">\
                 </div>\
-                <button id="input-select-uuid-search" type="button" class="red-ui-button" style="margin-left: 10px;">\
+                <button id="input-select-'+ id +'-search" type="button" class="red-ui-button" style="margin-left: 10px;">\
                     <i class="fa fa-search"></i>\
                 </button>\
             </div>';
-        template_root.appendChild(uuid);
+        parent.appendChild(item);
+    }
 
-        //=============================================
-        // Seperate outputs
-        //=============================================
-        var multi = document.createElement("div");
-        multi.setAttribute("class","form-row");
-        multi.innerHTML = '\
-            <div style="display: inline-flex; width: calc(100% - 105px)">\
-                <div id="input-select-multi" style="flex-grow: 1;">\
-                    <input type="checkbox" id="node-input-multi" style="flex: 15px;"' + (config.multi? ' checked="true"': '') + '">\
-                </div>\
-                <span style="width: 100%; margin-left: 10px;">\
-                    Seperate outputs\
-                </span>\
-            </div>';
-        template_root.appendChild(multi);
+    build(config) {
+        console.log("DeviceUI.build()");
+        var template_root = document.getElementById("template-root");
+        if (!template_root) {
+            console.log("template-root not found.")
+            return;
+        }
+
+        this.textInput(template_root,"name","Name",config.name);
+        this.bridgeInput(template_root,"bridge","Bridge",config.bridge);
+        this.uuidInput(template_root,"uuid","UUID",config.uuid);
+        this.checkboxInput(template_root,"multi","Seperate outputs",config.multi);        
     }
 
     inputUUID() {
