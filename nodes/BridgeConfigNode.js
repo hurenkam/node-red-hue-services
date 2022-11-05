@@ -115,6 +115,19 @@ module.exports = function (RED) {
         }
     });
 
+    RED.httpAdmin.get('/BridgeConfigNode/GetBridgeOptions', async function (req, res, next) {
+        console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetBridgeOptions()\")");
+        console.log(bridges);
+        var options = [];
+
+        Object.keys(bridges).forEach((key) => {
+            options.push({ label: bridges[key].name, value: bridges[key].id });
+        });
+        //options.push({ label: "Add Bridge", value: "_ADD_" });
+
+        res.end(JSON.stringify(Object(options)));
+    });
+
     RED.httpAdmin.get('/BridgeConfigNode/GetSortedDeviceServices', async function (req, res, next) {
         console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetSortedDeviceServices()\")");
         var clip = bridges[req.query.bridge_id].instance.clip;

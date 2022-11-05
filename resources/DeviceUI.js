@@ -31,6 +31,7 @@ class DeviceUI {
     }
 
     textInput(parent,id,label,value) {
+        console.log("DeviceUI.textInput("+id+")");
         var item = document.createElement("div");
         item.setAttribute("class","form-row");
         item.innerHTML = '\
@@ -40,6 +41,7 @@ class DeviceUI {
     }
 
     checkboxInput(parent,id,label,value) {
+        console.log("DeviceUI.checkboxInput("+id+")");
         var item = document.createElement("div");
         item.setAttribute("class","form-row");
         item.innerHTML = '\
@@ -54,29 +56,8 @@ class DeviceUI {
         parent.appendChild(item);
     }
 
-    selectInput(parent,id,label,value,options) {
-    }
-
-    bridgeInput(parent,id,label,value) {
-/*
-        input to be replaced with select element
-
-        <div class="form-row">
-            <label for="node-input-name"><i class="fa fa-tag"></i> Bridge</label>
-            <div style="width: calc(100% - 105px); display: inline-flex;">
-                <a id="node-input-lookup-bridge">
-                    <i class="fa fa-pencil"></i>
-                </a>
-            </div>
-        </div>
-        <select id="node-input-bridge" style="flex-grow: 1;">
-            <option value="_ADD_">Add new BridgeConfigNode...</option>
-        </select>
-*/
-        this.textInput(parent,id,label,value);
-    }
-
-    uuidInput(parent,id,label,value) {
+    selectInput(parent,id,label,value) {
+        console.log("DeviceUI.selectInput("+id+")");
         var item = document.createElement("div");
         item.setAttribute("class","form-row");
         item.innerHTML = '\
@@ -101,62 +82,43 @@ class DeviceUI {
         }
 
         this.textInput(template_root,"name","Name",config.name);
-        this.bridgeInput(template_root,"bridge","Bridge",config.bridge);
-        this.uuidInput(template_root,"uuid","UUID",config.uuid);
+        this.selectInput(template_root,"bridge","Bridge",config.bridge);
+        this.selectInput(template_root,"uuid","UUID",config.uuid);
         this.checkboxInput(template_root,"multi","Seperate outputs",config.multi);        
     }
 
-    inputUUID() {
-        console.log("DeviceUI.inputUUID()");
+    selectText(id) {
+        console.log("DeviceUI.selectText()");
     
-        var current = $('#node-input-uuid').val();
-        $('#input-select-uuid').empty();
-        $('#input-select-uuid').append('<input type="text" id="node-input-uuid" placeholder="00000000-0000-0000-0000-000000000000" style="width: 100%" value="'+current+'" />');
+        var current = $('#node-input-'+id).val();
+        $('#input-select-'+id).empty();
+        $('#input-select-'+id).append('<input type="text" id="node-input-'+id+'" style="width: 100%" value="'+current+'" />');
     
-        var button = $("#input-select-uuid-search");
+        var button = $("#input-select-"+id+"-search");
         var icon = button.find("i");
         icon.removeClass("fa-pencil");
         icon.addClass("fa-search");
     }
-    
-    findUUID() {
-        console.log("DeviceUI.findUUID()");
-    
-        var current = $('#node-input-uuid').val();
-        var bridge_id = $('#node-input-bridge').val();
-        //var bridge_id = $('#node-input-bridge option:selected').val();
-        if(!bridge_id) { 
-            console.log("DeviceUI.findUUID() invalid bridge_id:", bridge_id);
-            return;
-        }
-    
-        var bridge = RED.nodes.node(bridge_id);
-        if(!bridge) { 
-            console.log("DeviceUI.findUUID(): invalid bridge:", bridge);
-            return;
-        }
-    
-        // Add a notification on top of the page indicating that we are busy...
-        var notification = RED.notify("Searching for Hue Dimmer Switch devices...", { type: "compact", modal: true, fixed: true });
-    
-        // retrieve the options list from the bridge config node
-        // restrict the list to resources of given rtype and with model_id in given models list
-        $.get("BridgeConfigNode/GetSortedResourceOptions", {
-            type: this.rtype,
-            bridge_id: bridge.id,
-            models: this.models
-        })
+
+    selectOption(id,url,data) {
+        console.log("DeviceUI.selectOption()");
+        var current = $('#node-input-'+id).val();
+        var notification = RED.notify("Searching for options...", { 
+            type: "compact", modal: true, fixed: true 
+        });
+
+        $.get(url, data)
         .done( function(data) {
             var options = JSON.parse(data);
     
             if(options.length <= 0)
             {
                 notification.close();
-                RED.notify("No Hue Dimmer Switch devices found.", { type: "error" });
+                RED.notify("No options found.", { type: "error" });
                 return false;
             }
     
-            $("#node-input-uuid").typedInput({
+            $("#node-input-"+id).typedInput({
                 types: [
                     {
                         value: current,
@@ -165,7 +127,7 @@ class DeviceUI {
                 ]
             });
     
-            var button = $("#input-select-uuid-search");
+            var button = $("#input-select-"+id+"-search");
             var icon = button.find("i");
             icon.removeClass("fa-search");
             icon.addClass("fa-pencil");
@@ -175,12 +137,46 @@ class DeviceUI {
         })
         .fail(function()
         {
-            console.log("DimmerSwitchNode.oneditprepare.findUUID(): failed");
+            console.log("DeviceUI.selectOption(): failed");
     
             // Remove the notification
             notification.close();
             RED.notify("unknown error", "error");
         });
+    }
+
+    selectResource() {
+        console.log("DeviceUI.selectResource()");
+        var bridge_id = $('#node-input-bridge').val();
+        if(!bridge_id) { 
+            console.log("DeviceUI.selectResource() invalid bridge_id:", bridge_id);
+            return;
+        }
+
+        var bridge = RED.nodes.node(bridge_id);
+        if(!bridge) { 
+            console.log("DeviceUI.selectResource(): invalid bridge:", bridge);
+            return;
+        }
+
+        this.selectOption(
+            "uuid",
+            "BridgeConfigNode/GetSortedResourceOptions",
+            {
+                type: this.rtype,
+                bridge_id: bridge.id,
+                models: this.models
+            }
+        );
+    }
+
+    selectBridge() {
+        console.log("DeviceUI.selectBridge()");
+        this.selectOption(
+            "bridge",
+            "BridgeConfigNode/GetBridgeOptions",
+            {}
+        );
     }
         
     onEditPrepare(config) {
@@ -191,9 +187,18 @@ class DeviceUI {
         $('#input-select-uuid-search').click(function()
         {
             if($('#input-select-uuid').find(".red-ui-typedInput-container").length > 0) {
-                instance.inputUUID();
+                instance.selectText("uuid");
             } else {
-                instance.findUUID();
+                instance.selectResource();
+            }
+        });
+
+        $('#input-select-bridge-search').click(function()
+        {
+            if($('#input-select-bridge').find(".red-ui-typedInput-container").length > 0) {
+                instance.selectText("bridge");
+            } else {
+                instance.selectBridge();
             }
         });
     }
