@@ -50,6 +50,26 @@ class DeviceUI {
         parent.appendChild(item);
     }
 
+    jsonInput(parent,id,label,value) {
+        var item = document.createElement("div");
+        item.class = "form-row";
+        item.innerHTML = '\
+            <label for="node-input-'+id+'">\
+                <i class="fa fa-tab"></i>'+label+'\
+            </label>\
+            <input id="node-input-'+id+'" type="text">\
+        ';
+        parent.appendChild(item);
+
+        var input = $(item).find("input");
+        input.typedInput({
+            type:"json",
+            types:["json"]
+        });
+        input.typedInput("value",value);
+
+    }
+
     checkboxInput(parent,id,label,value) {
         console.log("DeviceUI.checkboxInput("+id+")");
         var item = document.createElement("div");

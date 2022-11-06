@@ -76,26 +76,7 @@ class DimmerSwitchUI extends DeviceUI {
             button_tab.setAttribute("style","display:none");
 
             ["initial_press","repeat","short_release","long_release"].forEach((item) => {
-                var button_tab_event = document.createElement("div");
-                button_tab_event.setAttribute("class","form-row");
-
-                var button_tab_event_label = document.createElement("label");
-                button_tab_event_label.setAttribute("for","node-input-button"+i+"-"+item);
-
-                var button_tab_event_label_content = document.createElement("i");
-                button_tab_event_label_content.setAttribute("class","fa fa-tab");
-
-                button_tab_event_label.appendChild(button_tab_event_label_content);
-                button_tab_event_label.append(item)
-                button_tab_event.appendChild(button_tab_event_label);
-
-                var button_tab_event_input = document.createElement("input");
-                button_tab_event_input.setAttribute("id","node-input-button"+i+"-"+item);
-                button_tab_event_input.setAttribute("type","text");
-                button_tab_event_input.setAttribute("placeholder","");
-                button_tab_event.appendChild(button_tab_event_input);
-
-                button_tab.appendChild(button_tab_event);
+                this.jsonInput(button_tab,"button"+i+"-"+item,item,config.buttons[i][item])
             });
 
             button_tabs_content.appendChild(button_tab);
@@ -145,18 +126,6 @@ class DimmerSwitchUI extends DeviceUI {
         tabs.activateTab("button0-tab-body");
         $("#button-tabs-content").children().hide();
         $("#button0-tab-body").show();
-
-        // Set the button translation input fields to json type
-        // ==============================================================================
-        for (var i = 0; i < 4; i++) {
-            ["initial_press","repeat","short_release","long_release"].forEach((item) => {
-                $("#node-input-button"+i+"-"+item).typedInput({
-                    type:"json",
-                    types:["json"]
-                });
-                $("#node-input-button"+i+"-"+item).typedInput("value",config.buttons[i][item]);
-            });
-        }
 
         $('#input-select-translate').change(function()
         {
