@@ -2,7 +2,7 @@ const Device = require('./Device');
 
 // ===================================================================
 //
-// State machine
+// State machine for smart behavior
 //
 // ===================================================================
 
@@ -70,10 +70,6 @@ class MotionState {
 }
 
 class IdleState extends MotionState {
-    static onmotiondetected = {
-        rtypes: [ "light", "grouped_light" ],
-        payload: { on: { on: true } }
-    };
 
     constructor(sensor) {
         super(sensor);
@@ -95,7 +91,7 @@ class IdleState extends MotionState {
             }
         },this.sensor.config.motiontimeout);
 
-        this.send(IdleState.onmotiondetected);
+        this.send(JSON.parse(this.sensor.config.onmotion));
         this.change(new MotionDetectedState(this.sensor));
     }
 
@@ -106,11 +102,7 @@ class IdleState extends MotionState {
 }
 
 class MotionDetectedState extends MotionState {
-    static onmotiontimeout = {
-        rtypes: [ "light", "grouped_light" ],
-        payload: { on: { on: false } }
-    };
-    
+
     constructor(sensor) {
         super(sensor);
         //console.log("MotionDetectedState.constructor()");
@@ -136,7 +128,7 @@ class MotionDetectedState extends MotionState {
             clearTimeout(MotionState.timer);
             MotionState.timer = null;
         }
-        this.send(MotionDetectedState.onmotiontimeout);
+        this.send(JSON.parse(this.sensor.config.ontimeout));
         this.change(new IdleState(this.sensor));
     }
 
@@ -162,7 +154,7 @@ class LightsOnState extends MotionState {
 
 // ===================================================================
 //
-// Motion Sensor
+// Main functionality
 //
 // ===================================================================
 
