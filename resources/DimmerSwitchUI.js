@@ -33,22 +33,8 @@ class DimmerSwitchUI extends DeviceUI {
             console.log("template-root not found.")
             return;
         }
-        
-        //=============================================
-        // Translate button output
-        //=============================================
-        var translate = document.createElement("div");
-        translate.setAttribute("class","form-row");
-        translate.innerHTML = '\
-            <div style="display: inline-flex; width: calc(100% - 105px)">\
-                <div id="input-select-translate" style="flex-grow: 1;">\
-                    <input type="checkbox" id="node-input-translate" style="flex: 15px;"' + (config.translate? ' checked="true"': '') + '">\
-                </div>\
-                <span style="width: 100%; margin-left: 10px;">\
-                    Translate button output\
-                </span>\
-            </div>';
-        template_root.appendChild(translate);
+
+        this.checkboxInput(template_root,"translate","Translate button output",config.translate);
 
         // ==============================================================================
         // Tab Header
@@ -83,7 +69,6 @@ class DimmerSwitchUI extends DeviceUI {
         }
         template_root.appendChild(button_tabs_content);
 
-        //var translate = $("#node-input-translate").prop('checked');
         if (config.translate==true) {
             $("#button-tabs-header").show();
             $("#button-tabs-content").show();
