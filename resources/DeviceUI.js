@@ -34,6 +34,7 @@ class DeviceUI {
         console.log("DeviceUI.textInput("+id+")");
         var item = document.createElement("div");
         item.setAttribute("class","form-row");
+        item.setAttribute("id","node-container-" + id);
         item.innerHTML = '\
             <label for="node-input-'+ id +'"><i class="fa fa-tag"></i> '+ label +'</label>\
             <input type="text" id="node-input-'+ id +'" value="'+ value +'">';
@@ -44,6 +45,7 @@ class DeviceUI {
         console.log("DeviceUI.textInput("+id+")");
         var item = document.createElement("div");
         item.setAttribute("class","form-row");
+        item.setAttribute("id","node-container-" + id);
         item.innerHTML = '\
             <label for="node-input-'+ id +'"><i class="fa fa-tag"></i> '+ label +'</label>\
             <input type="number" id="node-input-'+ id +'" value="'+ value +'">';
@@ -52,7 +54,8 @@ class DeviceUI {
 
     jsonInput(parent,id,label,value) {
         var item = document.createElement("div");
-        item.class = "form-row";
+        item.setAttribute("class","form-row");
+        item.setAttribute("id","node-container-" + id);
         item.innerHTML = '\
             <label for="node-input-'+id+'">\
                 <i class="fa fa-tab"></i>'+label+'\
@@ -74,6 +77,7 @@ class DeviceUI {
         console.log("DeviceUI.checkboxInput("+id+")");
         var item = document.createElement("div");
         item.setAttribute("class","form-row");
+        item.setAttribute("id","node-container-" + id);
         item.innerHTML = '\
             <div style="display: inline-flex; width: calc(100% - 105px)">\
                 <div id="input-select-'+ id +'" style="flex-grow: 1;">\
@@ -90,6 +94,7 @@ class DeviceUI {
         console.log("DeviceUI.selectInput("+id+")");
         var item = document.createElement("div");
         item.setAttribute("class","form-row");
+        item.setAttribute("id","node-container-" + id);
         item.innerHTML = '\
             <label for="node-input-'+ id +'"><i class="fa fa-tag"></i> '+ label +'</label>\
             <div style="display: inline-flex; width: calc(100% - 105px)">\
