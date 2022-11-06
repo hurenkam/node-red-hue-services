@@ -93,33 +93,32 @@ class Resource {
     }
 
     onInput(msg) {
-        if ((this.rtype) && (this.config.uuid)) {
-            const url = "/clip/v2/resource/" + this.rtype + "/" + this.config.uuid;
-            this.clip.put(url,msg.payload);
-        }
+        if (msg.rids) {
+            if (msg.rids.includes(this.uuid) && (this.config.rtype)) {
+                const url = "/clip/v2/resource/" + this.rtype + "/" + this.config.uuid;
+                this.clip.put(url,msg.payload);
+            }
 
-        if (this.services) {
-            if (msg.rids)
-            {
-                this.services.forEach(service => {
-                    if (msg.rids.includes(service.rid)) {
-                        const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
-                        this.clip.put(url,msg.payload);
-                    }
-                });
-            } else if (msg.rtypes) {
-                this.services.forEach(service => {
-                    if (msg.rtypes.includes(service.rtype)) {
-                        const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
-                        this.clip.put(url,msg.payload);
-                    }
-                });
-            } else {
-                this.services.forEach(service => {
+            this.services.forEach(service => {
+                if (msg.rids.includes(service.rid)) {
                     const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
                     this.clip.put(url,msg.payload);
-                });
+                }
+            });
+        }
+
+        if (msg.rtypes) {
+            if (msg.rtypes.includes(this.rtype) && (this.config.uuid)) {
+                const url = "/clip/v2/resource/" + this.rtype + "/" + this.config.uuid;
+                this.clip.put(url,msg.payload);
             }
+
+            this.services.forEach(service => {
+                if (msg.rtypes.includes(service.rtype)) {
+                    const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
+                    this.clip.put(url,msg.payload);
+                }
+            });
         }
     }
 

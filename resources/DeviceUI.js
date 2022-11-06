@@ -40,6 +40,16 @@ class DeviceUI {
         parent.appendChild(item);
     }
 
+    numberInput(parent,id,label,value) {
+        console.log("DeviceUI.textInput("+id+")");
+        var item = document.createElement("div");
+        item.setAttribute("class","form-row");
+        item.innerHTML = '\
+            <label for="node-input-'+ id +'"><i class="fa fa-tag"></i> '+ label +'</label>\
+            <input type="number" id="node-input-'+ id +'" value="'+ value +'">';
+        parent.appendChild(item);
+    }
+
     checkboxInput(parent,id,label,value) {
         console.log("DeviceUI.checkboxInput("+id+")");
         var item = document.createElement("div");
@@ -184,16 +194,6 @@ class DeviceUI {
         this.build(config);
 
         var instance = this;
-        $('#input-select-bridge-search').click(function()
-        {
-            if($('#input-select-bridge').find(".red-ui-typedInput-container").length > 0) {
-                instance.selectText("bridge");
-            } else {
-                instance.selectBridge();
-            }
-        });
-        instance.selectBridge();
-
         $('#input-select-uuid-search').click(function()
         {
             if($('#input-select-uuid').find(".red-ui-typedInput-container").length > 0) {
@@ -203,6 +203,16 @@ class DeviceUI {
             }
         });
         instance.selectResource();
+
+        $('#input-select-bridge-search').click(function()
+        {
+            if($('#input-select-bridge').find(".red-ui-typedInput-container").length > 0) {
+                instance.selectText("bridge");
+            } else {
+                instance.selectBridge();
+            }
+        });
+        instance.selectBridge();
     }
 
     onEditSave(config) {
