@@ -22,6 +22,7 @@ export class DimmerSwitchUI extends DeviceUI {
                     "initial_press": "{ \"rtypes\":  [\"light\", \"grouped_light\" ], \"payload\": { \"on\": { \"on\": false } } }"
                 }
             ] };
+        this.config.color = "#C7E9C0";
 
         this.models = ["RWL020","RWL021"];
     }

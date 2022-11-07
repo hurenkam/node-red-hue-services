@@ -1,122 +1,33 @@
-export class DeviceUI {
-    constructor(label="Generic Device",category="hue devices") {
-        console.log("DeviceUI.constructor()");
+import { BaseUI } from "./BaseUI.js";
 
+export class DeviceUI extends BaseUI {
+    constructor(label="Generic Device",category="hue devices") {
+        super(label,category);
+        console.log("DeviceUI.constructor()");
         var instance = this;
-        this.config = {
-            category: category,
-            defaults: {
-                name:      { value:"" },
-                bridge:    { type: "BridgeConfigNode", required: true },
-                uuid:      { value:"", required: true },
-                multi:     { value: false },
-                outputs:   { value: 1 },
-            },
-            color: "#C7E9C0",
-            inputs:0,
-            icon: "font-awesome/fa-circle-o",
-            label: function() {
-                return this.name||label;
-            },
-            paletteLabel: label,
-            oneditprepare: function() { instance.onEditPrepare(this) },
-            oneditsave:    function() { instance.onEditSave(this) },
-            oneditcancel:  function() { instance.onEditCancel(this) },
-        }
+
+        this.config.defaults.name =     { value:"" };
+        this.config.defaults.bridge =   { type: "BridgeConfigNode", required: true };
+        this.config.defaults.uuid =     { value:"", required: true };
+        this.config.defaults.multi =    { value: false };
+        this.config.defaults.outputs =  { value: 1 };
+
+        this.config.inputs = 0;
 
         this.rtype = "device";
         this.models = null;
-        
-        console.log(this.config)
-    }
-
-    textInput(parent,id,label,value) {
-        console.log("DeviceUI.textInput("+id+")");
-        var item = document.createElement("div");
-        item.setAttribute("class","form-row");
-        item.setAttribute("id","node-container-" + id);
-        item.innerHTML = '\
-            <label for="node-input-'+ id +'"><i class="fa fa-tag"></i> '+ label +'</label>\
-            <input type="text" id="node-input-'+ id +'" value="'+ value +'">';
-        parent.appendChild(item);
-    }
-
-    numberInput(parent,id,label,value) {
-        console.log("DeviceUI.textInput("+id+")");
-        var item = document.createElement("div");
-        item.setAttribute("class","form-row");
-        item.setAttribute("id","node-container-" + id);
-        item.innerHTML = '\
-            <label for="node-input-'+ id +'"><i class="fa fa-tag"></i> '+ label +'</label>\
-            <input type="number" id="node-input-'+ id +'" value="'+ value +'">';
-        parent.appendChild(item);
-    }
-
-    jsonInput(parent,id,label,value) {
-        var item = document.createElement("div");
-        item.setAttribute("class","form-row");
-        item.setAttribute("id","node-container-" + id);
-        item.innerHTML = '\
-            <label for="node-input-'+id+'">\
-                <i class="fa fa-tab"></i>'+label+'\
-            </label>\
-            <input id="node-input-'+id+'" type="text">\
-        ';
-        parent.appendChild(item);
-
-        var input = $(item).find("input");
-        input.typedInput({
-            type:"json",
-            types:["json"]
-        });
-        input.typedInput("value",value);
-
-    }
-
-    checkboxInput(parent,id,label,value) {
-        console.log("DeviceUI.checkboxInput("+id+")");
-        var item = document.createElement("div");
-        item.setAttribute("class","form-row");
-        item.setAttribute("id","node-container-" + id);
-        item.innerHTML = '\
-            <div style="display: inline-flex; width: calc(100% - 105px)">\
-                <div id="input-select-'+ id +'" style="flex-grow: 1;">\
-                    <input type="checkbox" id="node-input-'+ id +'" style="flex: 15px;"' + (value? ' checked="true"': '') + '">\
-                </div>\
-                <span style="width: 100%; margin-left: 10px;">\
-                    '+ label +'\
-                </span>\
-            </div>';
-        parent.appendChild(item);
-    }
-
-    selectInput(parent,id,label,value) {
-        console.log("DeviceUI.selectInput("+id+")");
-        var item = document.createElement("div");
-        item.setAttribute("class","form-row");
-        item.setAttribute("id","node-container-" + id);
-        item.innerHTML = '\
-            <label for="node-input-'+ id +'"><i class="fa fa-tag"></i> '+ label +'</label>\
-            <div style="display: inline-flex; width: calc(100% - 105px)">\
-                <div id="input-select-'+ id +'" style="flex-grow: 1;">\
-                    <input type="text" id="node-input-'+ id +'" style="width: 100%" value="' + value + '">\
-                </div>\
-                <button id="input-select-'+ id +'-search" type="button" class="red-ui-button" style="margin-left: 10px;">\
-                    <i class="fa fa-search"></i>\
-                </button>\
-            </div>';
-        parent.appendChild(item);
     }
 
     build(config) {
+        super.build(config);
         console.log("DeviceUI.build()");
+
         var template_root = document.getElementById("template-root");
         if (!template_root) {
             console.log("template-root not found.")
             return;
         }
 
-        this.textInput(template_root,"name","Name",config.name);
         this.selectInput(template_root,"bridge","Bridge",config.bridge);
         this.selectInput(template_root,"uuid","UUID",config.uuid);
         this.checkboxInput(template_root,"multi","Seperate outputs",config.multi);        
@@ -213,10 +124,10 @@ export class DeviceUI {
             {}
         );
     }
-        
+
     onEditPrepare(config) {
+        super.onEditPrepare(config);
         console.log("DeviceUI.onEditPrepare()");
-        this.build(config);
 
         var instance = this;
         $('#input-select-uuid-search').click(function()
@@ -241,9 +152,9 @@ export class DeviceUI {
     }
 
     onEditSave(config) {
+        super.onEditSave(config);
         console.log("DeviceUI.onEditSave()");
 
-        console.log(config);
         var config = this.config;
         var uuid = $('#node-input-uuid').val();
         var bridge = RED.nodes.node($('#node-input-bridge option:selected').val());
@@ -270,9 +181,5 @@ export class DeviceUI {
                 }
             });
         }
-    }
-
-    onEditCancel(config) {
-        console.log("DeviceUI.onEditCancel()");
     }
 }
