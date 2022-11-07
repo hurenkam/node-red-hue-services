@@ -1,4 +1,6 @@
-class LightUI extends DeviceUI {
+import { DeviceUI } from "./DeviceUI.js"
+
+export class LightUI extends DeviceUI {
     constructor() {
         super("Light");
         console.log("LightUI.constructor()");

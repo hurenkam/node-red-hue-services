@@ -2,10 +2,9 @@
     <div id="template-root"></div>
 </script>
 
-<script type="text/javascript" src="/resources/DeviceUI.js"></script>
-<script type="text/javascript" src="/resources/ZoneUI.js"></script>
+<script type="module">
+    import { ZoneUI } from "./resources/ZoneUI.js";
 
-<script type="text/javascript">
     RED.nodes.registerType('ZoneNode', new ZoneUI().config);
 </script>
 

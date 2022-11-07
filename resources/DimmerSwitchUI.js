@@ -1,4 +1,6 @@
-class DimmerSwitchUI extends DeviceUI {
+import { DeviceUI } from "./DeviceUI.js"
+
+export class DimmerSwitchUI extends DeviceUI {
     constructor() {
         super("Hue Dimmer Switch");
         console.log("DimmerSwitchUI.constructor()");

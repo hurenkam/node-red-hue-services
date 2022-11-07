@@ -1,4 +1,6 @@
-class LutronAuroraUI extends DeviceUI {
+import { DeviceUI } from "./DeviceUI.js"
+
+export class LutronAuroraUI extends DeviceUI {
     constructor() {
         super("Lutron Aurora Dimmer Switch");
         console.log("LutronAuroraUI.constructor()");

@@ -2,10 +2,9 @@
     <div id="template-root"></div>
 </script>
 
-<script type="text/javascript" src="/resources/DeviceUI.js"></script>
-<script type="text/javascript" src="/resources/MotionSensorUI.js"></script>
+<script type="module">
+    import { MotionSensorUI } from "./resources/MotionSensorUI.js";
 
-<script type="text/javascript">
     RED.nodes.registerType('MotionSensorNode', new MotionSensorUI().config);
 </script>
 

@@ -2,10 +2,9 @@
     <div id="template-root"></div>
 </script>
 
-<script type="text/javascript" src="/resources/DeviceUI.js"></script>
-<script type="text/javascript" src="/resources/DimmerSwitchUI.js"></script>
+<script type="module">
+    import { DimmerSwitchUI } from "./resources/DimmerSwitchUI.js";
 
-<script type="text/javascript">
     RED.nodes.registerType('DimmerSwitchNode', new DimmerSwitchUI().config);
 </script>
 

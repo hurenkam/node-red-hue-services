@@ -2,10 +2,9 @@
     <div id="template-root"></div>
 </script>
 
-<script type="text/javascript" src="/resources/DeviceUI.js"></script>
-<script type="text/javascript" src="/resources/RoomUI.js"></script>
+<script type="module">
+    import { RoomUI } from "./resources/RoomUI.js";
 
-<script type="text/javascript">
     RED.nodes.registerType('RoomNode', new RoomUI().config);
 </script>
 

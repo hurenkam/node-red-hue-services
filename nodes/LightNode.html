@@ -2,10 +2,9 @@
     <div id="template-root"></div>
 </script>
 
-<script type="text/javascript" src="/resources/DeviceUI.js"></script>
-<script type="text/javascript" src="/resources/LightUI.js"></script>
+<script type="module">
+    import { LightUI } from "./resources/LightUI.js";
 
-<script type="text/javascript">
     RED.nodes.registerType('LightNode', new LightUI().config);
 </script>
 

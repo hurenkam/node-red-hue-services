@@ -2,10 +2,9 @@
     <div id="template-root"></div>
 </script>
 
-<script type="text/javascript" src="/resources/DeviceUI.js"></script>
-<script type="text/javascript" src="/resources/WallSwitchModuleUI.js"></script>
+<script type="module">
+    import { WallSwitchModuleUI } from "./resources/WallSwitchModuleUI.js";
 
-<script type="text/javascript">
     RED.nodes.registerType('WallSwitchModuleNode', new WallSwitchModuleUI().config);
 </script>
 

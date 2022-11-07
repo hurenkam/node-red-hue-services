@@ -1,4 +1,6 @@
-class MotionSensorUI extends DeviceUI {
+import { DeviceUI } from "./DeviceUI.js"
+
+export class MotionSensorUI extends DeviceUI {
     constructor() {
         super("Hue Motion Sensor");
         console.log("MotionSensorUI.constructor()");

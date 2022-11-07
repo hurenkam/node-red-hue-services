@@ -1,4 +1,4 @@
-class DeviceUI {
+export class DeviceUI {
     constructor(label="Generic Device",category="hue devices") {
         console.log("DeviceUI.constructor()");
 
