@@ -10,9 +10,10 @@ export class DeviceUI extends BaseUI {
         this.config.defaults.bridge =   { type: "BridgeConfigNode", required: true };
         this.config.defaults.uuid =     { value:"", required: true };
         this.config.defaults.multi =    { value: false };
-        this.config.defaults.outputs =  { value: 1 };
 
-        this.config.inputs = 0;
+        this.config.inputs = 1;
+        this.config.color = "#EEEEEE";
+        this.config.icon = "font-awesome/fa-gears";
 
         this.rtype = "device";
         this.models = null;
