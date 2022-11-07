@@ -8,6 +8,8 @@ export class BaseUI {
             defaults: {
                 name:      { value:"" },
             },
+            inputs: 1,
+            outputs: 1,
             label: function() {
                 return this.name||label;
             },

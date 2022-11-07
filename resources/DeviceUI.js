@@ -152,21 +152,22 @@ export class DeviceUI extends BaseUI {
     }
 
     onEditSave(config) {
-        super.onEditSave(config);
         console.log("DeviceUI.onEditSave()");
 
-        var config = this.config;
         var uuid = $('#node-input-uuid').val();
-        var bridge = RED.nodes.node($('#node-input-bridge option:selected').val());
+        var bridge = $('#node-input-bridge').val();
         var multi = $("#node-input-multi").prop('checked');
+
         if ((uuid) && (bridge))
         { 
+            //console.log("DeviceUI.onEditSave() uuid:",uuid," bridge:",bridge);
             $.get("BridgeConfigNode/GetSortedDeviceServices", { 
-                bridge_id: bridge.id, 
+                bridge_id: bridge, 
                 uuid: uuid,
             })
             .done( function(data) {
                 var services = JSON.parse(data);
+                //console.log("DeviceUI.onEditSave(): Found",services.length,"services.");
                 if (services.length > 0) {
                     config.outputs = services.length;
                     config.outputLabels = [];
@@ -176,10 +177,10 @@ export class DeviceUI extends BaseUI {
                         });
                     } else {
                         config.outputs = 1;
-                        config.outputLabels.push("output");
                     }
                 }
             });
         }
+        super.onEditSave(config);
     }
 }

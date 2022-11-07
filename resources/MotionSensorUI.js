@@ -5,11 +5,16 @@ export class MotionSensorUI extends DeviceUI {
         super("Hue Motion Sensor");
         console.log("MotionSensorUI.constructor()");
 
+        const one_second = 1000;
+        const one_minute = 60 * one_second;
+        const five_minutes = 5 * one_minute;
+
         this.config.defaults.smart = { value: true }
-        this.config.defaults.motiontimeout = { value: 10000 }
+        this.config.defaults.motiontimeout = { value: five_minutes }
         this.config.defaults.onmotion = { value: "{ \"rtypes\":  [\"light\", \"grouped_light\" ], \"payload\": { \"on\": { \"on\": true } } }" }
         this.config.defaults.ontimeout = { value: "{ \"rtypes\":  [\"light\", \"grouped_light\" ], \"payload\": { \"on\": { \"on\": false } } }" }
-        this.config.inputs = 1
+        this.config.defaults.inputs = { value: 1 };
+        this.config.defaults.outputs = { value: 1 };
         this.config.color = "#E6E0F8";
         this.config.icon = "font-awesome/fa-rss";
 
@@ -57,4 +62,18 @@ export class MotionSensorUI extends DeviceUI {
 
         this.updateSmartOptions();
     }
+
+    onEditSave(config) {
+        console.log("MotionSensorUI.onEditSave()");
+        console.log(config);
+
+        var smart = $("#node-input-smart").prop('checked');
+        if (smart==true) {
+            config.inputs = 1;
+        } else {
+            config.inputs = 0;
+        }
+
+        super.onEditSave(config);
+     }
 }

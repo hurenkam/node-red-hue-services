@@ -67,7 +67,9 @@ module.exports = function(RED) {
                 if (this.state != "motindetected")
                 {
                     this.state = "motiondetected";
-                    this.send(JSON.parse(this.config.motion));
+                    if (this.config.motion) {
+                        this.send(JSON.parse(this.config.motion));
+                    }
                     this.updateStatus();
                 }
             }
@@ -77,15 +79,17 @@ module.exports = function(RED) {
             if (this.motionTimeout != null) {
                 clearTimeout(this.motionTimeout);
             }
-            var timeout = this.config.timeout * 1000;
+            var timeout = this.config.timeout;
             console.log("MotionBehaviorNode[" + this.config.name + "].updateMotionTimeout(): " + timeout);
             this.motionTimeout = setTimeout(() => this.onMotionTimeout(),timeout);
         }
 
         onMotionTimeout() {
             console.log("MotionBehaviorNode[" + this.config.name + "].onMotionTimeout()");
-            //console.log(this.config.nomotion);
-            this.send(JSON.parse(this.config.nomotion));
+            console.log(this.config.nomotion);
+            if (this.config.nomotion) {
+                this.send(JSON.parse(this.config.nomotion));
+            }
             this.state = "idle";
             this.updateStatus();
         }

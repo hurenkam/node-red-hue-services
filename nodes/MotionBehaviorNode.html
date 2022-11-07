@@ -1,54 +1,11 @@
-<script type="text/javascript">
-    RED.nodes.registerType('MotionBehaviorNode',{
-        category: 'hue behavior',
-        defaults: {
-            name: {value:""},
-            motion: {
-                value: "{ \"rtypes\":  [\"light\", \"grouped_light\" ], \"payload\": { \"on\": { \"on\": true } } }"
-            },
-            nomotion: {
-                value: "{ \"rtypes\":  [\"light\", \"grouped_light\" ], \"payload\": { \"on\": { \"on\": false } } }"
-            },
-            timeout: {value:300}
-        },
-        color: "#D8BFD8",
-        inputs:1,
-        outputs:1,
-        icon: "font-awesome/fa-circle-o",
-        label: function() {
-            return this.name||"Hue Motion Behavior";
-        },
-        paletteLabel: "Hue Motion Behavior",
-        oneditprepare: function() {
-            $("#node-input-motion").typedInput({
-                type:"json",
-                types:["json"]
-            })
-            $("#node-input-nomotion").typedInput({
-                type:"json",
-                types:["json"]
-            })
-        }
-    });
+<script type="text/html" data-template-name="MotionBehaviorNode">
+    <div id="template-root"></div>
 </script>
 
-<script type="text/html" data-template-name="MotionBehaviorNode">
-    <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-motion"><i class="fa fa-tag"></i> Behavior on Motion</label>
-        <input type="text" id="node-input-motion" placeholder="">
-    </div>
-    <div class="form-row">
-        <label for="node-input-nomotion"><i class="fa fa-tag"></i> Behavior on No Motion</label>
-        <input type="text" id="node-input-nomotion" placeholder="">
-    </div>
-    <div class="form-row">
-        <label for="node-input-timeout"><i class="fa fa-tag"></i> No Motion Timeout</label>
-        <input type="text" id="node-input-timeout" placeholder="">
-    </div>
+<script type="module">
+    import { MotionBehaviorUI } from "./resources/MotionBehaviorUI.js"
+
+    RED.nodes.registerType('MotionBehaviorNode', new MotionBehaviorUI().config);
 </script>
 
 <script type="text/html" data-help-name="MotionBehaviorNode">
