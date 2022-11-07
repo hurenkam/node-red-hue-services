@@ -1,4 +1,6 @@
-class ZoneUI extends DeviceUI {
+import { DeviceUI } from "./DeviceUI.js"
+
+export class ZoneUI extends DeviceUI {
     constructor() {
         super("Zone");
         console.log("ZoneUI.constructor()");

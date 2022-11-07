@@ -1,4 +1,6 @@
-class WallSwitchModuleUI extends DeviceUI {
+import { DeviceUI } from "./DeviceUI.js"
+
+export class WallSwitchModuleUI extends DeviceUI {
     constructor() {
         super("Hue Wall Switch Module");
         console.log("WallSwitchModuleUI.constructor()");

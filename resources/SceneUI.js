@@ -1,4 +1,6 @@
-class SceneUI extends DeviceUI {
+import { DeviceUI } from "./DeviceUI.js"
+
+export class SceneUI extends DeviceUI {
     constructor() {
         super("Scene");
         console.log("SceneUI.constructor()");

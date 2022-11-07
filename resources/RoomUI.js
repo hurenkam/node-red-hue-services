@@ -1,4 +1,6 @@
-class RoomUI extends DeviceUI {
+import { DeviceUI } from "./DeviceUI.js"
+
+export class RoomUI extends DeviceUI {
     constructor() {
         super("Room");
         console.log("RoomUI.constructor()");
