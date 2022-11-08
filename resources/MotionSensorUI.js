@@ -24,8 +24,8 @@ export class MotionSensorUI extends DeviceUI {
     build(config) {
         super.build(config);
         console.log("MotionSensorUI.build()");
-        console.log(config);
-        var template_root = document.getElementById("template-root");
+        
+        var template_root = this.getTemplateRoot();
         if (!template_root) {
             console.log("template-root not found.")
             return;
@@ -38,6 +38,7 @@ export class MotionSensorUI extends DeviceUI {
     }
 
     updateSmartOptions() {
+        console.log("MotionSensorUI.updateSmartOptions()");
         var smart = $("#node-input-smart").prop('checked');
 
         if (smart==true) {
@@ -52,6 +53,7 @@ export class MotionSensorUI extends DeviceUI {
     }
 
     onEditPrepare(config) {
+        console.log("MotionSensorUI.onEditPrepare()");
         super.onEditPrepare(config);
 
         var instance = this;
@@ -65,7 +67,7 @@ export class MotionSensorUI extends DeviceUI {
 
     onEditSave(config) {
         console.log("MotionSensorUI.onEditSave()");
-        console.log(config);
+        //console.log(config);
 
         var smart = $("#node-input-smart").prop('checked');
         if (smart==true) {

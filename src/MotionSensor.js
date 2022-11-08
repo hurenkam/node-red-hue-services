@@ -163,7 +163,7 @@ class MotionSensor extends Device {
     constructor(RED,clip,config) {
         super(RED,clip,config);
         console.log("MotionSensor[" + config.name + "].constructor()");
-        console.log(config);
+        //console.log(config);
         this.motion = null;
         this.temperature = null;
         this.light = null;

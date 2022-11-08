@@ -19,7 +19,7 @@ export class BaseUI {
             oneditcancel:  function() { instance.onEditCancel(this) },
         }
 
-        console.log(this.config)
+        //console.log(this.config)
     }
 
     textInput(parent,id,label,value) {
@@ -45,6 +45,7 @@ export class BaseUI {
     }
 
     jsonInput(parent,id,label,value) {
+        console.log("BaseUI.jsonInput("+id+")");
         var item = document.createElement("div");
         item.setAttribute("class","form-row");
         item.setAttribute("id","node-container-" + id);
@@ -100,9 +101,13 @@ export class BaseUI {
         parent.appendChild(item);
     }
 
+    getTemplateRoot() {
+        return document.getElementById(this.constructor.name);
+    }
+
     build(config) {
         console.log("BaseUI.build()");
-        var template_root = document.getElementById("template-root");
+        var template_root = this.getTemplateRoot();
         if (!template_root) {
             console.log("template-root not found.")
             return;

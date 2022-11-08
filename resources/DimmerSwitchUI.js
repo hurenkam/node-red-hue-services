@@ -31,7 +31,7 @@ export class DimmerSwitchUI extends DeviceUI {
         super.build(config)
         console.log("DimmerSwitchUI.build()");
 
-        var template_root = document.getElementById("template-root");
+        var template_root = this.getTemplateRoot();
         if (!template_root) {
             console.log("template-root not found.")
             return;

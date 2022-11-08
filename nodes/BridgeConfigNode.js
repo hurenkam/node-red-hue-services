@@ -10,7 +10,7 @@ module.exports = function (RED) {
             RED.nodes.createNode(this, config);
             this._config = config;
             console.log("BridgeConfigNode[" + config.name + "].constructor()")
-            console.log(config);
+            //console.log(config);
     
             this.clip = new ClipApi(config.name, config.ip, config.key);
             bridges[this.id] = { id: this.id, name: config.name, instance: this };

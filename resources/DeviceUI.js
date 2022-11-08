@@ -4,7 +4,6 @@ export class DeviceUI extends BaseUI {
     constructor(label="Generic Device",category="hue devices") {
         super(label,category);
         console.log("DeviceUI.constructor()");
-        var instance = this;
 
         this.config.defaults.name =     { value:"" };
         this.config.defaults.bridge =   { type: "BridgeConfigNode", required: true };
@@ -23,7 +22,7 @@ export class DeviceUI extends BaseUI {
         super.build(config);
         console.log("DeviceUI.build()");
 
-        var template_root = document.getElementById("template-root");
+        var template_root = this.getTemplateRoot();
         if (!template_root) {
             console.log("template-root not found.")
             return;
