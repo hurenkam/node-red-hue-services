@@ -1,6 +1,6 @@
-import { DeviceUI } from "./DeviceUI.js"
+import { ResourceUI } from "./ResourceUI.js"
 
-export class RoomUI extends DeviceUI {
+export class RoomUI extends ResourceUI {
     constructor() {
         super("Room");
         console.log("RoomUI.constructor()");
@@ -11,6 +11,5 @@ export class RoomUI extends DeviceUI {
         this.config.icon = "light.svg";
 
         this.rtype = "room";
-        this.models = null;
     }
 }
