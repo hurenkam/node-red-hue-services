@@ -15,19 +15,15 @@
   "node-red": {
     "nodes": {
       "BridgeConfigNode": "nodes/BridgeConfigNode.js",
-      "DeviceNode": "nodes/DeviceNode.js",
-      "LutronAuroraNode": "nodes/LutronAuroraNode.js",
-      "DimmerSwitchNode": "nodes/DimmerSwitchNode.js",
-      "WallSwitchModuleNode": "nodes/WallSwitchModuleNode.js",
-      "MotionSensorNode": "nodes/MotionSensorNode.js",
+      "Devices": "nodes/Devices.js",
       "MotionBehaviorNode": "nodes/MotionBehaviorNode.js",
       "SceneNode": "nodes/SceneNode.js",
-      "LightNode": "nodes/LightNode.js",
       "ZoneNode": "nodes/ZoneNode.js",
       "RoomNode": "nodes/RoomNode.js"
     }
   },
   "dependencies": {
+    "node-red": "^3.0.2",
     "axios": "^0.26.1",
     "eventsource": "^2.0.0",
     "limiter": "^1.0.0"

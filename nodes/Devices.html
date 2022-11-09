@@ -1,0 +1,37 @@
+<script type="module">
+
+    import { DeviceUI }           from "./resources/DeviceUI.js";
+    import { DimmerSwitchUI }     from "./resources/DimmerSwitchUI.js";
+    import { LightUI }            from "./resources/LightUI.js";
+    import { LutronAuroraUI }     from "./resources/LutronAuroraUI.js";
+    import { MotionSensorUI }     from "./resources/MotionSensorUI.js";
+    import { WallSwitchModuleUI } from "./resources/WallSwitchModuleUI.js";
+
+    var nodes = {
+        "DeviceNode": DeviceUI,
+        "DimmerSwitchNode": DimmerSwitchUI,
+        "LightNode": LightUI,
+        "LutronAuroraNode": LutronAuroraUI,
+        "MotionSensorNode": MotionSensorUI,
+        "WallSwitchModuleNode": WallSwitchModuleUI
+    }
+
+    Object.keys(nodes).forEach((id) => {
+        console.log(id,new nodes[id]().config);
+        var idUI = id.replace("Node","UI");
+
+        var template = document.createElement("script");
+        template.setAttribute("type","text/html");
+        template.setAttribute("data-template-name",id);
+        template.innerHTML='<div id="'+idUI+'"></div>';
+        document.documentElement.appendChild(template);
+
+        var help = document.createElement("script");
+        help.setAttribute("type","text/html");
+        help.setAttribute("data-help-name",id);
+        document.documentElement.appendChild(template);
+
+        RED.nodes.registerType(id, new nodes[id]().config);
+    });
+
+</script>
