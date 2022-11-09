@@ -36,10 +36,17 @@ class Resource {
     }
 
     updateStatus() {
+        var fill =  this.getStatusFill();
+        var shape = this.getStatusShape();
+        var text =  this.getStatusText();
+
+        if ((shape) && (!fill)) fill = "grey";
+        if ((fill) && (!shape)) shape = "dot";
+
         this.status({
-            fill:  this.getStatusFill(), 
-            shape: this.getStatusShape(), 
-            text:  this.getStatusText()
+            fill:  fill,
+            shape: shape,
+            text:  text
         });
     }
 
