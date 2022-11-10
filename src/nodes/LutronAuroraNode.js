@@ -1,8 +1,8 @@
-const Device = require('./Device');
+const DeviceNode = require('./DeviceNode');
 
-class LutronAurora extends Device {
-    constructor(RED,clip,config) {
-        super(RED,clip,config);
+class LutronAuroraNode extends DeviceNode {
+    constructor(config) {
+        super(config);
         console.log("DimmerSwitch[" + config.name + "].constructor()");
         this.button = null;
         this.relative_rotary = null;
@@ -10,7 +10,7 @@ class LutronAurora extends Device {
 
     onUpdate(resource) {
         super.onUpdate(resource);
-        //console.log("LutronAurora["+this.name+"].onUpdate()");
+        //console.log("LutronAuroraNode["+this.name+"].onUpdate()");
 
         if (resource.type === "button") {
             this.button = resource.button;
@@ -52,4 +52,4 @@ class LutronAurora extends Device {
     }
 }
 
-module.exports = LutronAurora;
+module.exports = LutronAuroraNode;

@@ -1,53 +1,18 @@
-class Resource {
-    constructor(RED,clip,config,rtype=null) {
-        console.log("Resource[" + config.name + "].constructor()");
+BaseNode = require("./BaseNode");
+
+class ResourceNode extends BaseNode {
+    constructor(config,rtype=null) {
+        super(config);
+        console.log("ResourceNode[" + config.name + "].constructor()");
         this.config = config;
-        this.clip = clip;
+        this.clip =  BaseNode.nodeAPI.nodes.getNode(config.bridge).clip;
         this.rtype = rtype;
-        RED.nodes.createNode(this,config);
 
         this.services = [];
 
         if (this.clip) {
             this.clip.once(this.config.uuid, (event) => this.onInitialUpdate(event) ); 
         }
-
-        this.on('input', function(msg) { 
-            console.log("Resource["+config.name+"].on('input')");
-            this.onInput(msg); 
-        });
-
-        this.on('close', function() { 
-            console.log("Resource["+config.name+"].on('close')");
-            this.onClose(); 
-        });
-    }
-
-    getStatusFill() {
-        return null;
-    }
-
-    getStatusText() {
-        return null;
-    }
-
-    getStatusShape() {
-        return null;
-    }
-
-    updateStatus() {
-        var fill =  this.getStatusFill();
-        var shape = this.getStatusShape();
-        var text =  this.getStatusText();
-
-        if ((shape) && (!fill)) fill = "grey";
-        if ((fill) && (!shape)) shape = "dot";
-
-        this.status({
-            fill:  fill,
-            shape: shape,
-            text:  text
-        });
     }
 
     onInitialUpdate(event) {
@@ -63,7 +28,6 @@ class Resource {
                     //console.log("Resource["+this.config.name+"].clip.on(" + service.rid + ")");
                     //console.log(event);
                     this.onUpdate(event.resource);
-                    this.updateStatus();
                 });
             });
         }
@@ -74,7 +38,6 @@ class Resource {
         //console.log(resource);
 
         this.onServicesUpdate(resource);
-
         this.updateStatus();
     }
 
@@ -127,13 +90,15 @@ class Resource {
                 }
             });
         }
+
+        super.onInput(msg);
     }
 
     onClose() {
         this.services = null;
-        this.config = null;
         this.clip = null;
+        super.onClose();
     }
 }
 
-module.exports = Resource;
+module.exports = ResourceNode;

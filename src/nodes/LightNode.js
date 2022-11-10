@@ -1,15 +1,15 @@
-const Device = require('./Device');
+const DeviceNode = require('./DeviceNode');
 
-class Light extends Device {
-    constructor(RED,clip,config) {
-        super(RED,clip,config);
-        console.log("Light[" + config.name + "].constructor()");
+class LightNode extends DeviceNode {
+    constructor(config) {
+        super(config);
+        console.log("LightNode[" + config.name + "].constructor()");
         this.button = null;
         this.state = { on: false, brightness: 0 };
     }
 
     onUpdate(resource) {
-        //console.log("Light["+this.name+"].onUpdate()");
+        //console.log("LightNode["+this.name+"].onUpdate()");
 
         if (resource.type === "light") {
             if (resource.on) {
@@ -51,4 +51,4 @@ class Light extends Device {
     }
 }
 
-module.exports = Light;
+module.exports = LightNode;

@@ -1,4 +1,4 @@
-const Device = require('./Device');
+const DeviceNode = require('./DeviceNode');
 
 // ===================================================================
 //
@@ -159,11 +159,10 @@ class LightsOnState extends MotionState {
 // ===================================================================
 
 
-class MotionSensor extends Device {
-    constructor(RED,clip,config) {
-        super(RED,clip,config);
-        console.log("MotionSensor[" + config.name + "].constructor()");
-        //console.log(config);
+class MotionSensorNode extends DeviceNode {
+    constructor(config) {
+        super(config);
+        console.log("MotionSensorNode[" + config.name + "].constructor()");
         this.motion = null;
         this.temperature = null;
         this.light = null;
@@ -189,7 +188,7 @@ class MotionSensor extends Device {
 
     onUpdate(resource) {
         super.onUpdate(resource);
-        //console.log("MotionSensor["+this.name+"].onUpdate()");
+        //console.log("MotionSensorNode["+this.name+"].onUpdate()");
 
         if (resource.type === "temperature") {
             this.temperature = resource.temperature;
@@ -266,4 +265,4 @@ class MotionSensor extends Device {
     }
 }
 
-module.exports = MotionSensor;
+module.exports = MotionSensorNode;

@@ -1,14 +1,15 @@
-module.exports = function (RED) {
-    var settings = RED.settings;
-    "use strict";
+//module.exports = function (RED) {
+//    var settings = RED.settings;
+//    "use strict";
     var bridges = {};
 
-    const ClipApi = require('../src/ClipApi');
+    const ClipApi = require('../ClipApi');
+    const BaseNode = require('./BaseNode');
 
-    class BridgeConfigNode {
+    class BridgeConfigNode extends BaseNode {
         constructor(config) {
-            RED.nodes.createNode(this, config);
-            this._config = config;
+            super(config);
+            BaseNode.nodeAPI.nodes.createNode(this, config);
             console.log("BridgeConfigNode[" + config.name + "].constructor()")
             //console.log(config);
     
@@ -16,16 +17,16 @@ module.exports = function (RED) {
             bridges[this.id] = { id: this.id, name: config.name, instance: this };
     
             this.on('close', function () {
-                console.log("BridgeConfigNode[" + this._config.name + "].on('close')");
+                console.log("BridgeConfigNode[" + this.config.name + "].on('close')");
                 this.clip.destructor();
                 this.clip = null;
             });
         }
     }
 
-    RED.nodes.registerType("BridgeConfigNode", BridgeConfigNode);
+    //BaseNode.nodeAPI.nodes.registerType("BridgeConfigNode", BridgeConfigNode);
 
-    RED.httpAdmin.get('/BridgeConfigNode/DiscoverBridges', async function (req, res, next) {
+    BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/DiscoverBridges', async function (req, res, next) {
         console.log("BridgeConfigNode.get(\"/BridgeConfigNode/DiscoverBridges()\")");
 
         var request = {
@@ -54,7 +55,7 @@ module.exports = function (RED) {
         });
     });
 
-    RED.httpAdmin.get('/BridgeConfigNode/GetBridgeName', async function (req, res, next) {
+    BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetBridgeName', async function (req, res, next) {
         console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetBridgeName()\")");
 
         if (!req.query.ip) {
@@ -80,7 +81,7 @@ module.exports = function (RED) {
         }
     });
 
-    RED.httpAdmin.get('/BridgeConfigNode/GetHueApplicationKey', async function (req, res, next) {
+    BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetHueApplicationKey', async function (req, res, next) {
         console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetHueApplicationKey()\")");
 
         if (!req.query.ip) {
@@ -115,7 +116,7 @@ module.exports = function (RED) {
         }
     });
 
-    RED.httpAdmin.get('/BridgeConfigNode/GetBridgeOptions', async function (req, res, next) {
+    BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetBridgeOptions', async function (req, res, next) {
         console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetBridgeOptions()\")");
         console.log(bridges);
         var options = [];
@@ -128,17 +129,20 @@ module.exports = function (RED) {
         res.end(JSON.stringify(Object(options)));
     });
 
-    RED.httpAdmin.get('/BridgeConfigNode/GetSortedDeviceServices', async function (req, res, next) {
+    BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedDeviceServices', async function (req, res, next) {
         console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetSortedDeviceServices()\")");
         var clip = bridges[req.query.bridge_id].instance.clip;
         var services = clip.getSortedDeviceServices(req.query.uuid);
         res.end(JSON.stringify(Object(services)));
     });
 
-    RED.httpAdmin.get('/BridgeConfigNode/GetSortedResourceOptions', async function (req, res, next) {
+    BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedResourceOptions', async function (req, res, next) {
         console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetSortedResourceOptions()\")");
         var clip = bridges[req.query.bridge_id].instance.clip;
         var options = clip.getSortedResourceOptions(req.query.type, req.query.models);
         res.end(JSON.stringify(Object(options)));
     });
-}
+
+    module.exports = BridgeConfigNode;
+
+//}

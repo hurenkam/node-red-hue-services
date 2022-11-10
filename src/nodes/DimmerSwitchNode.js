@@ -1,15 +1,15 @@
-const Device = require('./Device');
+const DeviceNode = require('./DeviceNode');
 
-class DimmerSwitch extends Device {
-    constructor(RED,clip,config) {
-        super(RED,clip,config);
-        console.log("DimmerSwitch[" + config.name + "].constructor()");
+class DimmerSwitchNode extends DeviceNode {
+    constructor(config) {
+        super(config);
+        console.log("DimmerSwitchNode[" + config.name + "].constructor()");
         this.button = null;
     }
 
     onUpdate(resource) {
         super.onUpdate(resource);
-        //console.log("DimmerSwitch["+this.name+"].onUpdate()");
+        //console.log("DimmerSwitchNode["+this.name+"].onUpdate()");
 
         if (resource.type === "button") {
             this.button = resource.button;
@@ -35,7 +35,7 @@ class DimmerSwitch extends Device {
 
                 var item = this.config.buttons[index][resource.button.last_event];
                 if (Object.keys(this.config.buttons[index]).includes(resource.button.last_event)) {
-                    console.log("DimmerSwitch["+this.config.name+"].onServiceUpdate() translate buttons["+index+"][\""+resource.button.last_event+"\"]");
+                    console.log("DimmerSwitchNode["+this.config.name+"].onServiceUpdate() translate buttons["+index+"][\""+resource.button.last_event+"\"]");
                     console.log(this.config.buttons[index][resource.button.last_event]);
 
                     if ((item != null) && (item != "")) {
@@ -61,4 +61,4 @@ class DimmerSwitch extends Device {
     }
 }
 
-module.exports = DimmerSwitch;
+module.exports = DimmerSwitchNode;

@@ -1,15 +1,15 @@
-const Device = require('./Device');
+const DeviceNode = require('./DeviceNode');
 
-class WallSwitchModule extends Device {
-    constructor(RED,clip,config) {
-        super(RED,clip,config);
-        console.log("WallSwitchModule[" + config.name + "].constructor()");
+class WallSwitchModuleNode extends DeviceNode {
+    constructor(config) {
+        super(config);
+        console.log("WallSwitchModuleNode[" + config.name + "].constructor()");
         this.button = null;
     }
 
     onUpdate(resource) {
         super.onUpdate(resource);
-        //console.log("WallSwitchModule["+this.name+"].onUpdate()");
+        //console.log("WallSwitchModuleNode["+this.name+"].onUpdate()");
 
         if (resource.type === "button") {
             this.button = resource.button;
@@ -33,4 +33,4 @@ class WallSwitchModule extends Device {
     }
 }
 
-module.exports = WallSwitchModule;
+module.exports = WallSwitchModuleNode;

@@ -1,9 +1,9 @@
-Resource = require("./Resource");
+ResourceNode = require("./ResourceNode");
 
-class Device extends Resource {
-    constructor(RED,clip,config) {
-        super(RED,clip,config,"device");
-        console.log("Device[" + config.name + "].constructor()");
+class DeviceNode extends ResourceNode {
+    constructor(config) {
+        super(config,"device");
+        console.log("DeviceNode[" + config.name + "].constructor()");
 
         this.power_state = null;
         this.zigbee_connectivity = null;
@@ -35,7 +35,7 @@ class Device extends Resource {
     }
 
     onUpdate(resource) {
-        //console.log("Device[" + this.config.name + "].onUpdate()");
+        //console.log("DeviceNode[" + this.config.name + "].onUpdate()");
         //console.log(resource);
 
         if (resource.type === "zigbee_connectivity") {
@@ -50,4 +50,4 @@ class Device extends Resource {
     }
 }
 
-module.exports = Device;
+module.exports = DeviceNode;

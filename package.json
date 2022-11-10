@@ -14,18 +14,13 @@
   "license": "GPL-2.0-only",
   "node-red": {
     "nodes": {
-      "BridgeConfigNode": "nodes/BridgeConfigNode.js",
-      "Devices": "nodes/Devices.js",
-      "MotionBehaviorNode": "nodes/MotionBehaviorNode.js",
-      "SceneNode": "nodes/SceneNode.js",
-      "ZoneNode": "nodes/ZoneNode.js",
-      "RoomNode": "nodes/RoomNode.js"
+      "all": "src/all.js"
     }
   },
   "dependencies": {
-    "node-red": "^3.0.2",
     "axios": "^0.26.1",
     "eventsource": "^2.0.0",
+    "http": "",
     "limiter": "^1.0.0"
   }
 }
