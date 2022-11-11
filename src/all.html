@@ -13,7 +13,8 @@
     import { RoomUI }             from "./src/ui/RoomUI.js";
     import { ZoneUI }             from "./src/ui/ZoneUI.js";
 
-    import { MotionBehaviorUI }     from "./src/ui/MotionBehaviorUI.js";
+    import { MotionBehaviorUI }   from "./src/ui/MotionBehaviorUI.js";
+    import { SceneCyclerUI }      from "./src/ui/SceneCyclerUI.js";
 
     var nodes = {
         "BridgeConfigNode": BridgeConfigUI,
@@ -30,6 +31,7 @@
         "ZoneNode": ZoneUI,
 
         "MotionBehaviorNode": MotionBehaviorUI,
+        "SceneCyclerNode": SceneCyclerUI,
     }
 
     Object.keys(nodes).forEach((id) => {

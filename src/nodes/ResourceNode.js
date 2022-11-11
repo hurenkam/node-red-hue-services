@@ -3,8 +3,9 @@ BaseNode = require("./BaseNode");
 class ResourceNode extends BaseNode {
     constructor(config,rtype=null) {
         super(config);
-        console.log("ResourceNode[" + config.name + "].constructor()");
         this.config = config;
+
+        console.log("ResourceNode[" + config.name + "].constructor()");
         this.clip =  BaseNode.nodeAPI.nodes.getNode(config.bridge).clip;
         this.rtype = rtype;
 
@@ -16,16 +17,16 @@ class ResourceNode extends BaseNode {
     }
 
     onInitialUpdate(event) {
-        console.log("Resource["+this.config.name+"].onInitialUpdate(" + this.config.uuid + ")");
-        console.log(event);
+        console.log("ResourceNode["+this.config.name+"].onInitialUpdate(" + this.config.uuid + ")");
+        //console.log(event);
 
         this.services = this.clip.getSortedDeviceServices(this.config.uuid,this.rtype);
-        console.log(this.services)
+        //console.log(this.services)
 
         if (this.services) {
             this.services.forEach((service) => {
                 this.clip.on(service.rid, (event) => {
-                    //console.log("Resource["+this.config.name+"].clip.on(" + service.rid + ")");
+                    //console.log("ResourceNode["+this.config.name+"].clip.on(" + service.rid + ")");
                     //console.log(event);
                     this.onUpdate(event.resource);
                 });
@@ -34,7 +35,7 @@ class ResourceNode extends BaseNode {
     }
 
     onUpdate(resource) {
-        //console.log("Resource["+this.config.name+"].onUpdate()");
+        //console.log("ResourceNode["+this.config.name+"].onUpdate()");
         //console.log(resource);
 
         this.onServicesUpdate(resource);
@@ -64,17 +65,19 @@ class ResourceNode extends BaseNode {
 
     onInput(msg) {
         if (msg.rids) {
-            if (msg.rids.includes(this.uuid) && (this.config.rtype)) {
+            if (msg.rids.includes(this.config.uuid) && (this.rtype)) {
                 const url = "/clip/v2/resource/" + this.rtype + "/" + this.config.uuid;
                 this.clip.put(url,msg.payload);
             }
 
-            this.services.forEach(service => {
-                if (msg.rids.includes(service.rid)) {
-                    const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
-                    this.clip.put(url,msg.payload);
-                }
-            });
+            if ((this.services) && (this.services.length > 0)) {
+                this.services.forEach(service => {
+                    if (msg.rids.includes(service.rid)) {
+                        const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
+                        this.clip.put(url,msg.payload);
+                    }
+                });
+            }
         }
 
         if (msg.rtypes) {
@@ -83,12 +86,14 @@ class ResourceNode extends BaseNode {
                 this.clip.put(url,msg.payload);
             }
 
-            this.services.forEach(service => {
-                if (msg.rtypes.includes(service.rtype)) {
-                    const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
-                    this.clip.put(url,msg.payload);
-                }
-            });
+            if ((this.services) && (this.services.length > 0)) {
+                this.services.forEach(service => {
+                    if (msg.rtypes.includes(service.rtype)) {
+                        const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
+                        this.clip.put(url,msg.payload);
+                    }
+                });
+            }
         }
 
         super.onInput(msg);

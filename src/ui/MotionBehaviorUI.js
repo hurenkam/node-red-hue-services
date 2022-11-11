@@ -17,6 +17,7 @@ export class MotionBehaviorUI extends BaseUI {
         };
         this.config.defaults.timeout = { value: five_minutes };
         this.config.color = "#D8BFD8";
+        this.config.icon = "font-awesome/fa-industry";
     }
 
     build(config) {

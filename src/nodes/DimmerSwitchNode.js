@@ -36,7 +36,7 @@ class DimmerSwitchNode extends DeviceNode {
                 var item = this.config.buttons[index][resource.button.last_event];
                 if (Object.keys(this.config.buttons[index]).includes(resource.button.last_event)) {
                     console.log("DimmerSwitchNode["+this.config.name+"].onServiceUpdate() translate buttons["+index+"][\""+resource.button.last_event+"\"]");
-                    console.log(this.config.buttons[index][resource.button.last_event]);
+                    //console.log(this.config.buttons[index][resource.button.last_event]);
 
                     if ((item != null) && (item != "")) {
                         msg.push(JSON.parse(item))

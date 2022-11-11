@@ -18,6 +18,7 @@ module.exports = function(RED) {
     const ZoneNode = require('./nodes/ZoneNode');
 
     const MotionBehaviorNode = require('./nodes/MotionBehaviorNode');
+    const SceneCyclerNode = require('./nodes/SceneCyclerNode');
 
     var nodes = {
         "BridgeConfigNode": BridgeConfigNode,
@@ -33,7 +34,8 @@ module.exports = function(RED) {
         "SceneNode": SceneNode,
         "ZoneNode": ZoneNode,
 
-        "MotionBehaviorNode": MotionBehaviorNode
+        "MotionBehaviorNode": MotionBehaviorNode,
+        "SceneCyclerNode": SceneCyclerNode
     }
 
     Object.keys(nodes).forEach((id) => {

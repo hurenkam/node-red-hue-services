@@ -11,8 +11,7 @@ class MotionBehaviorNode extends BaseNode {
     }
 
     onInput(msg) {
-        //console.log("MotionBehaviorNode[" + config.name + "].on('input')");
-        //console.log(msg);
+        //console.log("MotionBehaviorNode[" + this.config.name + "].onInput())");
 
         if (this.state != "lightson") {
             if (msg.payload.type === "motion")
@@ -43,7 +42,7 @@ class MotionBehaviorNode extends BaseNode {
 
     updateStatus() {
         super.updateStatus();
-        console.log("MotionBehaviorNode[" + this.config.name + "].updateStatus()");
+        //console.log("MotionBehaviorNode[" + this.config.name + "].updateStatus()");
         var fill = "grey";
         var shape = "ring";
         var text = "";
@@ -57,7 +56,6 @@ class MotionBehaviorNode extends BaseNode {
 
     onMotionDetected() {
         console.log("MotionBehaviorNode[" + this.config.name + "].onMotionDetected()");
-        //console.log(this.config.motion);
 
         if (this.state != "lightson")
         {
@@ -85,7 +83,6 @@ class MotionBehaviorNode extends BaseNode {
 
     onMotionTimeout() {
         console.log("MotionBehaviorNode[" + this.config.name + "].onMotionTimeout()");
-        console.log(this.config.nomotion);
         if (this.config.nomotion) {
             this.send(JSON.parse(this.config.nomotion));
         }

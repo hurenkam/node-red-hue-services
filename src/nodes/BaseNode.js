@@ -7,12 +7,12 @@ class BaseNode {
         BaseNode.nodeAPI.nodes.createNode(this,config);
 
         this.on('input', function(msg) { 
-            console.log("BaseNode["+config.name+"].on('input')");
+            //console.log("BaseNode["+config.name+"].on('input')");
             this.onInput(msg); 
         });
 
         this.on('close', function() { 
-            console.log("BaseNode["+config.name+"].on('close')");
+            //console.log("BaseNode["+config.name+"].on('close')");
             this.onClose(); 
         });
     }
@@ -49,7 +49,7 @@ class BaseNode {
     }
 
     onClose() {
-        //console.log("BaseNode[" + config.name + "].onClose()");
+        console.log("BaseNode[" + config.name + "].onClose()");
         this.config = null;
     }
 }

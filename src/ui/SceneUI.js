@@ -5,10 +5,10 @@ export class SceneUI extends ResourceUI {
         super("Scene");
         console.log("SceneUI.constructor()");
 
-        this.config.color = "#FFAAAA";
+        this.config.color = "#FFCCCC";
         this.config.inputs = 1;
         this.config.outputs = 1;
-        this.config.icon = "light.svg";
+        this.config.icon = "font-awesome/fa-tachometer";
 
         this.rtype = "scene";
     }
