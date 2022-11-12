@@ -28,7 +28,8 @@ class DimmerSwitchNode extends DeviceNode {
                 var msg = [];
                 var index = 0;
 
-                while ((index < this.services.length) && (this.services[index].rid != resource.id)) {
+                var rids = this.resource.rids;
+                while ((index < rids.length) && (rids[index] != resource.id)) {
                     if (this.config.multi) msg.push(null);
                     index += 1;
                 }
