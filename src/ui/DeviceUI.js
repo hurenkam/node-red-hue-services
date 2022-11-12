@@ -34,7 +34,7 @@ export class DeviceUI extends ResourceUI {
         if ((uuid) && (bridge))
         { 
             //console.log("DeviceUI.onEditSave() uuid:",uuid," bridge:",bridge);
-            $.get("BridgeConfigNode/GetSortedDeviceServices", { 
+            $.get("BridgeConfigNode/GetSortedServicesById", { 
                 bridge_id: bridge, 
                 uuid: uuid,
             })

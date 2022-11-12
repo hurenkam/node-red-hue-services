@@ -1,6 +1,6 @@
 var bridges = {};
 
-const ClipApi = require('../ClipApi');
+const ClipApi = require('../clip/ClipApi');
 const BaseNode = require('./BaseNode');
 
 class BridgeConfigNode extends BaseNode {
@@ -10,17 +10,18 @@ class BridgeConfigNode extends BaseNode {
         console.log("BridgeConfigNode[" + config.name + "].constructor()")
         //console.log(config);
 
-        this.clip = new ClipApi(config.name, config.ip, config.key);
+        this.clip = new ClipApi(config.ip,config.key,config.name);
         bridges[this.id] = { id: this.id, name: config.name, instance: this };
 
         this.on('close', function () {
             console.log("BridgeConfigNode[" + this.config.name + "].on('close')");
+
             this.clip.destructor();
             this.clip = null;
         });
     }
 }
-
+/*
 BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/DiscoverBridges', async function (req, res, next) {
     console.log("BridgeConfigNode.get(\"/BridgeConfigNode/DiscoverBridges()\")");
 
@@ -110,10 +111,10 @@ BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetHueApplicationKey', async f
         });
     }
 });
-
+*/
 BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetBridgeOptions', async function (req, res, next) {
     console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetBridgeOptions()\")");
-    console.log(bridges);
+    //console.log(bridges);
     var options = [];
 
     Object.keys(bridges).forEach((key) => {
@@ -124,10 +125,10 @@ BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetBridgeOptions', async funct
     res.end(JSON.stringify(Object(options)));
 });
 
-BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedDeviceServices', async function (req, res, next) {
-    console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetSortedDeviceServices()\")");
+BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedServicesById', async function (req, res, next) {
+    console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetSortedServicesById()\")");
     var clip = bridges[req.query.bridge_id].instance.clip;
-    var services = clip.getSortedDeviceServices(req.query.uuid);
+    var services = clip.getSortedServicesById(req.query.uuid);
     res.end(JSON.stringify(Object(services)));
 });
 

@@ -1,107 +1,103 @@
+Resource = require("../clip/Resource");
+ServiceListResource = require("../clip/ServiceListResource");
 BaseNode = require("./BaseNode");
 
 class ResourceNode extends BaseNode {
     constructor(config,rtype=null) {
         super(config);
         this.config = config;
-
-        console.log("ResourceNode[" + config.name + "].constructor()");
-        this.clip =  BaseNode.nodeAPI.nodes.getNode(config.bridge).clip;
         this.rtype = rtype;
 
-        this.services = [];
+        console.log("ResourceNode[" + config.name + "].constructor()");
 
-        if (this.clip) {
-            this.clip.once(this.config.uuid, (event) => this.onInitialUpdate(event) ); 
-        }
+        this.clip = BaseNode.nodeAPI.nodes.getNode(config.bridge).clip;
+
+        var instance = this;
+        setTimeout(function() {
+            instance.resource = instance.clip.resources[config.uuid];
+
+            instance.resource.on('update',function (event) {
+                instance.onUpdate(event);
+            });
+
+            if ((instance.resource.rids) && (instance.resource.services)) {
+                instance.resource.rids.forEach(rid => {
+                    instance.resource.services[rid].on('update',function (event) {
+                        instance.onUpdate(event);
+                    });
+                });
+            }
+        },2000);
     }
 
-    onInitialUpdate(event) {
-        console.log("ResourceNode["+this.config.name+"].onInitialUpdate(" + this.config.uuid + ")");
+    onUpdate(event) {
+        console.log("ResourceNode["+this.config.name+"].onUpdate()");
         //console.log(event);
 
-        this.services = this.clip.getSortedDeviceServices(this.config.uuid,this.rtype);
-        //console.log(this.services)
-
-        if (this.services) {
-            this.services.forEach((service) => {
-                this.clip.on(service.rid, (event) => {
-                    //console.log("ResourceNode["+this.config.name+"].clip.on(" + service.rid + ")");
-                    //console.log(event);
-                    this.onUpdate(event.resource);
-                });
-            });
-        }
-    }
-
-    onUpdate(resource) {
-        //console.log("ResourceNode["+this.config.name+"].onUpdate()");
-        //console.log(resource);
-
-        this.onServicesUpdate(resource);
+        this.onServicesUpdate(event);
         this.updateStatus();
     }
 
-    onServicesUpdate(resource) {
+    onServicesUpdate(event) {
         var msg = [];
         var index = 0;
 
         // Find the service that matches the resource id,
         // and update index and msg accordingly
-        if (this.services) {
-            while ((index < this.services.length) && (this.services[index].rid != resource.id)) {
+        if ((this.resource.rids) && (this.resource.services)) {
+            while ((index < this.resource.rids.length) && (this.resource.rids[index] != event.id)) {
                 if (this.config.multi) msg.push(null);
                 index += 1;
             }
 
             // if resource id was found then send the message
-            if (index < this.services.length) {
-                msg.push({ index: index, payload: resource });
+            if (index < this.resource.rids.length) {
+                msg.push({ index: index, payload: event });
                 this.send(msg);
             }
         }
-
     }
 
     onInput(msg) {
-        if (msg.rids) {
-            if (msg.rids.includes(this.config.uuid) && (this.rtype)) {
-                const url = "/clip/v2/resource/" + this.rtype + "/" + this.config.uuid;
-                this.clip.put(url,msg.payload);
-            }
-
-            if ((this.services) && (this.services.length > 0)) {
-                this.services.forEach(service => {
-                    if (msg.rids.includes(service.rid)) {
-                        const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
-                        this.clip.put(url,msg.payload);
-                    }
-                });
-            }
-        }
+        console.log("ResourceNode[" + this.config.name + "].onInput()");
+        console.log(msg);
 
         if (msg.rtypes) {
-            if (msg.rtypes.includes(this.rtype) && (this.config.uuid)) {
-                const url = "/clip/v2/resource/" + this.rtype + "/" + this.config.uuid;
-                this.clip.put(url,msg.payload);
+            if ((this.resource) && (msg.rtypes.includes(this.resource.rtype()))) {
+                this.resource.put(msg.payload);
             }
 
-            if ((this.services) && (this.services.length > 0)) {
-                this.services.forEach(service => {
-                    if (msg.rtypes.includes(service.rtype)) {
-                        const url = "/clip/v2/resource/" + service.rtype + "/" + service.rid;
-                        this.clip.put(url,msg.payload);
+            if ((this.resource) && (this.resource.rids) && (this.resource.rids.length > 0)) {
+                this.resource.rids.forEach((rid) => {
+                    if (this.resource.services[rid]) {
+                        this.resource.services[rid].put(msg.payload);
+                    } else {
+                        console.log("ResourceNode[" + this.config.name + "].onInput(): Unable to forward message to services.");
                     }
                 });
             }
         }
 
+        if (msg.rids) {
+            if ((this.resource) && (msg.rids.includes(this.resource.rid()))) {
+                this.resource.put(msg.payload);
+            }
+
+            if ((this.resource) && (this.resource.rids) && (this.resource.services)) {
+                this.resource.rids.forEach((rid) => {
+                    if (msg.rids.includes(rid)) {
+                        this.resource.services[rid].put(msg.payload);
+                    }
+                });
+            }
+        }
         super.onInput(msg);
     }
 
     onClose() {
-        this.services = null;
         this.clip = null;
+        this.config = null;
+        this.rtype = null;
         super.onClose();
     }
 }
