@@ -1,64 +1,37 @@
 Resource = require("../clip/Resource");
 ServiceListResource = require("../clip/ServiceListResource");
-BaseNode = require("./BaseNode");
+ResourceNode = require("./ResourceNode");
 
-class ServiceListNode extends BaseNode {
+class ServiceListNode extends ResourceNode {
     constructor(config,rtype=null) {
+        super(config,rtype);
         console.log("ServiceListNode[" + config.name + "].constructor()");
-        super(config);
-        this.config = config;
-        this.rtype = rtype;
-
-        var instance = this;
-        this.clip = BaseNode.nodeAPI.nodes.getNode(config.bridge).clip;
-        //this.clip.on('started',() => {
-        //    instance.onClipStarted();
-        //});
-        setTimeout(()=> {
-            instance.onClipStarted();
-        },5000);
-    }
-
-    onClipStarted() {
-        console.log("ServiceListNode[" + this.config.name + "].onStartup()");
-        this.resource = this.clip.resources[this.config.uuid];
-        this.onStartup();
     }
 
     onStartup() {
         console.log("ServiceListNode[" + this.config.name + "].onStartup()");
-
         var instance = this;
-        this.resource.on('update',function (event) {
-            instance.onUpdate(event);
-        });
 
+        // subscribe to events originating from services in the list
         if ((this.resource.rids) && (this.resource.services)) {
             this.resource.rids.forEach((rid) => {
                 instance.resource.services[rid].on('update',function (event) {
-                    instance.onUpdate(event);
+                    instance.onServicesUpdate(event);
                 });
             });
         }
 
-        this.updateStatus();
-    }
-
-    onUpdate(event) {
-        console.log("ServiceListNode["+this.config.name+"].onUpdate()");
-        //console.log(event);
-
-        this.onServicesUpdate(event);
-        this.updateStatus();
+        super.onStartup();
     }
 
     onServicesUpdate(event) {
         var msg = [];
         var index = 0;
 
-        // Find the service that matches the resource id,
-        // and update index and msg accordingly
         if ((this.resource.rids) && (this.resource.services)) {
+
+            // Find the service that matches the resource id,
+            // and update index and msg accordingly
             while ((index < this.resource.rids.length) && (this.resource.rids[index] != event.id)) {
                 if (this.config.multi) msg.push(null);
                 index += 1;
@@ -74,45 +47,30 @@ class ServiceListNode extends BaseNode {
 
     onInput(msg) {
         console.log("ServiceListNode[" + this.config.name + "].onInput()");
-        //console.log(msg);
 
-        if (msg.rtypes) {
-            if ((this.resource) && (msg.rtypes.includes(this.resource.rtype()))) {
-                this.resource.put(msg.payload);
-            }
+        if ((this.resource) && (this.resource.rids) && (this.resource.services)) {
 
-            if ((this.resource) && (this.resource.rids) && (this.resource.rids.length > 0)) {
+            if (msg.rtypes) {
                 this.resource.rids.forEach((rid) => {
-                    if (this.resource.services[rid]) {
+                    if (msg.rtypes.includes(this.resource.services[rid].rtype())) {
                         this.resource.services[rid].put(msg.payload);
-                    } else {
-                        console.log("ServiceListNode[" + this.config.name + "].onInput(): Unable to forward message to services.");
                     }
                 });
             }
-        }
 
-        if (msg.rids) {
-            if ((this.resource) && (msg.rids.includes(this.resource.rid()))) {
-                this.resource.put(msg.payload);
-            }
-
-            if ((this.resource) && (this.resource.rids) && (this.resource.services)) {
+            if (msg.rids) {
                 this.resource.rids.forEach((rid) => {
                     if (msg.rids.includes(rid)) {
                         this.resource.services[rid].put(msg.payload);
                     }
                 });
             }
-        }
-        super.onInput(msg);
-    }
 
-    onClose() {
-        this.clip = null;
-        this.config = null;
-        this.rtype = null;
-        super.onClose();
+        } else {
+            console.log("ServiceListNode[" + this.config.name + "].onInput(): Unable to forward message to services.");
+        }
+
+        super.onInput(msg);
     }
 }
 
