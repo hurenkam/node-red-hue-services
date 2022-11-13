@@ -42,18 +42,18 @@ class ResourceNode extends BaseNode {
     }
 
     onInput(msg) {
-        console.log("ResourceNode[" + this.config.name + "].onInput(",msg,")");
-        console.log("this.resource.rtype():",this.resource.rtype());
-        console.log("this.resource.rid():",this.resource.rid());
+        //console.log("ResourceNode[" + this.config.name + "].onInput(",msg,")");
 
         if (msg.rtypes) {
             if ((this.resource) && (msg.rtypes.includes(this.resource.rtype()))) {
+                console.log("ResourceNode[" + this.config.name + "].onInput(",msg.payload,")");
                 this.resource.put(msg.payload);
             }
         }
 
         if (msg.rids) {
             if ((this.resource) && (msg.rids.includes(this.resource.rid()))) {
+                console.log("ResourceNode[" + this.config.name + "].onInput(",msg.payload,")");
                 this.resource.put(msg.payload);
             }
         }
