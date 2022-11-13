@@ -9,21 +9,32 @@ class RoomNode extends ServiceListNode {
         this.state = { on: false, brightness: 0 };
     }
 
-    onUpdate(resource) {
-        //console.log("RoomNode[" + this.config.name + "].onUpdate()");
-        //console.log(resource);
+    onStartup() {
+        console.log("RoomNode[" + this.config.name + "].onStarted()");
 
-        if (resource.type === "grouped_light") {
-            if (resource.on) {
-                this.state.on = resource.on.on;
-            }
+        var instance = this;
+        var light = this.resource.getServicesByType("grouped_light")[0];
 
-            if (resource.dimming) {
-                this.state.brightness = resource.dimming.brightness;
-            }
+        this.onLightUpdate(light.item);
+        light.on('update',function(event) {
+            instance.onLightUpdate(event);
+        });
+
+        super.onStartup();
+    }
+
+    onLightUpdate(event) {
+        console.log("RoomNode[" + this.config.name + "].onLightUpdate()");
+
+        if (event.on) {
+            this.state.on = event.on.on;
         }
 
-        super.onUpdate(resource);
+        if (event.dimming) {
+            this.state.brightness = event.dimming.brightness;
+        }
+
+        this.updateStatus();
     }
 
     getStatusFill() {
