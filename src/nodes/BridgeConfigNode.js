@@ -8,7 +8,6 @@ class BridgeConfigNode extends BaseNode {
         super(config);
         BaseNode.nodeAPI.nodes.createNode(this, config);
         console.log("BridgeConfigNode[" + config.name + "].constructor()")
-        //console.log(config);
 
         this.clip = new ClipApi(config.ip,config.key,config.name);
         bridges[this.id] = { id: this.id, name: config.name, instance: this };
@@ -114,13 +113,11 @@ BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetHueApplicationKey', async f
 */
 BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetBridgeOptions', async function (req, res, next) {
     console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetBridgeOptions()\")");
-    //console.log(bridges);
     var options = [];
 
     Object.keys(bridges).forEach((key) => {
         options.push({ label: bridges[key].name, value: bridges[key].id });
     });
-    //options.push({ label: "Add Bridge", value: "_ADD_" });
 
     res.end(JSON.stringify(Object(options)));
 });

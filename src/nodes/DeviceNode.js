@@ -1,6 +1,6 @@
-ResourceNode = require("./ResourceNode");
+ServiceListNode = require("./ServiceListNode");
 
-class DeviceNode extends ResourceNode {
+class DeviceNode extends ServiceListNode {
     constructor(config) {
         console.log("DeviceNode[" + config.name + "].constructor()");
         super(config,"device");

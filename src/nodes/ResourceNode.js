@@ -1,5 +1,4 @@
 Resource = require("../clip/Resource");
-ServiceListResource = require("../clip/ServiceListResource");
 BaseNode = require("./BaseNode");
 
 class ResourceNode extends BaseNode {
@@ -33,62 +32,23 @@ class ResourceNode extends BaseNode {
             instance.onUpdate(event);
         });
 
-        if ((this.resource.rids) && (this.resource.services)) {
-            this.resource.rids.forEach((rid) => {
-                instance.resource.services[rid].on('update',function (event) {
-                    instance.onUpdate(event);
-                });
-            });
-        }
-
         this.updateStatus();
     }
 
     onUpdate(event) {
         console.log("ResourceNode["+this.config.name+"].onUpdate()");
-        //console.log(event);
-
-        this.onServicesUpdate(event);
+        this.send({ payload: event });
         this.updateStatus();
     }
 
-    onServicesUpdate(event) {
-        var msg = [];
-        var index = 0;
-
-        // Find the service that matches the resource id,
-        // and update index and msg accordingly
-        if ((this.resource.rids) && (this.resource.services)) {
-            while ((index < this.resource.rids.length) && (this.resource.rids[index] != event.id)) {
-                if (this.config.multi) msg.push(null);
-                index += 1;
-            }
-
-            // if resource id was found then send the message
-            if (index < this.resource.rids.length) {
-                msg.push({ index: index, payload: event });
-                this.send(msg);
-            }
-        }
-    }
-
     onInput(msg) {
-        console.log("ResourceNode[" + this.config.name + "].onInput()");
-        //console.log(msg);
+        console.log("ResourceNode[" + this.config.name + "].onInput(",msg,")");
+        console.log("this.resource.rtype():",this.resource.rtype());
+        console.log("this.resource.rid():",this.resource.rid());
 
         if (msg.rtypes) {
             if ((this.resource) && (msg.rtypes.includes(this.resource.rtype()))) {
                 this.resource.put(msg.payload);
-            }
-
-            if ((this.resource) && (this.resource.rids) && (this.resource.rids.length > 0)) {
-                this.resource.rids.forEach((rid) => {
-                    if (this.resource.services[rid]) {
-                        this.resource.services[rid].put(msg.payload);
-                    } else {
-                        console.log("ResourceNode[" + this.config.name + "].onInput(): Unable to forward message to services.");
-                    }
-                });
             }
         }
 
@@ -96,19 +56,13 @@ class ResourceNode extends BaseNode {
             if ((this.resource) && (msg.rids.includes(this.resource.rid()))) {
                 this.resource.put(msg.payload);
             }
-
-            if ((this.resource) && (this.resource.rids) && (this.resource.services)) {
-                this.resource.rids.forEach((rid) => {
-                    if (msg.rids.includes(rid)) {
-                        this.resource.services[rid].put(msg.payload);
-                    }
-                });
-            }
         }
+
         super.onInput(msg);
     }
 
     onClose() {
+        console.log("ResourceNode[" + this.config.name + "].onClose()");
         this.clip = null;
         this.config = null;
         this.rtype = null;

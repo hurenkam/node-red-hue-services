@@ -7,17 +7,29 @@ class WallSwitchModuleNode extends DeviceNode {
         this.button = null;
     }
 
-    onUpdate(resource) {
-        super.onUpdate(resource);
-        //console.log("WallSwitchModuleNode["+this.name+"].onUpdate()");
+    onStartup() {
+        console.log("WallSwitchModuleNode[" + this.config.name + "].onStarted()");
 
-        if (resource.type === "button") {
-            this.button = resource.button;
-            setTimeout(() => { 
-                this.button = null;
-                this.updateStatus();
-            },10000);
-        }
+        var instance = this;
+        var buttons = this.resource.getServicesByType("button");
+
+        buttons.forEach((button) => {
+            button.on('update',function(event) {
+                instance.onButtonUpdate(event);
+            });
+        });
+
+        super.onStartup();
+    }
+
+    onButtonUpdate(event) {
+        console.log("WallSwitchModuleNode[" + this.config.name + "].onButtonUpdate()");
+
+        this.button = event.button;
+        setTimeout(() => { 
+            this.button = null;
+            this.updateStatus();
+        },10000);
 
         this.updateStatus();
     }

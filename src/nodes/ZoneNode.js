@@ -1,6 +1,6 @@
-ResourceNode = require("./ResourceNode");
+ServiceListNode = require("./ServiceListNode");
 
-class ZoneNode extends ResourceNode {
+class ZoneNode extends ServiceListNode {
     constructor(config) {
         super(config,"zone");
         console.log("ZoneNode[" + config.name + "].constructor()");
