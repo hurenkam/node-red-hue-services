@@ -10,14 +10,24 @@ class LightNode extends DeviceNode {
 
     onStartup() {
         console.log("LightNode[" + this.config.name + "].onStarted()");
-
         var instance = this;
-        var light = this.resource.getServicesByType("light")[0];
 
-        this.onLightUpdate(light.item);
-        light.on('update',function(event) {
-            instance.onLightUpdate(event);
-        });
+        var light = this.resource.getServicesByType("light")[0];
+        var group = this.resource.getServicesByType("grouped_light")[0];
+
+        if (light) {
+            this.onLightUpdate(light.item);
+            light.on('update',function(event) {
+                instance.onLightUpdate(event);
+            });
+        }
+
+        if (group) {
+            this.onLightUpdate(group.item);
+            group.on('update',function(event) {
+                instance.onLightUpdate(event);
+            });
+        }
 
         super.onStartup();
     }
