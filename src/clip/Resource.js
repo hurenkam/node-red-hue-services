@@ -4,8 +4,7 @@ class Resource extends events.EventEmitter {
     constructor(item) {
         super();
         this.item = item;
-        console.log("Resource["+this.rtype()+","+this.id()+"].constructor()");
-        //console.log(item);
+        //console.log("Resource["+this.rtype()+","+this.id()+"].constructor()");
     }
 
     id() {
@@ -25,7 +24,7 @@ class Resource extends events.EventEmitter {
     }
 
     destructor() {
-        console.log("Resource["+this.rtype()+","+this.id()+"].destructor()");
+        //console.log("Resource["+this.rtype()+","+this.id()+"].destructor()");
         this.id = null;
     }
 
@@ -36,9 +35,22 @@ class Resource extends events.EventEmitter {
     }
 
     onEvent(event) {
-        console.log("Resource["+this.rtype()+","+this.id()+"].onEvent()");
-        //console.log(event);
+        //console.log("Resource["+this.rtype()+","+this.id()+"].onEvent()");
+        this.updateStatus(event);
         this.emit('update',event);
+    }
+
+    updateStatus(event) {
+        //console.log("Resource["+this.rtype()+","+this.id()+"].updateStatus()");
+        const blacklist = ["id", "id_v1", "owner", "type"];
+
+        var instance = this;
+        Object.keys(event).forEach((key) => {
+            if (!blacklist.includes(key)) {
+                //console.log(key+":",event[key]);
+                instance.item[key] = event[key];
+            }
+        });
     }
 }
 

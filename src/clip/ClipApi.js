@@ -1,5 +1,6 @@
 const events = require('events');
 const EventSource = require('eventsource');
+const { emit } = require('process');
 const RestApi = require('../RestApi');
 
 const Resource = require('./Resource');
@@ -84,11 +85,14 @@ class ClipApi extends events.EventEmitter {
                     //console.log(item);
                 }
             });
+            instance.emit('started');
         });
     }
 
     destructor() {
         console.log("ClipApi[" + (this.name? this.name: this.ip) + "].destructor()");
+        this.emit('stopped');
+
         var index = ClipApi.register.indexOf(this);
         if (index) {
             ClipApi.register.remove(index);
@@ -114,12 +118,12 @@ class ClipApi extends events.EventEmitter {
     }
 
     registerResource(resource) {
-        console.log("ClipApi[" + (this.name? this.name: this.ip) + "].registerResource()");
+        //console.log("ClipApi[" + (this.name? this.name: this.ip) + "].registerResource()");
         this.resources[resource.rid()] = resource;
 
         var instance = this;
         resource.on('put',function(data) {
-            console.log("ClipApi[" + (instance.name? instance.name: instance.ip) + "].registerResource(): on('put')");
+            //console.log("ClipApi[" + (instance.name? instance.name: instance.ip) + "].registerResource(): on('put')");
             instance.restAPI.put("/clip/v2/resource/" + resource.rtype() + "/" + resource.rid(), data);
         });
 
@@ -142,7 +146,7 @@ class ClipApi extends events.EventEmitter {
     }
 
     unregisterResource(resource) {
-        console.log("ClipApi[" + (this.name? this.name: this.ip) + "].unregisterResource()");
+        //console.log("ClipApi[" + (this.name? this.name: this.ip) + "].unregisterResource()");
         this.resources.remove(resource.rid());
 
         resource.off('put');
@@ -151,7 +155,7 @@ class ClipApi extends events.EventEmitter {
     }
 
     getSortedServicesById(uuid,rtype="device") {
-        console.log("ClipApi[" + this.name + "].getSortedServicesById(" + uuid + "," + rtype + ")");
+        //console.log("ClipApi[" + this.name + "].getSortedServicesById(" + uuid + "," + rtype + ")");
 
         var services = [];
         Object.keys(this.resources[uuid].services).forEach(service => {
@@ -170,6 +174,7 @@ class ClipApi extends events.EventEmitter {
     }
 
     getSortedResourcesByTypeAndModel(type,models) {
+        //console.log("ClipApi[" + this.name + "].getSortedResourcesByTypeAndModel(",type,",",models,")");
         var instance = this;
         var keys = Object.keys(instance.resources).filter(function(key) {
             var value = instance.resources[key];
@@ -197,7 +202,7 @@ class ClipApi extends events.EventEmitter {
     }
 
     getSortedResourceOptions(type, models) {
-        console.log("ClipApi[" + this.name + "].getSortedOptions(" + type + "," + models + ")");
+        //console.log("ClipApi[" + this.name + "].getSortedOptions(" + type + "," + models + ")");
 
         var options = [];
         var resources = this.getSortedResourcesByTypeAndModel(type,models);

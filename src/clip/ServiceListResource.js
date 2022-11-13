@@ -3,7 +3,7 @@ const Resource = require('./Resource');
 class ServiceListResource extends Resource {
     constructor(item) {
         super(item);
-        console.log("ServiceListResource["+this.rtype()+","+this.id()+"].constructor()");
+        //console.log("ServiceListResource["+this.rtype()+","+this.id()+"].constructor()");
         this.rids = [];
         this.services = {};
 
@@ -22,14 +22,36 @@ class ServiceListResource extends Resource {
     }
 
     destructor() {
-        super.destructor();
-        console.log("ServiceListResource["+this.rtype()+","+this.id()+"].destructor()");
+        //console.log("ServiceListResource["+this.rtype()+","+this.id()+"].destructor()");
         this.services = null;
+        super.destructor();
     }
 
     onServiceAvailable(rid,service) {
-        console.log("ServiceListResource["+this.rtype()+","+this.id()+"].onServiceAvailable("+rid+")");
+        //console.log("ServiceListResource["+this.rtype()+","+this.id()+"].onServiceAvailable("+rid+")");
         this.services[rid] = service;
+    }
+
+    getServiceTypes() {
+        //console.log("ServiceListResource["+this.rtype()+","+this.id()+"].getServiceTypes()");
+        var result = [];
+        var services = this.services;
+        this.rids.forEach((rid) => {
+            result.push(services[rid].item.type);
+        });
+        return result;
+    }
+
+    getServicesByType(type) {
+        //console.log("ServiceListResource["+this.rtype()+","+this.id()+"].getServicesByType("+type+")");
+        var result = [];
+        var services = this.services;
+        this.rids.forEach((rid) => {
+            if (services[rid].item.type == type) {
+                result.push(services[rid]);
+            }
+        });
+        return result;
     }
 }
 
