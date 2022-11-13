@@ -2,11 +2,42 @@ ResourceNode = require("./ResourceNode");
 
 class DeviceNode extends ResourceNode {
     constructor(config) {
-        super(config,"device");
         console.log("DeviceNode[" + config.name + "].constructor()");
+        super(config,"device");
+    }
 
-        this.power_state = null;
-        this.zigbee_connectivity = null;
+    onStartup() {
+        super.onStartup();
+        console.log("DeviceNode[" + this.config.name + "].onStartup()");
+
+        var instance = this;
+        var power = this.resource.getServicesByType("device_power")[0];
+        if (power) {
+            this.onPowerUpdate(power.item);
+            power.on('update',function(event) {
+                instance.onPowerUpdate(event);
+            });
+        }
+
+        var connectivity = this.resource.getServicesByType("zigbee_connectivity")[0];
+        if (connectivity) {
+            this.onConnectivityUpdate(connectivity.item);
+            connectivity.on('update',function(event) {
+                instance.onConnectivityUpdate(event);
+            });
+        }
+    }
+
+    onPowerUpdate(event) {
+        console.log("DeviceNode[" + this.config.name + "].onPowerUpdate(",event.power_state,")");
+        this.power_state = event.power_state;
+        this.updateStatus();
+    }
+
+    onConnectivityUpdate(event) {
+        console.log("DeviceNode[" + this.config.name + "].onConnectivityUpdate(",event.zigbee_connectivity,")");
+        this.zigbee_connectivity = event.zigbee_connectivity;
+        this.updateStatus();
     }
 
     getStatusFill() {
@@ -32,21 +63,6 @@ class DeviceNode extends ResourceNode {
             return "dot";
         }
         return super.getStatusShape();
-    }
-
-    onUpdate(resource) {
-        //console.log("DeviceNode[" + this.config.name + "].onUpdate()");
-        //console.log(resource);
-
-        if (resource.type === "zigbee_connectivity") {
-            this.zigbee_connectivity = resource.status;
-        }
-
-        if (resource.type === "device_power") {
-            this.power_state = resource.power_state;
-        }
-
-        super.onUpdate(resource);
     }
 }
 

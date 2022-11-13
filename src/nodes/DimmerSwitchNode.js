@@ -7,22 +7,35 @@ class DimmerSwitchNode extends DeviceNode {
         this.button = null;
     }
 
-    onUpdate(resource) {
-        super.onUpdate(resource);
-        //console.log("DimmerSwitchNode["+this.name+"].onUpdate()");
+    onStartup() {
+        console.log("DimmerSwitchNode[" + this.config.name + "].onStarted()");
 
-        if (resource.type === "button") {
-            this.button = resource.button;
-            setTimeout(() => { 
-                this.button = null;
-                this.updateStatus();
-            },10000);
-        }
+        var instance = this;
+        var buttons = this.resource.getServicesByType("button");
+
+        buttons.forEach((button) => {
+            button.on('update',function(event) {
+                instance.onButtonUpdate(event);
+            });
+        });
+
+        super.onStartup();
+    }
+
+    onButtonUpdate(event) {
+        console.log("DimmerSwitchNode[" + this.config.name + "].onButtonUpdate()");
+
+        this.button = event.button;
+        setTimeout(() => { 
+            this.button = null;
+            this.updateStatus();
+        },10000);
 
         this.updateStatus();
     }
 
     onServicesUpdate(resource) {
+        console.log("DimmerSwitchNode["+this.config.name+"].onServiceUpdate()");
         if (this.config.translate) {
             if ((resource.type == "button") && (resource.button) && (resource.button.last_event)) {
                 var msg = [];

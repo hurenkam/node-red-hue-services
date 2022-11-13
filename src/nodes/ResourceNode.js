@@ -4,30 +4,44 @@ BaseNode = require("./BaseNode");
 
 class ResourceNode extends BaseNode {
     constructor(config,rtype=null) {
+        console.log("ResourceNode[" + config.name + "].constructor()");
         super(config);
         this.config = config;
         this.rtype = rtype;
 
-        console.log("ResourceNode[" + config.name + "].constructor()");
-
+        var instance = this;
         this.clip = BaseNode.nodeAPI.nodes.getNode(config.bridge).clip;
+        //this.clip.on('started',() => {
+        //    instance.onClipStarted();
+        //});
+        setTimeout(()=> {
+            instance.onClipStarted();
+        },5000);
+    }
+
+    onClipStarted() {
+        console.log("ResourceNode[" + this.config.name + "].onStartup()");
+        this.resource = this.clip.resources[this.config.uuid];
+        this.onStartup();
+    }
+
+    onStartup() {
+        console.log("ResourceNode[" + this.config.name + "].onStartup()");
 
         var instance = this;
-        setTimeout(function() {
-            instance.resource = instance.clip.resources[config.uuid];
+        this.resource.on('update',function (event) {
+            instance.onUpdate(event);
+        });
 
-            instance.resource.on('update',function (event) {
-                instance.onUpdate(event);
-            });
-
-            if ((instance.resource.rids) && (instance.resource.services)) {
-                instance.resource.rids.forEach(rid => {
-                    instance.resource.services[rid].on('update',function (event) {
-                        instance.onUpdate(event);
-                    });
+        if ((this.resource.rids) && (this.resource.services)) {
+            this.resource.rids.forEach((rid) => {
+                instance.resource.services[rid].on('update',function (event) {
+                    instance.onUpdate(event);
                 });
-            }
-        },2000);
+            });
+        }
+
+        this.updateStatus();
     }
 
     onUpdate(event) {
@@ -60,7 +74,7 @@ class ResourceNode extends BaseNode {
 
     onInput(msg) {
         console.log("ResourceNode[" + this.config.name + "].onInput()");
-        console.log(msg);
+        //console.log(msg);
 
         if (msg.rtypes) {
             if ((this.resource) && (msg.rtypes.includes(this.resource.rtype()))) {

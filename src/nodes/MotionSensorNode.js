@@ -186,25 +186,51 @@ class MotionSensorNode extends DeviceNode {
         super.onClose();
     }
 
-    onUpdate(resource) {
-        super.onUpdate(resource);
-        //console.log("MotionSensorNode["+this.name+"].onUpdate()");
+    onStartup() {
+        console.log("MotionSensorNode[" + this.config.name + "].onStarted()");
+        var instance = this;
 
-        if (resource.type === "temperature") {
-            this.temperature = resource.temperature;
-        }
+        var temperature = this.resource.getServicesByType("temperature")[0];
+        this.onTemperatureUpdate(temperature.item);
+        temperature.on('update',function(event) {
+            instance.onTemperatureUpdate(event);
+        });
 
-        if (resource.type === "light_level") {
-            this.light = resource.light;
-        }
+        var light_level = this.resource.getServicesByType("light_level")[0];
+        this.onLightLevelUpdate(light_level.item);
+        light_level.on('update',function(event) {
+            instance.onLightLevelUpdate(event);
+        });
 
-        if (resource.type === "motion") {
-            this.motion = resource.motion;
-            setTimeout(() => { 
-                this.motion = null;
-                this.updateStatus();
-            },5000);
-        }
+        var motion = this.resource.getServicesByType("motion")[0];
+        this.onMotionUpdate(motion.item);
+        motion.on('update',function(event) {
+            instance.onMotionUpdate(event);
+        });
+
+        super.onStartup();
+    }
+
+    onTemperatureUpdate(event) {
+        console.log("MotionSensorNode[" + this.config.name + "].onTemperatureUpdate(",event.temperature,")");
+        this.temperature = event.temperature;
+        this.updateStatus();
+    }
+
+    onLightLevelUpdate(event) {
+        console.log("MotionSensorNode[" + this.config.name + "].onLightLevelUpdate(",event.light,")");
+        this.light = event.light;
+        this.updateStatus();
+    }
+
+    onMotionUpdate(event) {
+        console.log("MotionSensorNode[" + this.config.name + "].onMotionUpdate(",event.motion,")");
+        this.motion = event.motion;
+
+        setTimeout(() => { 
+            this.motion = null;
+            this.updateStatus();
+        },5000);
 
         this.updateStatus();
     }

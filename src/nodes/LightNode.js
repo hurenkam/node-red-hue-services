@@ -8,20 +8,32 @@ class LightNode extends DeviceNode {
         this.state = { on: false, brightness: 0 };
     }
 
-    onUpdate(resource) {
-        //console.log("LightNode["+this.name+"].onUpdate()");
+    onStartup() {
+        console.log("LightNode[" + this.config.name + "].onStarted()");
 
-        if (resource.type === "light") {
-            if (resource.on) {
-                this.state.on = resource.on.on;
-            }
+        var instance = this;
+        var light = this.resource.getServicesByType("light")[0];
 
-            if (resource.dimming) {
-                this.state.brightness = resource.dimming.brightness;
-            }
+        this.onLightUpdate(light.item);
+        light.on('update',function(event) {
+            instance.onLightUpdate(event);
+        });
+
+        super.onStartup();
+    }
+
+    onLightUpdate(event) {
+        console.log("LightNode[" + this.config.name + "].onLightUpdate()");
+
+        if (event.on) {
+            this.state.on = event.on.on;
         }
 
-        super.onUpdate(resource);
+        if (event.dimming) {
+            this.state.brightness = event.dimming.brightness;
+        }
+
+        this.updateStatus();
     }
 
     getStatusFill() {

@@ -3,34 +3,54 @@ const DeviceNode = require('./DeviceNode');
 class LutronAuroraNode extends DeviceNode {
     constructor(config) {
         super(config);
-        console.log("DimmerSwitch[" + config.name + "].constructor()");
+        console.log("LutronAuroraNode[" + config.name + "].constructor()");
         this.button = null;
         this.relative_rotary = null;
     }
 
-    onUpdate(resource) {
-        super.onUpdate(resource);
-        //console.log("LutronAuroraNode["+this.name+"].onUpdate()");
+    onStartup() {
+        console.log("LutronAuroraNode[" + this.config.name + "].onStarted()");
+        var instance = this;
 
-        if (resource.type === "button") {
-            this.button = resource.button;
-            setTimeout(() => { 
-                this.button = null;
-                this.updateStatus();
-            },10000);
-        }
+        var buttons = this.resource.getServicesByType("button");
+        buttons.forEach((button) => {
+            button.on('update',function(event) {
+                instance.onButtonUpdate(event);
+            });
+        });
 
-        if (resource.type === "relative_rotary") {
-            this.relative_rotary = resource.relative_rotary;
-            setTimeout(() => { 
-                this.relative_rotary = null;
-                this.updateStatus();
-            },10000);
-        }
+        var rotary = this.resource.getServicesByType("relative_rotary")[0];
+        rotary.on('update',function(event) {
+            instance.onRotaryUpdate(event);
+        });
+
+        super.onStartup();
+    }
+
+    onButtonUpdate(event) {
+        console.log("LutronAuroraNode[" + this.config.name + "].onButtonUpdate()");
+
+        this.button = event.button;
+        setTimeout(() => { 
+            this.button = null;
+            this.updateStatus();
+        },10000);
 
         this.updateStatus();
     }
 
+    onRotaryUpdate(event) {
+        console.log("LutronAuroraNode[" + this.config.name + "].onRotaryUpdate()");
+
+        this.relative_rotary = event.relative_rotary;
+        setTimeout(() => { 
+            this.relative_rotary = null;
+            this.updateStatus();
+        },10000);
+
+        this.updateStatus();
+    }
+    
     getStatusText() {
         var text = super.getStatusText();
 
