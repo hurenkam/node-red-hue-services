@@ -2,7 +2,8 @@
 node-red palette to access hue bridge through clip v2 api
 
 # status
-(as of: 14/11/2022)
+(tag v0.3, 14/11/2022)
+
 This is by far not complete, but most of the devices and functionality that i regularly use
 in my home automation environment seems to work and stability is ok.
 
@@ -40,10 +41,10 @@ associated with that resource id will come out as payload, and whatever payload 
 will be sent as a put request to the clip interface.
 
 The following command will for instance switch a light, room or zone on:
-msg: { "rtypes": ["light", "grouped_light"], "payload": { "on": { "on": true } } }
+'''{ "rtypes": ["light", "grouped_light"], "payload": { "on": { "on": true } } }'''
 
 And the following command wil set the brightness to 50%:
-msg: { "rtypes": ["light", "grouped_light"], "payload": { "dimming": { "brightness": 50 } } }
+'''{ "rtypes": ["light", "grouped_light"], "payload": { "dimming": { "brightness": 50 } } }'''
 
 Do note that to address a node, you must either provide an msg.rids array that contains the rid
 of the resource you wish to address, or an msg.rtypes array that contains the rtype of the resource
@@ -60,5 +61,5 @@ Credit where credit is due, this was inspired by the node-red-contrib-huemagic p
 That is when i decided to go and dive into this, and create my own wrapper around the hue clip v2 api.
 
 I initially licensed this code under GPLv2, but have recently changed that to Apache v2 because both node-red as well asl the huemagic extension
-use that license, and i want this to be compatible so that in case it might be considered usefull by either project, they can easily include it.
+use that license, and i want this to be compatible so that in case it might be considered useful by either project, they can easily include it.
 Since Apache v2 is less restrictive than GPLv2, it imposes no limits w.r.t. the original license, the code can still be re-distributed under GPLv2.
