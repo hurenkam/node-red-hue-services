@@ -2,40 +2,63 @@ ServiceListNode = require("./ServiceListNode");
 
 class DeviceNode extends ServiceListNode {
     constructor(config) {
-        console.log("DeviceNode[" + config.name + "].constructor()");
         super(config,"device");
+        console.log("DeviceNode[" + this.logid() + "].constructor()");
     }
 
     onStartup() {
         super.onStartup();
-        console.log("DeviceNode[" + this.config.name + "].onStartup()");
-
+        console.log("DeviceNode[" + this.logid() + "].onStartup()");
         var instance = this;
-        var power = this.resource.getServicesByType("device_power")[0];
-        if (power) {
-            this.onPowerUpdate(power.item);
-            power.on('update',function(event) {
+
+        this._onPowerUpdate = function(event) {
+            try {
                 instance.onPowerUpdate(event);
-            });
+            } catch (error) {
+                console.log(error);
+            }
         }
 
+        this._onConnectivityUpdate = function(event) {
+            try {
+                instance.onConnectivityUpdate(event);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        var power = this.resource.getServicesByType("device_power")[0];
         var connectivity = this.resource.getServicesByType("zigbee_connectivity")[0];
+
+        if (power) {
+            this.onPowerUpdate(power.item);
+            power.on('update',this._onPowerUpdate);
+        }
+
         if (connectivity) {
             this.onConnectivityUpdate(connectivity.item);
-            connectivity.on('update',function(event) {
-                instance.onConnectivityUpdate(event);
-            });
+            connectivity.on('update',this._onConnectivityUpdate);
         }
     }
 
+    onClose() {
+        var power = this.resource.getServicesByType("device_power")[0];
+        var connectivity = this.resource.getServicesByType("zigbee_connectivity")[0];
+
+        power.off('update',this._onPowerUpdate);
+        connectivity.off('update',this._onConnectivityUpdate);
+
+        super.onClose();
+    }
+
     onPowerUpdate(event) {
-        console.log("DeviceNode[" + this.config.name + "].onPowerUpdate(",event.power_state,")");
+        console.log("DeviceNode[" + this.logid() + "].onPowerUpdate(",event.power_state,")");
         this.power_state = event.power_state;
         this.updateStatus();
     }
 
     onConnectivityUpdate(event) {
-        console.log("DeviceNode[" + this.config.name + "].onConnectivityUpdate(",event.status,")");
+        console.log("DeviceNode[" + this.logid() + "].onConnectivityUpdate(",event.status,")");
         this.zigbee_connectivity = event.status;
         this.updateStatus();
     }

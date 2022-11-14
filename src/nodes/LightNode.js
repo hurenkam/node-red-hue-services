@@ -15,21 +15,42 @@ class LightNode extends DeviceNode {
         var light = this.resource.getServicesByType("light")[0];
         var group = this.resource.getServicesByType("grouped_light")[0];
 
+        this._onLightUpdate = function(event) {
+            try {
+                instance.onLightUpdate(event);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
         if (light) {
             this.onLightUpdate(light.item);
-            light.on('update',function(event) {
-                instance.onLightUpdate(event);
-            });
+            light.on('update',this._onLightUpdate);
         }
 
         if (group) {
             this.onLightUpdate(group.item);
-            group.on('update',function(event) {
-                instance.onLightUpdate(event);
-            });
+            group.on('update',this._onLightUpdate);
         }
 
         super.onStartup();
+    }
+
+    onClose() {
+        var light = this.resource.getServicesByType("light")[0];
+        var group = this.resource.getServicesByType("grouped_light")[0];
+        
+        if (light) {
+            light.off('update',this._onLightUpdate);
+            light = null;
+        }
+
+        if (group) {
+            group.off('update',this._onLightUpdate);
+            group = null;
+        }
+
+        super.onClose();
     }
 
     onLightUpdate(event) {

@@ -13,15 +13,32 @@ class ServiceListNode extends ResourceNode {
         var instance = this;
 
         // subscribe to events originating from services in the list
+        this._onServiceUpdate = function(event) {
+            try {
+                instance.onServicesUpdate(event);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
         if ((this.resource.rids) && (this.resource.services)) {
             this.resource.rids.forEach((rid) => {
-                instance.resource.services[rid].on('update',function (event) {
-                    instance.onServicesUpdate(event);
-                });
+                instance.resource.services[rid].on('update',instance._onServiceUpdate);
             });
         }
 
         super.onStartup();
+    }
+
+    onClose() {
+        var instance = this;
+        if ((this.resource.rids) && (this.resource.services)) {
+            this.resource.rids.forEach((rid) => {
+                instance.resource.services[rid].off('update',instance._onServiceUpdate);
+            });
+        }
+
+        super.onClose();
     }
 
     onServicesUpdate(event) {

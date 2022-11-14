@@ -106,11 +106,13 @@ class ClipApi extends events.EventEmitter {
 
         var instance = this;
         Object.keys(this.resources).forEach((id) => {
-            instance.resources[id].destructor();
-            instance.resources.remove(id);
+            var resource = instance.resource[id];
+            instance.unregisterResource(resource);
+            resource.destructor();
         });
 
         this.resources = null;
+        this.removeAllListeners();
     }
 
     isResourceRegistered(id) {
@@ -122,36 +124,40 @@ class ClipApi extends events.EventEmitter {
         this.resources[resource.rid()] = resource;
 
         var instance = this;
-        resource.on('put',function(data) {
+        this._onPut = function(data) {
             //console.log("ClipApi[" + (instance.name? instance.name: instance.ip) + "].registerResource(): on('put')");
             instance.restAPI.put("/clip/v2/resource/" + resource.rtype() + "/" + resource.rid(), data);
-        });
-
-        resource.on('post',function(data) {
-            this.restAPI.post("/clip/v2/resource/" + resource.rtype() + "/" + resource.rid(), data);
-        });
-
-        resource.on('delete',function(data) {
-            this.restAPI.delete("/clip/v2/resource/" + resource.rtype() + "/" + resource.rid(), data);
-        });
-
-        resource.on('getService',function(id) {
+        }
+        this._onPost = function(data) {
+            instance.restAPI.post("/clip/v2/resource/" + resource.rtype() + "/" + resource.rid(), data);
+        }
+        this._onDelete = function(data) {
+            instance.restAPI.delete("/clip/v2/resource/" + resource.rtype() + "/" + resource.rid(), data);
+        }
+        this._onGetService = function(id) {
             if (Object.keys(instance.resources).includes(id)) {
                 resource.onServiceAvailable(id,instance.resources[id]);
             } else {
                 console.log("ClipApi[" + (instance.name? instance.name: instance.ip) + "].registerResource().on('getService'): Service "+id+" not yet available.");
                 //this.queueServiceRequest(resource,id);
             }
-        });
+        }
+
+        resource.on('put',this._onPut);
+        resource.on('post',this._onPost);
+        resource.on('delete',this._onDelete);
+        resource.on('getService',this._onGetService);
     }
 
     unregisterResource(resource) {
         //console.log("ClipApi[" + (this.name? this.name: this.ip) + "].unregisterResource()");
-        this.resources.remove(resource.rid());
 
-        resource.off('put');
-        resource.off('post');
-        resource.off('delete');
+        resource.off('getService',this._onGetService);
+        resource.off('delete',this._onDelete);
+        resource.off('post',this._onPost);
+        resource.off('put',this._onPut);
+
+        this.resources.remove(resource.rid());
     }
 
     getSortedServicesById(uuid,rtype="device") {

@@ -172,10 +172,60 @@ class MotionSensorNode extends DeviceNode {
         }
     }
 
+    onStartup() {
+        console.log("MotionSensorNode[" + this.logid() + "].onStarted()");
+        var instance = this;
+
+        this._onTemperatureUpdate = function(event) {
+            try {
+                instance.onTemperatureUpdate(event);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        this._onLightLevelUpdate = function(event) {
+            try {
+                instance.onLightLevelUpdate(event);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        this._onMotionUpdate = function(event) {
+            try {
+                instance.onMotionUpdate(event);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        var temperature = this.resource.getServicesByType("temperature")[0];
+        var light_level = this.resource.getServicesByType("light_level")[0];
+        var motion = this.resource.getServicesByType("motion")[0];        
+        this.onTemperatureUpdate(temperature.item);
+        this.onLightLevelUpdate(light_level.item);
+        this.onMotionUpdate(motion.item);
+
+        temperature.on('update',this._onTemperatureUpdate);
+        light_level.on('update',this._onLightLevelUpdate);
+        motion.on('update',this._onMotionUpdate);
+
+        super.onStartup();
+    }
+
     onClose() {
         if (MotionState.motionTimeout != null) {
             clearTimeout(MotionState.motionTimeout);
         }
+        
+        var temperature = this.resource.getServicesByType("temperature")[0];
+        var light_level = this.resource.getServicesByType("light_level")[0];
+        var motion = this.resource.getServicesByType("motion")[0];        
+
+        temperature.off('update',this._onTemperatureUpdate);
+        light_level.off('update',this._onLightLevelUpdate);
+        motion.off('update',this._onMotionUpdate);
 
         if (this.state) {
             this.state.sensor = null;
@@ -184,31 +234,6 @@ class MotionSensorNode extends DeviceNode {
         }
 
         super.onClose();
-    }
-
-    onStartup() {
-        console.log("MotionSensorNode[" + this.logid() + "].onStarted()");
-        var instance = this;
-
-        var temperature = this.resource.getServicesByType("temperature")[0];
-        this.onTemperatureUpdate(temperature.item);
-        temperature.on('update',function(event) {
-            instance.onTemperatureUpdate(event);
-        });
-
-        var light_level = this.resource.getServicesByType("light_level")[0];
-        this.onLightLevelUpdate(light_level.item);
-        light_level.on('update',function(event) {
-            instance.onLightLevelUpdate(event);
-        });
-
-        var motion = this.resource.getServicesByType("motion")[0];
-        this.onMotionUpdate(motion.item);
-        motion.on('update',function(event) {
-            instance.onMotionUpdate(event);
-        });
-
-        super.onStartup();
     }
 
     onTemperatureUpdate(event) {
@@ -287,6 +312,7 @@ class MotionSensorNode extends DeviceNode {
                 }
             }
         }
+        
         return text;
     }
 }

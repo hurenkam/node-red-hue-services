@@ -25,6 +25,7 @@ class Resource extends events.EventEmitter {
 
     destructor() {
         //console.log("Resource["+this.rtype()+","+this.id()+"].destructor()");
+        this.removeAllListeners();
         this.id = null;
     }
 

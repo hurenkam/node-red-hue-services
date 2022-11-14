@@ -5,7 +5,6 @@ class ResourceNode extends BaseNode {
     constructor(config,rtype=null) {
         super(config);
         console.log("ResourceNode[" + this.logid() + "].constructor()");
-        this.config = config;
         this.rtype = rtype;
 
         var instance = this;
@@ -26,11 +25,16 @@ class ResourceNode extends BaseNode {
 
     onStartup() {
         console.log("ResourceNode[" + this.logid() + "].onStartup()");
-
         var instance = this;
-        this.resource.on('update',function (event) {
-            instance.onUpdate(event);
-        });
+        
+        this._onUpdate = function(event) {
+            try {
+                instance.onUpdate(event);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        this.resource.on('update',this._onUpdate);
 
         this.updateStatus();
     }
@@ -63,7 +67,6 @@ class ResourceNode extends BaseNode {
     onClose() {
         console.log("ResourceNode[" + this.logid() + "].onClose()");
         this.clip = null;
-        this.config = null;
         this.rtype = null;
         super.onClose();
     }

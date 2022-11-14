@@ -21,7 +21,7 @@ class RestApi {
 
     async _request(url, method="GET", data=null) {
         var realurl = "https://" + this._ip + url;
-        console.log("RestApi[" + this._name + "].request(" + realurl + "," + method + "," + data + ")");
+        console.log("RestApi[" + this._name + "].request(" + realurl + ", " + method + ",",data,")");
 
         var request = {
             "method": method,
