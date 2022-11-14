@@ -3,12 +3,12 @@ const DeviceNode = require('./DeviceNode');
 class DimmerSwitchNode extends DeviceNode {
     constructor(config) {
         super(config);
-        console.log("DimmerSwitchNode[" + config.name + "].constructor()");
+        console.log("DimmerSwitchNode[" + this.logid() + "].constructor()");
         this.button = null;
     }
 
     onStartup() {
-        console.log("DimmerSwitchNode[" + this.config.name + "].onStarted()");
+        console.log("DimmerSwitchNode[" + this.logid() + "].onStarted()");
 
         var instance = this;
         var buttons = this.resource.getServicesByType("button");
@@ -23,7 +23,7 @@ class DimmerSwitchNode extends DeviceNode {
     }
 
     onButtonUpdate(event) {
-        console.log("DimmerSwitchNode[" + this.config.name + "].onButtonUpdate()");
+        console.log("DimmerSwitchNode[" + this.logid() + "].onButtonUpdate()");
 
         this.button = event.button;
         setTimeout(() => { 
@@ -35,7 +35,7 @@ class DimmerSwitchNode extends DeviceNode {
     }
 
     onServicesUpdate(resource) {
-        console.log("DimmerSwitchNode["+this.config.name+"].onServiceUpdate()");
+        console.log("DimmerSwitchNode["+this.logid()+"].onServiceUpdate()");
         if (this.config.translate) {
             if ((resource.type == "button") && (resource.button) && (resource.button.last_event)) {
                 var msg = [];
@@ -49,7 +49,7 @@ class DimmerSwitchNode extends DeviceNode {
 
                 var item = this.config.buttons[index][resource.button.last_event];
                 if (Object.keys(this.config.buttons[index]).includes(resource.button.last_event)) {
-                    console.log("DimmerSwitchNode["+this.config.name+"].onServiceUpdate() translate buttons["+index+"][\""+resource.button.last_event+"\"]");
+                    console.log("DimmerSwitchNode["+this.logid()+"].onServiceUpdate() translate buttons["+index+"][\""+resource.button.last_event+"\"]");
                     //console.log(this.config.buttons[index][resource.button.last_event]);
 
                     if ((item != null) && (item != "")) {

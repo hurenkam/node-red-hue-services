@@ -3,12 +3,12 @@ const DeviceNode = require('./DeviceNode');
 class WallSwitchModuleNode extends DeviceNode {
     constructor(config) {
         super(config);
-        console.log("WallSwitchModuleNode[" + config.name + "].constructor()");
+        console.log("WallSwitchModuleNode[" + this.logid() + "].constructor()");
         this.button = null;
     }
 
     onStartup() {
-        console.log("WallSwitchModuleNode[" + this.config.name + "].onStarted()");
+        console.log("WallSwitchModuleNode[" + this.logid() + "].onStarted()");
 
         var instance = this;
         var buttons = this.resource.getServicesByType("button");
@@ -23,7 +23,7 @@ class WallSwitchModuleNode extends DeviceNode {
     }
 
     onButtonUpdate(event) {
-        console.log("WallSwitchModuleNode[" + this.config.name + "].onButtonUpdate()");
+        console.log("WallSwitchModuleNode[" + this.logid() + "].onButtonUpdate()");
 
         this.button = event.button;
         setTimeout(() => { 

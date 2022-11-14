@@ -7,13 +7,13 @@ class BridgeConfigNode extends BaseNode {
     constructor(config) {
         super(config);
         BaseNode.nodeAPI.nodes.createNode(this, config);
-        console.log("BridgeConfigNode[" + config.name + "].constructor()")
+        console.log("BridgeConfigNode[" + this.logid() + "].constructor()")
 
         this.clip = new ClipApi(config.ip,config.key,config.name);
         bridges[this.id] = { id: this.id, name: config.name, instance: this };
 
         this.on('close', function () {
-            console.log("BridgeConfigNode[" + this.config.name + "].on('close')");
+            console.log("BridgeConfigNode[" + this.logid() + "].on('close')");
 
             this.clip.destructor();
             this.clip = null;

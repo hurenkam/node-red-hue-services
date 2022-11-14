@@ -36,7 +36,6 @@ class DeviceNode extends ServiceListNode {
 
     onConnectivityUpdate(event) {
         console.log("DeviceNode[" + this.config.name + "].onConnectivityUpdate(",event.status,")");
-        console.log(event);
         this.zigbee_connectivity = event.status;
         this.updateStatus();
     }

@@ -5,11 +5,11 @@ ResourceNode = require("./ResourceNode");
 class ServiceListNode extends ResourceNode {
     constructor(config,rtype=null) {
         super(config,rtype);
-        console.log("ServiceListNode[" + config.name + "].constructor()");
+        console.log("ServiceListNode[" + this.logid() + "].constructor()");
     }
 
     onStartup() {
-        console.log("ServiceListNode[" + this.config.name + "].onStartup()");
+        console.log("ServiceListNode[" + this.logid() + "].onStartup()");
         var instance = this;
 
         // subscribe to events originating from services in the list
@@ -46,7 +46,7 @@ class ServiceListNode extends ResourceNode {
     }
 
     onInput(msg) {
-        console.log("ServiceListNode[" + this.config.name + "].onInput()");
+        console.log("ServiceListNode[" + this.logid() + "].onInput()");
 
         if ((this.resource) && (this.resource.rids) && (this.resource.services)) {
 
@@ -67,7 +67,7 @@ class ServiceListNode extends ResourceNode {
             }
 
         } else {
-            console.log("ServiceListNode[" + this.config.name + "].onInput(): Unable to forward message to services.");
+            console.log("ServiceListNode[" + this.logid() + "].onInput(): Unable to forward message to services.");
         }
 
         super.onInput(msg);

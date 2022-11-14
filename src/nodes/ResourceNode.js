@@ -3,8 +3,8 @@ BaseNode = require("./BaseNode");
 
 class ResourceNode extends BaseNode {
     constructor(config,rtype=null) {
-        console.log("ResourceNode[" + config.name + "].constructor()");
         super(config);
+        console.log("ResourceNode[" + this.logid() + "].constructor()");
         this.config = config;
         this.rtype = rtype;
 
@@ -19,13 +19,13 @@ class ResourceNode extends BaseNode {
     }
 
     onClipStarted() {
-        console.log("ResourceNode[" + this.config.name + "].onStartup()");
+        console.log("ResourceNode[" + this.logid() + "].onStartup()");
         this.resource = this.clip.resources[this.config.uuid];
         this.onStartup();
     }
 
     onStartup() {
-        console.log("ResourceNode[" + this.config.name + "].onStartup()");
+        console.log("ResourceNode[" + this.logid() + "].onStartup()");
 
         var instance = this;
         this.resource.on('update',function (event) {
@@ -36,24 +36,23 @@ class ResourceNode extends BaseNode {
     }
 
     onUpdate(event) {
-        console.log("ResourceNode["+this.config.name+"].onUpdate()");
+        console.log("ResourceNode["+this.logid()+"].onUpdate()");
         this.send({ payload: event });
-        this.updateStatus();
     }
 
     onInput(msg) {
-        //console.log("ResourceNode[" + this.config.name + "].onInput(",msg,")");
+        //console.log("ResourceNode[" + this.logid() + "].onInput(",msg,")");
 
         if (msg.rtypes) {
             if ((this.resource) && (msg.rtypes.includes(this.resource.rtype()))) {
-                console.log("ResourceNode[" + this.config.name + "].onInput(",msg.payload,")");
+                console.log("ResourceNode[" + this.logid() + "].onInput(",msg.payload,")");
                 this.resource.put(msg.payload);
             }
         }
 
         if (msg.rids) {
             if ((this.resource) && (msg.rids.includes(this.resource.rid()))) {
-                console.log("ResourceNode[" + this.config.name + "].onInput(",msg.payload,")");
+                console.log("ResourceNode[" + this.logid() + "].onInput(",msg.payload,")");
                 this.resource.put(msg.payload);
             }
         }
@@ -62,7 +61,7 @@ class ResourceNode extends BaseNode {
     }
 
     onClose() {
-        console.log("ResourceNode[" + this.config.name + "].onClose()");
+        console.log("ResourceNode[" + this.logid() + "].onClose()");
         this.clip = null;
         this.config = null;
         this.rtype = null;

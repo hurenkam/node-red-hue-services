@@ -3,13 +3,13 @@ const DeviceNode = require('./DeviceNode');
 class LutronAuroraNode extends DeviceNode {
     constructor(config) {
         super(config);
-        console.log("LutronAuroraNode[" + config.name + "].constructor()");
+        console.log("LutronAuroraNode[" + this.logid() + "].constructor()");
         this.button = null;
         this.relative_rotary = null;
     }
 
     onStartup() {
-        console.log("LutronAuroraNode[" + this.config.name + "].onStarted()");
+        console.log("LutronAuroraNode[" + this.logid() + "].onStarted()");
         var instance = this;
 
         var buttons = this.resource.getServicesByType("button");
@@ -28,7 +28,7 @@ class LutronAuroraNode extends DeviceNode {
     }
 
     onButtonUpdate(event) {
-        console.log("LutronAuroraNode[" + this.config.name + "].onButtonUpdate()");
+        console.log("LutronAuroraNode[" + this.logid() + "].onButtonUpdate()");
 
         this.button = event.button;
         setTimeout(() => { 
@@ -40,7 +40,7 @@ class LutronAuroraNode extends DeviceNode {
     }
 
     onRotaryUpdate(event) {
-        console.log("LutronAuroraNode[" + this.config.name + "].onRotaryUpdate()");
+        console.log("LutronAuroraNode[" + this.logid() + "].onRotaryUpdate()");
 
         this.relative_rotary = event.relative_rotary;
         setTimeout(() => { 

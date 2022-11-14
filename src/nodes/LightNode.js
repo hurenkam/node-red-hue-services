@@ -3,13 +3,13 @@ const DeviceNode = require('./DeviceNode');
 class LightNode extends DeviceNode {
     constructor(config) {
         super(config);
-        console.log("LightNode[" + config.name + "].constructor()");
+        console.log("LightNode[" + this.logid() + "].constructor()");
         this.button = null;
         this.state = { on: false, brightness: 0 };
     }
 
     onStartup() {
-        console.log("LightNode[" + this.config.name + "].onStarted()");
+        console.log("LightNode[" + this.logid() + "].onStarted()");
         var instance = this;
 
         var light = this.resource.getServicesByType("light")[0];
@@ -33,7 +33,7 @@ class LightNode extends DeviceNode {
     }
 
     onLightUpdate(event) {
-        console.log("LightNode[" + this.config.name + "].onLightUpdate()");
+        console.log("LightNode[" + this.logid() + "].onLightUpdate()");
 
         if (event.on) {
             this.state.on = event.on.on;

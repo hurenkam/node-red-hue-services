@@ -3,7 +3,7 @@ BaseNode = require("./BaseNode");
 class SceneCyclerNode extends BaseNode {
     constructor(config) {
         super(config);
-        console.log("SceneCyclerNode[" + config.name + "].constructor()");
+        console.log("SceneCyclerNode[" + this.logid() + "].constructor()");
         //console.log(this.wires)
         
         this.scenes = [];
@@ -18,28 +18,25 @@ class SceneCyclerNode extends BaseNode {
                     var type = node.type;
                     var bridge = node.config.bridge;
                     var uuid = node.config.uuid;
-                    var services = node.services;
-                    console.log(name,type,bridge,uuid,services);
+                    console.log(name,type,bridge,uuid);
                     if (type == "SceneNode") {
                         this.scenes.push({ name: name, bridge: node.config.bridge, uuid: node.config.uuid })
                     }
-                } else {
-                    console.log(node);
                 }
             });
         });
     }
 
     onInput(msg) {
-        //console.log("SceneCyclerNode.onInput()");
+        //console.log("SceneCyclerNode[" + this.logid() + "].onInput()");
         this.selectNextScene();
     }
 
     selectNextScene() {
-        //console.log("SceneCyclerNode.selectNextScene()");
+        //console.log("SceneCyclerNode[" + this.logid() + "].selectNextScene()");
         if (this.scenes.length > 0) {
             var scene = this.scenes[this.current];
-            console.log("SceneCycler.selectNextScene():",this.current);
+            console.log("SceneCycler[" + this.logid() + "].selectNextScene():",this.current);
 
             this.send({ 
                 rids: [scene.uuid], 

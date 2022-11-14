@@ -162,7 +162,7 @@ class LightsOnState extends MotionState {
 class MotionSensorNode extends DeviceNode {
     constructor(config) {
         super(config);
-        console.log("MotionSensorNode[" + config.name + "].constructor()");
+        console.log("MotionSensorNode[" + this.logid() + "].constructor()");
         this.motion = null;
         this.temperature = null;
         this.light = null;
@@ -187,7 +187,7 @@ class MotionSensorNode extends DeviceNode {
     }
 
     onStartup() {
-        console.log("MotionSensorNode[" + this.config.name + "].onStarted()");
+        console.log("MotionSensorNode[" + this.logid() + "].onStarted()");
         var instance = this;
 
         var temperature = this.resource.getServicesByType("temperature")[0];
@@ -212,19 +212,19 @@ class MotionSensorNode extends DeviceNode {
     }
 
     onTemperatureUpdate(event) {
-        console.log("MotionSensorNode[" + this.config.name + "].onTemperatureUpdate(",event.temperature,")");
+        console.log("MotionSensorNode[" + this.logid() + "].onTemperatureUpdate(",event.temperature,")");
         this.temperature = event.temperature;
         this.updateStatus();
     }
 
     onLightLevelUpdate(event) {
-        console.log("MotionSensorNode[" + this.config.name + "].onLightLevelUpdate(",event.light,")");
+        console.log("MotionSensorNode[" + this.logid() + "].onLightLevelUpdate(",event.light,")");
         this.light = event.light;
         this.updateStatus();
     }
 
     onMotionUpdate(event) {
-        console.log("MotionSensorNode[" + this.config.name + "].onMotionUpdate(",event.motion,")");
+        console.log("MotionSensorNode[" + this.logid() + "].onMotionUpdate(",event.motion,")");
         this.motion = event.motion;
 
         setTimeout(() => { 

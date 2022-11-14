@@ -2,19 +2,23 @@ class BaseNode {
     static nodeAPI = null;
 
     constructor(config) {
-        console.log("BaseNode[" + config.name + "].constructor()");
         this.config = config;
+        console.log("BaseNode[" + this.logid() + "].constructor()");
         BaseNode.nodeAPI.nodes.createNode(this,config);
 
         this.on('input', function(msg) { 
-            //console.log("BaseNode["+config.name+"].on('input')");
+            //console.log("BaseNode["+this.id()+"].on('input')");
             this.onInput(msg); 
         });
 
         this.on('close', function() { 
-            //console.log("BaseNode["+config.name+"].on('close')");
+            //console.log("BaseNode["+this.id()+"].on('close')");
             this.onClose(); 
         });
+    }
+
+    logid() {
+        return ((this.config) && (this.config.name))? this.config.name: "<?>";
     }
 
     getStatusFill() {
@@ -45,11 +49,11 @@ class BaseNode {
     }
 
     onInput(msg) {
-        //console.log("BaseNode[" + config.name + "].onInput(",msg,")");
+        //console.log("BaseNode[" + this.logid() + "].onInput(",msg,")");
     }
 
     onClose() {
-        console.log("BaseNode[" + config.name + "].onClose()");
+        console.log("BaseNode[" + this.logid() + "].onClose()");
         this.config = null;
     }
 }

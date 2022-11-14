@@ -3,7 +3,7 @@ BaseNode = require("./BaseNode");
 class MotionBehaviorNode extends BaseNode {
     constructor(config) {
         super(config);
-        console.log("MotionBehaviorNode[" + config.name + "].constructor()");
+        console.log("MotionBehaviorNode[" + this.logid() + "].constructor()");
 
         this.motionTimeout = null;
         this.lightstate = { on: false, brightness: 0 }
@@ -11,7 +11,7 @@ class MotionBehaviorNode extends BaseNode {
     }
 
     onInput(msg) {
-        //console.log("MotionBehaviorNode[" + this.config.name + "].onInput())");
+        //console.log("MotionBehaviorNode[" + this.logid() + "].onInput())");
 
         if (this.state != "lightson") {
             if (msg.payload.type === "motion")
@@ -42,7 +42,7 @@ class MotionBehaviorNode extends BaseNode {
 
     updateStatus() {
         super.updateStatus();
-        //console.log("MotionBehaviorNode[" + this.config.name + "].updateStatus()");
+        //console.log("MotionBehaviorNode[" + this.logid() + "].updateStatus()");
         var fill = "grey";
         var shape = "ring";
         var text = "";
@@ -55,7 +55,7 @@ class MotionBehaviorNode extends BaseNode {
     }
 
     onMotionDetected() {
-        console.log("MotionBehaviorNode[" + this.config.name + "].onMotionDetected()");
+        console.log("MotionBehaviorNode[" + this.logid() + "].onMotionDetected()");
 
         if (this.state != "lightson")
         {
@@ -77,12 +77,12 @@ class MotionBehaviorNode extends BaseNode {
             clearTimeout(this.motionTimeout);
         }
         var timeout = this.config.timeout;
-        console.log("MotionBehaviorNode[" + this.config.name + "].updateMotionTimeout(): " + timeout);
+        console.log("MotionBehaviorNode[" + this.logid() + "].updateMotionTimeout(): " + timeout);
         this.motionTimeout = setTimeout(() => this.onMotionTimeout(),timeout);
     }
 
     onMotionTimeout() {
-        console.log("MotionBehaviorNode[" + this.config.name + "].onMotionTimeout()");
+        console.log("MotionBehaviorNode[" + this.logid() + "].onMotionTimeout()");
         if (this.config.nomotion) {
             this.send(JSON.parse(this.config.nomotion));
         }
@@ -91,13 +91,13 @@ class MotionBehaviorNode extends BaseNode {
     }
 
     onLightsOn() {
-        console.log("MotionBehaviorNode[" + this.config.name + "].onLightsOn()");
+        console.log("MotionBehaviorNode[" + this.logid() + "].onLightsOn()");
         this.state = "lightson";
         this.updateStatus();
     }
 
     onLightsOff() {
-        console.log("MotionBehaviorNode[" + this.config.name + "].onLightsOff()");
+        console.log("MotionBehaviorNode[" + this.logid() + "].onLightsOff()");
         this.state = "idle";
         this.updateStatus();
     }
