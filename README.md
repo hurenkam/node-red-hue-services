@@ -12,6 +12,7 @@ in my home automation environment seems to work and stability is ok.
 - Dimmer Switch (should work for all versions, but i only tested with v1)
 - Lutron Aurora (don't use it regularly, but seemed to work fine when i tested it)
 - Wall Switch Module (same here, not regularly tested but seems to work fine last time i tested)
+- Indoor and Outdoor motion sensors, all working fine. Smart mode can use some improvements.
 
 ## Common used resources:
 - Room: works fine
@@ -29,6 +30,9 @@ in my home automation environment seems to work and stability is ok.
 - Provide better low level support for simple resources as 'grouped_light' or 'light'.
 - Improve the generic device node (which allows using as of yet unsupported devices)
 - Provide a generic sevice node (to allow using as of yet unsupported services)
+- Support more devices
+  - smart button (should be easy to do, but i don't have one to test)
+  - tap dial switch (should be similar to a lutron aurora, but i don't have one to test)
 
 # Use
 Using these nodes requires a bit of knowledge on the clip v2 api, as i designed this palette
@@ -41,9 +45,11 @@ associated with that resource id will come out as payload, and whatever payload 
 will be sent as a put request to the clip interface.
 
 The following command will for instance switch a light, room or zone on:
+
 ```{ "rtypes": ["light", "grouped_light"], "payload": { "on": { "on": true } } }```
 
 And the following command wil set the brightness to 50%:
+
 ```{ "rtypes": ["light", "grouped_light"], "payload": { "dimming": { "brightness": 50 } } }```
 
 Do note that to address a node, you must either provide an msg.rids array that contains the rid
