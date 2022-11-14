@@ -41,10 +41,10 @@ associated with that resource id will come out as payload, and whatever payload 
 will be sent as a put request to the clip interface.
 
 The following command will for instance switch a light, room or zone on:
-'''{ "rtypes": ["light", "grouped_light"], "payload": { "on": { "on": true } } }'''
+```{ "rtypes": ["light", "grouped_light"], "payload": { "on": { "on": true } } }```
 
 And the following command wil set the brightness to 50%:
-'''{ "rtypes": ["light", "grouped_light"], "payload": { "dimming": { "brightness": 50 } } }'''
+```{ "rtypes": ["light", "grouped_light"], "payload": { "dimming": { "brightness": 50 } } }```
 
 Do note that to address a node, you must either provide an msg.rids array that contains the rid
 of the resource you wish to address, or an msg.rtypes array that contains the rtype of the resource
