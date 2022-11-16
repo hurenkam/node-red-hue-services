@@ -199,8 +199,8 @@ class ClipApi extends events.EventEmitter {
         });
 
         return result.filter(function(resource) {
-            if ((models) && (resource.item.model)) {
-                return models.includes(resource.item.model);
+            if ((models) && (resource.item.product_data) && (resource.item.product_data.model_id)) {
+                return models.includes(resource.item.product_data.model_id);
             } else {
                 return true;
             }
