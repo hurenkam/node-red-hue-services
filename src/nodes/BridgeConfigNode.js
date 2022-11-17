@@ -126,7 +126,14 @@ BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedServicesById', async 
     console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetSortedServicesById()\")");
     var clip = bridges[req.query.bridge_id].instance.clip;
     var services = clip.getSortedServicesById(req.query.uuid);
-    res.end(JSON.stringify(Object(services)));
+    var options = [];
+    services.forEach((service) => {
+        options.push({ 
+            value: service.rid(), 
+            label: service.typeName() 
+        });
+    });
+    res.end(JSON.stringify(Object(options)));
 });
 
 BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedResourceOptions', async function (req, res, next) {

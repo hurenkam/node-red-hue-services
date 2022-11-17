@@ -35,29 +35,37 @@ class DimmerSwitchNode extends DeviceNode {
     }
 
     onServicesUpdate(resource) {
-        console.log("DimmerSwitchNode["+this.logid()+"].onServiceUpdate()");
+        //console.log("DimmerSwitchNode["+this.logid()+"].onServiceUpdate() resource.id:", resource.id);
         if (this.config.translate) {
             if ((resource.type == "button") && (resource.button) && (resource.button.last_event)) {
                 var msg = [];
                 var index = 0;
+                var button = 0;
 
-                var rids = this.resource.rids;
-                while ((index < rids.length) && (rids[index] != resource.id)) {
-                    if (this.config.multi) msg.push(null);
-                    index += 1;
-                }
-
-                var item = this.config.buttons[index][resource.button.last_event];
-                if (Object.keys(this.config.buttons[index]).includes(resource.button.last_event)) {
-                    console.log("DimmerSwitchNode["+this.logid()+"].onServiceUpdate() translate buttons["+index+"][\""+resource.button.last_event+"\"]");
-                    //console.log(this.config.buttons[index][resource.button.last_event]);
-
-                    if ((item != null) && (item != "")) {
-                        msg.push(JSON.parse(item))
-                        this.send(msg);
+                var services = this.clip.getSortedServicesById(this.config.uuid);
+                if (services) {
+        
+                    // Find the service that matches the resource id,
+                    // and update index and msg accordingly
+                    while ((index < services.length) && (services[index].rid() != resource.id)) {
+                        if (this.config.multi) msg.push(null);
+                        if (services[index].rtype() == "button") {
+                            button += 1;
+                        }
+                        index += 1;
                     }
 
-                    return // do not call super
+                    var item = this.config.buttons[button][resource.button.last_event];
+                    if (Object.keys(this.config.buttons[button]).includes(resource.button.last_event)) {
+                        //console.log("DimmerSwitchNode["+this.logid()+"].onServiceUpdate() translate buttons["+index+"][\""+resource.button.last_event+"\"]");
+
+                        if ((item != null) && (item != "")) {
+                            msg.push(JSON.parse(item))
+                            this.send(msg);
+                        }
+
+                        return // do not call super
+                    }
                 }
             }
         }

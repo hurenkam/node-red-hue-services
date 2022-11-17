@@ -45,17 +45,19 @@ class ServiceListNode extends ResourceNode {
         var msg = [];
         var index = 0;
 
-        if ((this.resource.rids) && (this.resource.services)) {
+        console.log("ServiceListNode.onServicesUpdate() uuid:",this.config.uuid);
+        var services = this.clip.getSortedServicesById(this.config.uuid);
+        if (services) {
 
             // Find the service that matches the resource id,
             // and update index and msg accordingly
-            while ((index < this.resource.rids.length) && (this.resource.rids[index] != event.id)) {
+            while ((index < services.length) && (services[index].rid() != event.id)) {
                 if (this.config.multi) msg.push(null);
                 index += 1;
             }
 
             // if resource id was found then send the message
-            if (index < this.resource.rids.length) {
+            if (index < services.length) {
                 msg.push({ index: index, payload: event });
                 this.send(msg);
             }

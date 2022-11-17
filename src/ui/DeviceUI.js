@@ -46,7 +46,7 @@ export class DeviceUI extends ResourceUI {
                     config.outputLabels = [];
                     if (multi) {
                         services.forEach(service => {
-                            config.outputLabels.push(service.rtype);
+                            config.outputLabels.push(service.label);
                         });
                     } else {
                         config.outputs = 1;
