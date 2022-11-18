@@ -9,6 +9,7 @@
     import { MotionSensorUI }     from "./src/ui/MotionSensorUI.js";
     import { WallSwitchModuleUI } from "./src/ui/WallSwitchModuleUI.js";
 
+    import { ServiceUI }          from "./src/ui/ServiceUI.js";
     import { SceneUI }            from "./src/ui/SceneUI.js";
     import { RoomUI }             from "./src/ui/RoomUI.js";
     import { ZoneUI }             from "./src/ui/ZoneUI.js";
@@ -26,6 +27,7 @@
         "MotionSensorNode": MotionSensorUI,
         "WallSwitchModuleNode": WallSwitchModuleUI,
 
+        "ServiceNode": ServiceUI,
         "SceneNode": SceneUI,
         "RoomNode": RoomUI,
         "ZoneNode": ZoneUI,
@@ -35,8 +37,8 @@
     }
 
     Object.keys(nodes).forEach((id) => {
-        console.log(id,new nodes[id]().config);
         var idUI = id.replace("Node","UI");
+        console.log(id,idUI,new nodes[id]().config);
 
         var template = document.createElement("script");
         template.setAttribute("type","text/html");

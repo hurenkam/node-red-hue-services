@@ -20,7 +20,11 @@ class ResourceNode extends BaseNode {
     onClipStarted() {
         console.log("ResourceNode[" + this.logid() + "].onStartup()");
         this.resource = this.clip.resources[this.config.uuid];
-        this.onStartup();
+        if (!this.resource) {
+            console.log("ResourceNode[" + this.logid() + "].onStartup(): Unable to lookup resource instance for uuid",this.config.uuid);
+        } else {
+            this.onStartup();
+        }
     }
 
     onStartup() {

@@ -125,7 +125,7 @@ BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetBridgeOptions', async funct
 BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedServicesById', async function (req, res, next) {
     console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetSortedServicesById()\")");
     var clip = bridges[req.query.bridge_id].instance.clip;
-    var services = clip.getSortedServicesById(req.query.uuid);
+    var services = clip.getSortedServicesById(req.query.uuid,req.query.rtype);
     var options = [];
     services.forEach((service) => {
         options.push({ 
@@ -140,6 +140,28 @@ BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedResourceOptions', asy
     console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetSortedResourceOptions()\")");
     var clip = bridges[req.query.bridge_id].instance.clip;
     var options = clip.getSortedResourceOptions(req.query.type, req.query.models);
+    res.end(JSON.stringify(Object(options)));
+});
+
+BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedTypeOptions', async function (req, res, next) {
+    console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetSortedTypeOptions()\")");
+    var clip = bridges[req.query.bridge_id].instance.clip;
+    var options = clip.getSortedTypeOptions();
+    res.end(JSON.stringify(Object(options)));
+});
+
+
+BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedOwnerOptions', async function (req, res, next) {
+    console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetSortedOwnerOptions()\")");
+    var clip = bridges[req.query.bridge_id].instance.clip;
+    var options = clip.getSortedOwnerOptions(req.query.rtype);
+    res.end(JSON.stringify(Object(options)));
+});
+
+BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedServiceOptions', async function (req, res, next) {
+    console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetSortedServiceOptions()\")");
+    var clip = bridges[req.query.bridge_id].instance.clip;
+    var options = clip.getSortedServiceOptions(req.query.owner,req.query.rtype);
     res.end(JSON.stringify(Object(options)));
 });
 

@@ -13,6 +13,7 @@ module.exports = function(RED) {
     const MotionSensorNode = require('./nodes/MotionSensorNode');
     const WallSwitchModuleNode = require('./nodes/WallSwitchModuleNode');
 
+    const ServiceNode = require('./nodes/ServiceNode');
     const SceneNode = require('./nodes/SceneNode');
 
     const MotionBehaviorNode = require('./nodes/MotionBehaviorNode');
@@ -28,6 +29,7 @@ module.exports = function(RED) {
         "MotionSensorNode": MotionSensorNode,
         "WallSwitchModuleNode": WallSwitchModuleNode,
 
+        "ServiceNode": ServiceNode,
         "RoomNode": LightNode,
         "SceneNode": SceneNode,
         "ZoneNode": LightNode,

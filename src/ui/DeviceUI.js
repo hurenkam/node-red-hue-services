@@ -3,7 +3,7 @@ import { ResourceUI } from "./ResourceUI.js";
 export class DeviceUI extends ResourceUI {
     constructor(label="Generic Device",category="hue devices") {
         super(label,category);
-        console.log("DeviceUI.constructor()");
+        console.log("DeviceUI.constructor():",this.constructor.name);
 
         this.config.defaults.multi = { value: false };
 
@@ -24,12 +24,11 @@ export class DeviceUI extends ResourceUI {
         this.checkboxInput(template_root,"multi","Seperate outputs",config.multi);        
     }
 
-    onEditSave(config) {
-        console.log("DeviceUI.onEditSave()");
-
+    updateOutputs(config) {
         var uuid = $('#node-input-uuid').val();
         var bridge = $('#node-input-bridge').val();
         var multi = $("#node-input-multi").prop('checked');
+        console.log("DeviceUI.updateOutputs()",config)
 
         if ((uuid) && (bridge))
         { 
@@ -54,6 +53,16 @@ export class DeviceUI extends ResourceUI {
                 }
             });
         }
+    }
+
+    onEditPrepare(config) {
+        this.updateOutputs(config);
+        super.onEditPrepare(config);
+    }
+
+    onEditSave(config) {
+        console.log("DeviceUI.onEditSave()");
+        this.updateOutputs(config);
         super.onEditSave(config);
     }
 }

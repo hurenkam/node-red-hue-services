@@ -6,10 +6,10 @@ export class BaseUI {
         this.config = {
             category: category,
             defaults: {
-                name:      { value:"" },
+                name:      { value: "" },
+                inputs:    { value: 1 },
+                outputs:   { value: 1 }
             },
-            inputs: 1,
-            outputs: 1,
             label: function() {
                 return this.name||label;
             },
@@ -109,7 +109,7 @@ export class BaseUI {
         console.log("BaseUI.build()");
         var template_root = this.getTemplateRoot();
         if (!template_root) {
-            console.log("template-root not found.")
+            console.log("template-root "+this.constructor.name+" not found.")
             return;
         }
 

@@ -1,5 +1,6 @@
 const events = require('events');
 const EventSource = require('eventsource');
+const { rmdirSync } = require('fs');
 const { emit } = require('process');
 const RestApi = require('../RestApi');
 
@@ -141,7 +142,7 @@ class ClipApi extends events.EventEmitter {
         this.resources.remove(resource.rid());
     }
 
-    getSortedServicesById(uuid,rtype="device") {
+    getSortedServicesById(uuid) {
         //console.log("ClipApi[" + this.name + "].getSortedServicesById(" + uuid + "," + rtype + ")");
 
         var services = [];
@@ -180,6 +181,8 @@ class ClipApi extends events.EventEmitter {
             return 0;
         });
 
+        console.log(result);
+
         return result.filter(function(resource) {
             if ((models) && (resource.item.product_data) && (resource.item.product_data.model_id)) {
                 return models.includes(resource.item.product_data.model_id);
@@ -196,6 +199,79 @@ class ClipApi extends events.EventEmitter {
         var resources = this.getSortedResourcesByTypeAndModel(type,models);
         resources.forEach((resource) => {
             options.push({ value: resource.rid(), label: (resource.name()? resource.name() : resource.id()) });
+        });
+
+        options.sort(function (a, b) {
+            if (a.label > b.label) return 1;
+            if (a.label < b.label) return -1;
+            return 0;
+        });
+
+        return options;
+    }
+
+    getSortedTypeOptions() {
+        console.log("ClipApi[" + this.name + "].getSortedTypeOptions()");
+        var options = [];
+        var rtypes = [];
+        Object.values(this.resources).forEach((resource)=>{
+            if (resource.owner) {
+                if (!rtypes.includes(resource.rtype())) {
+                    rtypes.push(resource.rtype());
+                    options.push({ value: resource.rtype(), label: resource.rtype()});
+                }
+            }
+        });
+
+        options.sort(function (a, b) {
+            if (a.label > b.label) return 1;
+            if (a.label < b.label) return -1;
+            return 0;
+        });
+
+        return options;
+    }
+
+    getSortedOwnerOptions(rtype) {
+        console.log("ClipApi[" + this.name + "].getSortedOwnerOptions(" + rtype + ")");
+
+        var options = [];
+        var rids = [];
+        Object.values(this.resources).forEach((resource)=>{
+            if (resource.services) {
+                Object.values(resource.services).forEach((service) => {
+                    if ((service.rtype() == rtype) && (!rids.includes(resource.rid()))) {
+                        rids.push(resource.rid());
+                        options.push({ value: resource.rid(), label: resource.name() });
+                    }
+                });
+            }
+        });
+
+        options.sort(function (a, b) {
+            if (a.label > b.label) return 1;
+            if (a.label < b.label) return -1;
+            return 0;
+        });
+
+        return options;
+    }
+
+    getSortedServiceOptions(uuid,rtype) {
+        console.log("ClipApi[" + this.name + "].getSortedServiceOptions("+ uuid + "," + rtype + ")");
+
+        var options = [];
+        var owner = this.resources[uuid];
+        Object.values(owner.services).forEach((service) => {
+            if (service.rtype() == rtype) {
+                options.push({ value: service.rid(), label: service.typeName() });
+            }
+        });
+
+        options.sort(function (a, b) {
+            if (a.label > b.label) return 1;
+            if (a.label < b.label) return -1;
+            return 0;
         });
 
         return options;
