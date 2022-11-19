@@ -1,25 +1,27 @@
 <script type="module">
 
-    import { BridgeConfigUI }     from "./src/ui/BridgeConfigUI.js";
+    import { BridgeConfigUI }         from "./src/ui/BridgeConfigUI.js";
 
-    import { DeviceUI }           from "./src/ui/DeviceUI.js";
-    import { DimmerSwitchUI }     from "./src/ui/DimmerSwitchUI.js";
-    import { LightUI }            from "./src/ui/LightUI.js";
-    import { LutronAuroraUI }     from "./src/ui/LutronAuroraUI.js";
-    import { MotionSensorUI }     from "./src/ui/MotionSensorUI.js";
-    import { WallSwitchModuleUI } from "./src/ui/WallSwitchModuleUI.js";
+    import { DeviceUI }               from "./src/ui/DeviceUI.js";
+    import { DimmerSwitchUI }         from "./src/ui/DimmerSwitchUI.js";
+    import { LightUI }                from "./src/ui/LightUI.js";
+    import { LutronAuroraUI }         from "./src/ui/LutronAuroraUI.js";
+    import { MotionSensorUI }         from "./src/ui/MotionSensorUI.js";
+    import { WallSwitchModuleUI }     from "./src/ui/WallSwitchModuleUI.js";
 
-    import { DevicePowerUI }      from "./src/ui/DevicePowerUI.js";
-    import { LightLevelUI }       from "./src/ui/LightLevelUI.js";
-    import { MotionUI }           from "./src/ui/MotionUI.js";
-    import { TemperatureUI }      from "./src/ui/TemperatureUI.js";
-    import { ServiceUI }          from "./src/ui/ServiceUI.js";
-    import { SceneUI }            from "./src/ui/SceneUI.js";
-    import { RoomUI }             from "./src/ui/RoomUI.js";
-    import { ZoneUI }             from "./src/ui/ZoneUI.js";
+    import { ServiceUI }              from "./src/ui/ServiceUI.js";
+    import { DevicePowerUI }          from "./src/ui/DevicePowerUI.js";
+    import { LightLevelUI }           from "./src/ui/LightLevelUI.js";
+    import { MotionUI }               from "./src/ui/MotionUI.js";
+    import { TemperatureUI }          from "./src/ui/TemperatureUI.js";
+    import { ZigbeeConnectivityUI }   from "./src/ui/ZigbeeConnectivityUI.js";
 
-    import { MotionBehaviorUI }   from "./src/ui/MotionBehaviorUI.js";
-    import { SceneCyclerUI }      from "./src/ui/SceneCyclerUI.js";
+    import { SceneUI }                from "./src/ui/SceneUI.js";
+    import { RoomUI }                 from "./src/ui/RoomUI.js";
+    import { ZoneUI }                 from "./src/ui/ZoneUI.js";
+
+    import { MotionBehaviorUI }       from "./src/ui/MotionBehaviorUI.js";
+    import { SceneCyclerUI }          from "./src/ui/SceneCyclerUI.js";
 
     var nodes = {
         "BridgeConfigNode": BridgeConfigUI,
@@ -31,6 +33,7 @@
         "MotionSensorNode": MotionSensorUI,
         "WallSwitchModuleNode": WallSwitchModuleUI,
 
+        "ZigbeeConnectivityNode": ZigbeeConnectivityUI,
         "DevicePowerNode": DevicePowerUI,
         "LightLevelNode": LightLevelUI,
         "MotionNode": MotionUI,

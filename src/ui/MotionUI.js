@@ -6,8 +6,6 @@ export class MotionUI extends ServiceUI {
         console.log("MotionUI.constructor()");
 
         this.config.color = "#FFC0FF";
-        this.config.inputs = 1;
-        this.config.outputs = 1;
         this.config.icon = "font-awesome/fa-rss";
     }
 

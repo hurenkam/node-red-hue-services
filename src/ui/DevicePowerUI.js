@@ -6,8 +6,6 @@ export class DevicePowerUI extends ServiceUI {
         console.log("DevicePowerUI.constructor()");
 
         this.config.color = "#FFD8D8";
-        this.config.inputs = 1;
-        this.config.outputs = 1;
         this.config.icon = "font-awesome/fa-battery-three-quarters";
     }
 

@@ -17,7 +17,9 @@ module.exports = function(RED) {
     const LightLevelNode = require('./nodes/LightLevelNode');
     const MotionNode = require('./nodes/MotionNode');
     const TemperatureNode = require('./nodes/TemperatureNode');
+    const ZigbeeConnectivityNode = require('./nodes/ZigbeeConnectivityNode');
     const ServiceNode = require('./nodes/ServiceNode');
+    
     const SceneNode = require('./nodes/SceneNode');
 
     const MotionBehaviorNode = require('./nodes/MotionBehaviorNode');
@@ -37,7 +39,9 @@ module.exports = function(RED) {
         "LightLevelNode": LightLevelNode,
         "MotionNode": MotionNode,
         "TemperatureNode": TemperatureNode,
+        "ZigbeeConnectivityNode": ZigbeeConnectivityNode,
         "ServiceNode": ServiceNode,
+
         "RoomNode": LightNode,
         "SceneNode": SceneNode,
         "ZoneNode": LightNode,

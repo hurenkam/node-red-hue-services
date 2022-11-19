@@ -6,8 +6,6 @@ export class LightLevelUI extends ServiceUI {
         console.log("LightLevelUI.constructor()");
 
         this.config.color = "#FFFFC0";
-        this.config.inputs = 1;
-        this.config.outputs = 1;
         this.config.icon = "font-awesome/fa-sun-o";
     }
 
