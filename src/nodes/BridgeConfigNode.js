@@ -160,6 +160,7 @@ BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedOwnerOptions', async 
 
 BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedServiceOptions', async function (req, res, next) {
     console.log("BridgeConfigNode.get(\"/BridgeConfigNode/GetSortedServiceOptions()\")");
+    console.log(req.query);
     var clip = bridges[req.query.bridge_id].instance.clip;
     var options = clip.getSortedServiceOptions(req.query.owner,req.query.rtype);
     res.end(JSON.stringify(Object(options)));

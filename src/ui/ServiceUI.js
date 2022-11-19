@@ -1,13 +1,13 @@
 import { BaseUI } from "./BaseUI.js";
 
 export class ServiceUI extends BaseUI {
-    constructor(label="Service",category="hue services") {
+    constructor(label="Service",category="hue services",rtype="") {
         super(label,category);
         console.log("ServiceUI.constructor()");
 
         this.config.defaults.name =     { value:"" };
         this.config.defaults.bridge =   { type: "BridgeConfigNode", required: true };
-        this.config.defaults.rtype =    { value:"", required: true };
+        this.config.defaults.rtype =    { value:rtype, required: true };
         this.config.defaults.owner =    { value:"", required: true };
         this.config.defaults.uuid =     { value:"", required: true };
 
@@ -15,7 +15,7 @@ export class ServiceUI extends BaseUI {
         this.config.color = "#EEEEEE";
         this.config.icon = "font-awesome/fa-gears";
 
-        this.rtype = null;
+        //this.rtype = rtype;
         this.models = null;
     }
 
@@ -182,6 +182,32 @@ export class ServiceUI extends BaseUI {
         );
     }
 
+    showServiceSelectionIfThereIsChoice() {
+        console.log("TemperatureUI[].showServiceSelectionIfThereIsChoice()");
+
+        var bridge = $('#node-input-bridge').val();
+        var owner = $('#node-input-owner').val();
+        var rtype = $('#node-input-rtype').val();
+        
+        if ((!bridge) || (!owner) || (owner=="") || (!rtype) || (rtype=="")) return;
+
+        $.get("BridgeConfigNode/GetSortedServiceOptions", {
+            bridge_id: bridge,
+            rtype: rtype,
+            owner: owner
+        })
+        .done(function(data) {
+            var options = JSON.parse(data);
+            console.log("Options:",options);
+            if (options.length == 1) {
+                $('#node-input-uuid').val(options[0].value);
+                $('#node-container-uuid').hide();
+            } else if (options.length > 1) {
+                $('#node-container-uuid').show();
+            }
+        })
+    };
+
     onEditPrepare(config) {
         super.onEditPrepare(config);
         console.log("ServiceUI.onEditPrepare()");
@@ -227,5 +253,15 @@ export class ServiceUI extends BaseUI {
         });
         instance.selectService();
 
+        $('#node-input-owner').change(function() {
+            console.log("TemperatureUI[].onEditPrepare().on('change')");
+            instance.showServiceSelectionIfThereIsChoice();
+            instance.selectText("uuid");
+            instance.selectService();
+        });
+
+        $('#node-container-uuid').hide();
+
+        this.showServiceSelectionIfThereIsChoice();
     }
 }

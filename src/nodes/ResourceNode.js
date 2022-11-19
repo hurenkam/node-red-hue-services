@@ -2,10 +2,9 @@ Resource = require("../clip/Resource");
 BaseNode = require("./BaseNode");
 
 class ResourceNode extends BaseNode {
-    constructor(config,rtype=null) {
+    constructor(config) {
         super(config);
         console.log("ResourceNode[" + this.logid() + "].constructor()");
-        this.rtype = rtype;
 
         var instance = this;
         this.clip = BaseNode.nodeAPI.nodes.getNode(config.bridge).clip;
@@ -71,7 +70,6 @@ class ResourceNode extends BaseNode {
     onClose() {
         console.log("ResourceNode[" + this.logid() + "].onClose()");
         this.clip = null;
-        this.rtype = null;
         super.onClose();
     }
 }
