@@ -2,7 +2,7 @@ import { BaseUI } from "./BaseUI.js"
 
 export class BridgeConfigUI extends BaseUI {
     constructor() {
-        super();
+        super("BridgeConfig");
         console.log("BridgeConfigUI.constructor()");
 
         this.config.category = 'config';

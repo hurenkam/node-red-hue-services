@@ -35,7 +35,7 @@ export class LightUI extends DeviceUI {
     buildHelp() {
         var help = super.buildHelp();
         help["Input"] += "\n\n\
-For a Light you would typically put `['light']` in `msg.rtypes`, to indicate you want to \
+For a Light you can put `['light']` in `msg.rtypes`, to indicate you want to \
 address its 'light' service. In the `msg.payload` you can put for instance \
 `{ 'on': { 'on': true } }` to switch the light on (or use `{ 'on': { 'on': false } }` \
 to switch the light off).\n\n\
