@@ -17,6 +17,19 @@ export class ResourceUI extends BaseUI {
         this.models = null;
     }
 
+    buildHelp() {
+        var help = super.buildHelp();
+        help["Settings"] += "\
+#### Bridge\n\
+Select the hue bridge for your device or resource.\n\n\
+#### UUID\n\
+Select the device or service by UUID, you can toggle between search \
+and manual input. The search will query the bridge for suitable devices \
+and present them as a selection list.\n\n\
+";
+        return help;
+    }
+
     build(config) {
         super.build(config);
         console.log("ResourceUI.build()");

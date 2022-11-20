@@ -11,6 +11,30 @@ export class DeviceUI extends ResourceUI {
         this.models = null;
     }
 
+    buildHelp() {
+        var help = super.buildHelp();
+        help["Settings"] += "\
+#### Seperate outputs\n\
+Select this if you wish to have a seperate output for each service the device offers.\n\n\
+";
+        help["Input"] = "\
+If you wish to address the resource itself, or one of the services it owns, you need to \
+address them specifically either by adding the resource id to the `msg.rids` list (formatted \
+as JSON), or adding the resource type to the `msg.rtypes` list (formatted as JSON).\n\
+The content of `msg.payload` will then be forwarded as a 'put' request to the clip v2 url \
+for the resource.\n\n\
+";
+        help['Outputs'] = "\
+All events pertaining to either the device or one of its resources will be monitored and passed \
+as `msg.payload` to the output (this is formatted as a json object). See the clip v2 specification \
+as to what exactly that output will be for the specific services you are interested in.\n\n\
+If you have selected *Seperate outputs* then you will see that the device and each of its \
+services has a seperate output. Note that the labels on the outputs are automatically set \
+to enumerate the type of the resource.\n\n\
+";
+        return help;
+    }
+
     build(config) {
         super.build(config);
         console.log("DeviceUI.build()");

@@ -19,7 +19,30 @@ export class BaseUI {
             oneditcancel:  function() { instance.onEditCancel(this) },
         }
 
-        //console.log(this.config)
+        this.help = this.buildHelp();
+    }
+
+    buildHelp() {
+        return {
+            "intro": "",
+            "Settings": "",
+            "Input": "",
+            "Outputs": "",
+            "Details": ""
+        }
+    }
+
+    manual() {
+        var text = "";
+        Object.keys(this.help).forEach((key)=>{
+            if ((this.help[key]) && (this.help[key]!="")) {
+                if (key != "intro") {
+                    text += "\n### " + key + "\n";
+                }
+                text += this.help[key];
+            }
+        });
+        return text;
     }
 
     textInput(parent,id,label,value) {

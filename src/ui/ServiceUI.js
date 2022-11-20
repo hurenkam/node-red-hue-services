@@ -19,6 +19,29 @@ export class ServiceUI extends BaseUI {
         this.models = null;
     }
 
+    buildHelp() {
+        var help = super.buildHelp();
+        help["Settings"] += "\
+#### Bridge\n\
+Select the hue bridge for your device or resource.\n\n\
+#### Type\n\
+If the node works for multiple types, then you can select a type here. Otherwise \
+the field is hidden. \
+\n\n\
+#### Owner\n\
+Here you can either fill in the UUID of the device that offers the service \
+or alternately you can select the owner from the available list of devices.\
+\n\n\
+#### UUID\n\
+If the selected owner offers only one service of the (pre)selected type, then \
+this field is hidden, and the one choice is automatically selected. \n\n\
+If not, then it offers you a choice of either filling in the UUID of the service \
+to be selected, or you can select one from the list which is offered. \
+\n\n\
+";
+        return help;
+    }
+
     build(config) {
         super.build(config);
         console.log("ServiceUI.build()");

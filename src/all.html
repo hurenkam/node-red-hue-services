@@ -49,7 +49,9 @@
 
     Object.keys(nodes).forEach((id) => {
         var idUI = id.replace("Node","UI");
-        console.log(id,idUI,new nodes[id]().config);
+        var idHelp = id.replace("Node","Help");
+        var node = new nodes[id]();
+        console.log(id,idUI,idHelp,new nodes[id]().config);
 
         var template = document.createElement("script");
         template.setAttribute("type","text/html");
@@ -58,11 +60,12 @@
         document.documentElement.appendChild(template);
 
         var help = document.createElement("script");
-        help.setAttribute("type","text/html");
+        help.setAttribute("type","text/markdown");
         help.setAttribute("data-help-name",id);
-        document.documentElement.appendChild(template);
+        help.innerHTML = node.manual();
+        document.documentElement.appendChild(help);
 
-        RED.nodes.registerType(id, new nodes[id]().config);
+        RED.nodes.registerType(id,node.config);
     });
 
 </script>

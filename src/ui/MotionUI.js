@@ -9,6 +9,16 @@ export class MotionUI extends ServiceUI {
         this.config.icon = "font-awesome/fa-rss";
     }
 
+    buildHelp() {
+        var help = super.buildHelp();
+        help["Outputs"] += "\
+The Motion node only has one output. It will listen to events for the specified service \
+and forward them to the output as `msg.payload` which contains the motion events in a \
+JSON format conform the clip v2 specification.\n\n\
+";
+        return help;
+    }
+
     onEditPrepare(config) {
         super.onEditPrepare(config);
         $('#node-container-rtype').hide();

@@ -12,4 +12,15 @@ export class ZoneUI extends ResourceUI {
 
         this.rtype = "zone";
     }
+
+    buildHelp() {
+        var help = super.buildHelp();
+        help["Input"] += "\n\n\
+For a Zone you could put `['grouped_light']` in `msg.rtypes`, to indicate you want to \
+address its 'grouped_light' service. In the `msg.payload` you can put for instance \
+`{ 'on': { 'on': true } }` to switch the zone on (or use `{ 'on': { 'on': false } }` \
+to switch the zone off).\n\n\
+";
+        return help;
+    }
 }
