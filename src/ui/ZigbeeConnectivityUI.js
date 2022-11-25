@@ -15,7 +15,8 @@ export class ZigbeeConnectivityUI extends ServiceUI {
 The Zigbee Connectivity node only has one output. It will listen to events for the specified service \
 and forward them to the output as `msg.payload` which contains the zigbee_connectivity events in a \
 JSON format conform the clip v2 specification.\n\n\
-";
+Please see the Hue CLIP API documentation: \n\n\
+https://developers.meethue.com/develop/hue-api-v2";
         return help;
     }
 

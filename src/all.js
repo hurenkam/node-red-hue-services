@@ -8,12 +8,14 @@ module.exports = function(RED) {
 
     const DeviceNode = require('./nodes/DeviceNode');
     const DimmerSwitchNode = require('./nodes/DimmerSwitchNode');
-    const LightNode = require('./nodes/LightNode');
+    const LampNode = require('./nodes/LampNode');
     const LutronAuroraNode = require('./nodes/LutronAuroraNode');
     const MotionSensorNode = require('./nodes/MotionSensorNode');
     const WallSwitchModuleNode = require('./nodes/WallSwitchModuleNode');
 
     const DevicePowerNode = require('./nodes/DevicePowerNode');
+    const GroupedLightNode = require('./nodes/GroupedLightNode');
+    const LightNode = require('./nodes/LightNode');
     const LightLevelNode = require('./nodes/LightLevelNode');
     const MotionNode = require('./nodes/MotionNode');
     const TemperatureNode = require('./nodes/TemperatureNode');
@@ -30,21 +32,23 @@ module.exports = function(RED) {
 
         "DeviceNode": DeviceNode,
         "DimmerSwitchNode": DimmerSwitchNode,
-        "LightNode": LightNode,
+        "LampNode": LampNode,
         "LutronAuroraNode": LutronAuroraNode,
         "MotionSensorNode": MotionSensorNode,
         "WallSwitchModuleNode": WallSwitchModuleNode,
 
         "DevicePowerNode": DevicePowerNode,
+        "GroupedLightNode": GroupedLightNode,
+        "LightNode": LightNode,
         "LightLevelNode": LightLevelNode,
         "MotionNode": MotionNode,
         "TemperatureNode": TemperatureNode,
         "ZigbeeConnectivityNode": ZigbeeConnectivityNode,
         "ServiceNode": ServiceNode,
 
-        "RoomNode": LightNode,
+        "RoomNode": LampNode,
         "SceneNode": SceneNode,
-        "ZoneNode": LightNode,
+        "ZoneNode": LampNode,
 
         "MotionBehaviorNode": MotionBehaviorNode,
         "SceneCyclerNode": SceneCyclerNode

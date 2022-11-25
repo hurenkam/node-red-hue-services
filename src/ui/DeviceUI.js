@@ -32,6 +32,11 @@ If you have selected *Seperate outputs* then you will see that the device and ea
 services has a seperate output. Note that the labels on the outputs are automatically set \
 to enumerate the type of the resource.\n\n\
 ";
+        help['Details'] = "\
+For more detailed information regarding the content of the `msg.payload`, either for incoming \
+or outgoing messages, please see the Hue CLIP API documentation: \n\n\
+https://developers.meethue.com/develop/hue-api-v2 \
+";
         return help;
     }
 

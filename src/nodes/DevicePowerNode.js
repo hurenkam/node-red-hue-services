@@ -19,8 +19,8 @@ class DevicePowerNode extends ServiceNode {
         var text = "";
 
         if ((this.resource.item.power_state) && (this.resource.item.power_state.battery_level!=null)) {
-            fill = "blue";
-            text = ""+this.resource.item.power_state.battery_level+"%";
+            fill = (this.resource.item.power_state.battery_level > 10)? "green" : "red";
+            text = this.resource.item.power_state.battery_level+"%";
         }
 
         this.status({fill: fill, shape: shape, text: text});

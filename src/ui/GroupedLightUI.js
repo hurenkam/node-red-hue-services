@@ -1,23 +1,23 @@
 import { ServiceUI } from "./ServiceUI.js"
 
-export class LightUI extends ServiceUI {
+export class GroupedLightUI extends ServiceUI {
     constructor() {
-        super("Light","hue services","light");
-        console.log("LightUI.constructor()");
+        super("Grouped Light","hue services","grouped_light");
+        console.log("GroupedLightUI.constructor()");
 
-        this.config.color = "#FFFFC0";
+        this.config.color = "#E7E7AE";
         this.config.icon = "light.svg";
     }
 
     buildHelp() {
         var help = super.buildHelp();
         help["Inputs"] += "\
-The Light node accepts input. The `msg.payload` content (in JSON format) will be send as a put request to the associated Clip v2 resource url.\n\n\
+The Grouped Light node accepts input. The `msg.payload` content (in JSON format) will be send as a put request to the associated Clip v2 resource url.\n\n\
 Please see the Hue CLIP API documentation: \n\n\
 https://developers.meethue.com/develop/hue-api-v2";
         help["Outputs"] += "\
-The Light node only has one output. It will listen to Clip v2 events for this service \
-and forward them to the output as `msg.payload` which contains the light events in a \
+The Grouped Light node only has one output. It will listen to Clip v2 events for this service \
+and forward them to the output as `msg.payload` which contains the grouped_light events in a \
 JSON format conform the clip v2 specification.\n\n\
 Please see the Hue CLIP API documentation: \n\n\
 https://developers.meethue.com/develop/hue-api-v2";

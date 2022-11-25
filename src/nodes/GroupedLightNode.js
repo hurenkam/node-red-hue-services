@@ -1,9 +1,9 @@
 ServiceNode = require("./ServiceNode");
 
-class LightNode extends ServiceNode {
+class GroupedLightNode extends ServiceNode {
     constructor(config) {
         super(config);
-        console.log("LightNode[" + this.logid() + "].constructor()");
+        console.log("GroupedLightNode[" + this.logid() + "].constructor()");
     }
 
     onUpdate(event) {
@@ -27,7 +27,7 @@ class LightNode extends ServiceNode {
                 }
 
             } else if (this.resource.item.on.on==false) {
-                fill = "green";
+                fill = "blue";
                 text = "off";
             }
         }
@@ -36,4 +36,4 @@ class LightNode extends ServiceNode {
     }
 }
 
-module.exports = LightNode;
+module.exports = GroupedLightNode;

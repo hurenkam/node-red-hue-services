@@ -15,7 +15,8 @@ export class TemperatureUI extends ServiceUI {
 The Temperature node only has one output. It will listen to events for the specified service \
 and forward them to the output as `msg.payload` which contains the temperature events in a \
 JSON format conform the clip v2 specification.\n\n\
-";
+Please see the Hue CLIP API documentation: \n\n\
+https://developers.meethue.com/develop/hue-api-v2";
         return help;
     }
 

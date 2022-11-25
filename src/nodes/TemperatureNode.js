@@ -19,8 +19,8 @@ class TemperatureNode extends ServiceNode {
         var text = "";
 
         if (this.resource.item.temperature) {
-            if (this.resource.item.temperature.temperature) {
-                fill = "blue";
+            if (this.resource.item.temperature.temperature!=null) {
+                fill = "green";
                 text = ""+this.resource.item.temperature.temperature+"c";
             }
         }
