@@ -5,7 +5,7 @@ export class DevicePowerUI extends ServiceUI {
         super("Device Power","hue services","device_power");
         console.log("DevicePowerUI.constructor()");
 
-        this.config.color = "#D8D8FF";
+        this.config.color = "#B0E0FF";
         this.config.icon = "font-awesome/fa-battery-three-quarters";
     }
 

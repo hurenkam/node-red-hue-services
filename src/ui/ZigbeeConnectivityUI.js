@@ -5,7 +5,8 @@ export class ZigbeeConnectivityUI extends ServiceUI {
         super("Zigbee Connectivity","hue services","zigbee_connectivity");
         console.log("ZigbeeConnectivityUI.constructor()");
 
-        this.config.color = "#A8FFA8";
+        this.config.color = "#E0B0FF";
+        //this.config.color = "#F0F0F0";
         this.config.icon = "font-awesome/fa-sitemap";
     }
 

@@ -5,7 +5,8 @@ export class GroupedLightUI extends ServiceUI {
         super("Grouped Light","hue services","grouped_light");
         console.log("GroupedLightUI.constructor()");
 
-        this.config.color = "#E7E7AE";
+        this.config.color = "#FFFFA8";
+        //this.config.color = "#E7E7AE";
         this.config.icon = "light.svg";
     }
 

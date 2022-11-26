@@ -20,8 +20,8 @@ class MotionNode extends ServiceNode {
 
         if (this.resource.item.motion) {
             if (this.resource.item.motion.motion!=null) {
-                fill = (this.resource.item.motion.motion=="true")? "blue" : "green";
-                text = (this.resource.item.motion.motion=="true")? "motion" : "no motion";
+                fill = (this.resource.item.motion.motion==true)? "blue" : "grey";
+                text = (this.resource.item.motion.motion==true)? "motion" : "no motion";
             }
         }
 

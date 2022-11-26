@@ -5,7 +5,7 @@ export class LightUI extends ServiceUI {
         super("Light","hue services","light");
         console.log("LightUI.constructor()");
 
-        this.config.color = "#FFFFC0";
+        this.config.color = "#FFFFD8";
         this.config.icon = "light.svg";
     }
 
