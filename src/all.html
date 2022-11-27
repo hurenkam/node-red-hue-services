@@ -64,7 +64,7 @@
         var template = document.createElement("script");
         template.setAttribute("type","text/html");
         template.setAttribute("data-template-name",id);
-        template.innerHTML='<div id="'+idUI+'"></div>';
+        template.innerHTML = node.ui();
         document.documentElement.appendChild(template);
 
         var help = document.createElement("script");

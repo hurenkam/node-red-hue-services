@@ -21,20 +21,13 @@ export class MotionSensorUI extends DeviceUI {
         this.models = ["SML001","SML002"];
     }
 
-    build(config) {
-        super.build(config);
-        console.log("MotionSensorUI.build()");
-        
-        var template_root = this.getTemplateRoot();
-        if (!template_root) {
-            console.log("template-root not found.")
-            return;
-        }
-
-        this.checkboxInput(template_root,"smart","Smart mode",config.smart);        
-        this.numberInput(template_root,"motiontimeout","Motion timeout",config.motiontimeout);
-        this.jsonInput(template_root,"onmotion","On Motion",config.onmotion)
-        this.jsonInput(template_root,"ontimeout","On Timeout",config.ontimeout)
+    ui() {
+        var text = super.ui();
+        text += this.uiCheckboxInput("smart","Smart mode");        
+        text += this.uiNumberInput("motiontimeout","Motion timeout");
+        text += this.uiTextInput("onmotion","On Motion");
+        text += this.uiTextInput("ontimeout","On Timeout");
+        return text;
     }
 
     updateSmartOptions() {
@@ -61,8 +54,17 @@ export class MotionSensorUI extends DeviceUI {
         {
             instance.updateSmartOptions();
         });
-
         this.updateSmartOptions();
+
+        $("#node-input-onmotion").typedInput({
+            type:"json",
+            types:["json"]
+        });
+
+        $("#node-input-ontimeout").typedInput({
+            type:"json",
+            types:["json"]
+        });
     }
 
     onEditSave(config) {

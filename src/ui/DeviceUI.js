@@ -40,17 +40,10 @@ https://developers.meethue.com/develop/hue-api-v2 \
         return help;
     }
 
-    build(config) {
-        super.build(config);
-        console.log("DeviceUI.build()");
-
-        var template_root = this.getTemplateRoot();
-        if (!template_root) {
-            console.log("template-root not found.")
-            return;
-        }
-
-        this.checkboxInput(template_root,"multi","Seperate outputs",config.multi);        
+    ui() {
+        var text = super.ui();
+        text += this.uiCheckboxInput("multi","Seperate outputs");
+        return text;
     }
 
     updateOutputs(config) {

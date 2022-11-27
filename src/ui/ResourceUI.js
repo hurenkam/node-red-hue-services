@@ -30,18 +30,12 @@ and present them as a selection list.\n\n\
         return help;
     }
 
-    build(config) {
-        super.build(config);
-        console.log("ResourceUI.build()");
-
-        var template_root = this.getTemplateRoot();
-        if (!template_root) {
-            console.log("template-root not found.")
-            return;
-        }
-
-        this.selectInput(template_root,"bridge","Bridge",config.bridge);
-        this.selectInput(template_root,"uuid","UUID",config.uuid);
+    ui(){
+        var text = super.ui();
+        console.log("ResourceUI.ui()");
+        text += this.uiTextInput("bridge","Bridge");
+        text += this.uiSelectInput("uuid","UUID");
+        return text;
     }
 
     selectText(id) {
@@ -127,20 +121,11 @@ and present them as a selection list.\n\n\
         );
     }
 
-    selectBridge() {
-        console.log("ResourceUI.selectBridge()");
-        this.selectOption(
-            "bridge",
-            "BridgeConfigNode/GetBridgeOptions",
-            {}
-        );
-    }
-
     onEditPrepare(config) {
         super.onEditPrepare(config);
         console.log("ResourceUI.onEditPrepare()");
-
         var instance = this;
+
         $('#input-select-uuid-search').click(function()
         {
             if($('#input-select-uuid').find(".red-ui-typedInput-container").length > 0) {
@@ -150,15 +135,5 @@ and present them as a selection list.\n\n\
             }
         });
         instance.selectResource();
-
-        $('#input-select-bridge-search').click(function()
-        {
-            if($('#input-select-bridge').find(".red-ui-typedInput-container").length > 0) {
-                instance.selectText("bridge");
-            } else {
-                instance.selectBridge();
-            }
-        });
-        instance.selectBridge();
     }
 }

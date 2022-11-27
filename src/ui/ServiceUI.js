@@ -15,7 +15,6 @@ export class ServiceUI extends BaseUI {
         this.config.color = "#EEEEEE";
         this.config.icon = "font-awesome/fa-gears";
 
-        //this.rtype = rtype;
         this.models = null;
     }
 
@@ -42,20 +41,15 @@ to be selected, or you can select one from the list which is offered. \
         return help;
     }
 
-    build(config) {
-        super.build(config);
-        console.log("ServiceUI.build()");
+    ui() {
+        var text = super.ui();
+        console.log("ServiceUI.ui()");
 
-        var template_root = this.getTemplateRoot();
-        if (!template_root) {
-            console.log("template-root "+this.constructor.name+" not found.")
-            return;
-        }
-
-        this.selectInput(template_root,"bridge","Bridge",config.bridge);
-        this.selectInput(template_root,"rtype","Type",config.rtype);
-        this.selectInput(template_root,"owner","Owner",config.owner);
-        this.selectInput(template_root,"uuid","UUID",config.uuid);
+        text += this.uiTextInput("bridge","Bridge");
+        text += this.uiSelectInput("rtype","Type");
+        text += this.uiSelectInput("owner","Owner");
+        text += this.uiSelectInput("uuid","UUID");
+        return text;
     }
 
     selectText(id) {
@@ -114,15 +108,6 @@ to be selected, or you can select one from the list which is offered. \
             notification.close();
             RED.notify("unknown error", "error");
         });
-    }
-
-    selectBridge() {
-        console.log("ServiceUI.selectBridge()");
-        this.selectOption(
-            "bridge",
-            "BridgeConfigNode/GetBridgeOptions",
-            {}
-        );
     }
 
     selectType() {
@@ -234,17 +219,7 @@ to be selected, or you can select one from the list which is offered. \
     onEditPrepare(config) {
         super.onEditPrepare(config);
         console.log("ServiceUI.onEditPrepare()");
-
         var instance = this;
-        $('#input-select-bridge-search').click(function()
-        {
-            if($('#input-select-bridge').find(".red-ui-typedInput-container").length > 0) {
-                instance.selectText("bridge");
-            } else {
-                instance.selectBridge();
-            }
-        });
-        instance.selectBridge();
 
         $('#input-select-rtype-search').click(function()
         {

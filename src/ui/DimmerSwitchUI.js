@@ -5,7 +5,7 @@ export class DimmerSwitchUI extends DeviceUI {
         super("Hue Dimmer Switch");
         console.log("DimmerSwitchUI.constructor()");
 
-        this.config.defaults.translate = { value: false };
+        this.config.defaults.translate = { value: true };
         this.config.defaults.buttons = { value: [ 
                 { 
                     "initial_press": "{ \"rtypes\":  [\"light\", \"grouped_light\" ], \"payload\": { \"on\": { \"on\": true } } }"
@@ -27,17 +27,9 @@ export class DimmerSwitchUI extends DeviceUI {
         this.models = ["RWL020","RWL021"];
     }
 
-    build(config) {
-        super.build(config)
-        console.log("DimmerSwitchUI.build()");
-
-        var template_root = this.getTemplateRoot();
-        if (!template_root) {
-            console.log("template-root not found.")
-            return;
-        }
-
-        this.checkboxInput(template_root,"translate","Translate button output",config.translate);
+    ui() {
+        var text = super.ui();
+        text += this.uiCheckboxInput("translate","Translate button output");
 
         // ==============================================================================
         // Tab Header
@@ -49,9 +41,7 @@ export class DimmerSwitchUI extends DeviceUI {
             <div class="form-row button-tabs-row">\
                 <ul style="min-width: 600px; margin-bottom: 20px;" id="button-tabs"></ul>\
             </div>';
-
-        template_root.appendChild(button_tabs_header);
-
+        text += button_tabs_header.outerHTML;
 
         // ==============================================================================
         // Tab Content
@@ -65,25 +55,27 @@ export class DimmerSwitchUI extends DeviceUI {
             button_tab.setAttribute("style","display:none");
 
             ["initial_press","repeat","short_release","long_release"].forEach((item) => {
-                this.jsonInput(button_tab,"button"+i+"-"+item,item,config.buttons[i][item])
+                button_tab.innerHTML += this.uiTextInput("button"+i+"-"+item,item);
             });
-
-            button_tabs_content.appendChild(button_tab);
+            button_tabs_content.innerHTML += button_tab.outerHTML;
         }
-        template_root.appendChild(button_tabs_content);
+        text += button_tabs_content.outerHTML;
 
-        if (config.translate==true) {
-            $("#button-tabs-header").show();
-            $("#button-tabs-content").show();
-        } else {
-            $("#button-tabs-header").hide();
-            $("#button-tabs-content").hide();
-        }
+        return text;
     }
 
     onEditPrepare(config) {
         super.onEditPrepare(config);
         console.log("DimmerSwitchUI.onEditPrepare()");
+
+        for (var i = 0; i < 4; i++) {
+            ["initial_press","repeat","short_release","long_release"].forEach((item) => {
+                $("#node-input-button"+i+"-"+item).typedInput({
+                    type:"json",
+                    types:["json"],
+                });
+            });
+        }
 
         // Create the button translation tabs
         // ==============================================================================
@@ -115,8 +107,8 @@ export class DimmerSwitchUI extends DeviceUI {
         $("#button-tabs-content").children().hide();
         $("#button0-tab-body").show();
 
-        $('#input-select-translate').change(function()
-        {
+        $('#input-select-translate').change(function() {
+
             console.log("DimmerSwitchNode.oneditprepare.$('#input-select-translate').change()");
             var translate = $("#node-input-translate").prop('checked');
 
@@ -129,6 +121,15 @@ export class DimmerSwitchUI extends DeviceUI {
             }
 
         });
+
+        for (var i = 0; i < 4; i++) {
+            ["initial_press","repeat","short_release","long_release"].forEach((item) => {
+                if (config.buttons[i][item]) {
+                    console.log("DimmerSwitchUI.onEditPrepare()  Found translation:",config.buttons[i][item]);
+                    $("#node-input-button"+i+"-"+item).typedInput("value",config.buttons[i][item]);
+                }
+            });
+        }
     }
 
     onEditSave(config) {

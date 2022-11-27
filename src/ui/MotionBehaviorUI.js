@@ -20,17 +20,25 @@ export class MotionBehaviorUI extends BaseUI {
         this.config.icon = "font-awesome/fa-industry";
     }
 
-    build(config) {
-        super.build(config);
+    ui() {
+        var text = super.ui();
+        text += this.uiNumberInput("timeout","Motion timeout");
+        text += this.uiTextInput("motion","On Motion");
+        text += this.uiTextInput("nomotion","On Timeout");
+        return text;
+    }
 
-        var template_root = this.getTemplateRoot();
-        if (!template_root) {
-            console.log("template-root not found.")
-            return;
-        }
+    onEditPrepare(config) {
+        super.onEditPrepare(config);
 
-        this.numberInput(template_root,"timeout","Motion timeout",config.timeout);
-        this.jsonInput(template_root,"motion","On Motion",config.motion)
-        this.jsonInput(template_root,"nomotion","On Timeout",config.nomotion)
+        $("#node-input-motion").typedInput({
+            type:"json",
+            types:["json"]
+        });
+
+        $("#node-input-nomotion").typedInput({
+            type:"json",
+            types:["json"]
+        });
     }
 }
