@@ -1,38 +1,48 @@
 # node-red-contrib-mh-hue
 node-red palette to access hue bridge through clip v2 api
 
-# status
-(tag v0.3, 14/11/2022)
+# Status
+(tag v0.5, 29/11/2022)
 
 This is by far not complete, but most of the devices and functionality that i regularly use
 in my home automation environment seems to work and stability is ok.
 
-## Devices:
-- Light (supports all the hue lights i own, and probably most that i don't)
-- Dimmer Switch (should work for all versions, but i only tested with v1)
-- Lutron Aurora (don't use it regularly, but seemed to work fine when i tested it)
-- Wall Switch Module (same here, not regularly tested but seems to work fine last time i tested)
-- Indoor and Outdoor motion sensors, all working fine. Smart mode can use some improvements.
+## Devices / Behaviors:
+- Removed for now, services should cover all the basics, devices & behaviors will be re-introduced in a later release
 
-## Common used resources:
-- Room: works fine
-- Zone: works fine
-- Scene: works fine
-
-## Behavior nodes:
-- Motion behavior:
-- Scene cycler
+## Services:
+- Generic Service, in case you need some service that is not supported below, you can use this.
+- Button
+- Device Power
+- Grouped Light
+- Light
+- Light Level
+- Motion
+- Relative Rotary
+- Scene
+- Temperature
+- Zigbee Connectivity
 
 ## Todo
-- Bridge discovery and automatic key generation has not yet been implemented. Currently the 
-  bridge needs to be configured manually with an ip address and known key.
+- ~~Bridge discovery and automatic key generation has not yet been implemented. Currently the~~
+  ~~bridge needs to be configured manually with an ip address and known key.~~
+- ~~Provide better low level support for simple resources as 'grouped_light' or 'light'.~~
+- ~~Provide a generic sevice node (to allow using as of yet unsupported services)~~
+- Use scope, this is probably required if i want to upload this as a package.
+- Fix packaging, now I'm using a symlink to point to my *UI.js files, this needs a proper solution.
+
+## Postponed until after 0.5.x release
 - Improve 'smart' modes for Switch and Motion devices
-- Provide better low level support for simple resources as 'grouped_light' or 'light'.
 - Improve the generic device node (which allows using as of yet unsupported devices)
-- Provide a generic sevice node (to allow using as of yet unsupported services)
 - Support more devices
   - smart button (should be easy to do, but i don't have one to test)
   - tap dial switch (should be similar to a lutron aurora, but i don't have one to test)
+
+## Screenshots
+![ScreenShot](screenshots/Screenshot%20from%202022-11-29%2000-29-23.png)
+![ScreenShot](screenshots/Screenshot%20from%202022-11-29%2000-30-16.png)
+![ScreenShot](screenshots/Screenshot%20from%202022-11-29%2000-30-58.png)
+![ScreenShot](screenshots/Screenshot%20from%202022-11-29%2000-31-29.png)
 
 # Use
 Using these nodes requires a bit of knowledge on the clip v2 api, as i designed this palette
@@ -55,12 +65,6 @@ And the following command wil set the brightness to 50%:
 Do note that to address a node, you must either provide an msg.rids array that contains the rid
 of the resource you wish to address, or an msg.rtypes array that contains the rtype of the resource
 you wish to address.
-
-The Motion behavior node will combine input from all connected motion sensors, and if light/room/zone is connected to the input, it will disable motion behavior when that light/room/zone is on.
-Output can be directly connected to a light/room/zone (typically the same as is connected to the input)
-
-The Scene cycler allows you to cycle through the scenes that are connected to its output. It will
-currently trigger a scene change on any incomming command, so it can be easily hooked up to a switch.
 
 # credits
 Credit where credit is due, this was inspired by the node-red-contrib-huemagic project, which stopped working for me at some point.
