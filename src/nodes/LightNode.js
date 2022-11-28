@@ -27,13 +27,13 @@ class LightNode extends ServiceNode {
                 }
 
             } else if (this.resource.item.on.on==false) {
-                fill = "green";
+                fill = "grey";
                 text = "off";
             }
         }
 
         this.status({fill: fill, shape: shape, text: text});
-    }
+     }
 }
 
 module.exports = LightNode;

@@ -2,14 +2,6 @@
 
     import { BridgeConfigUI }         from "./src/ui/BridgeConfigUI.js";
 
-    import { DeviceUI }               from "./src/ui/DeviceUI.js";
-    import { DimmerSwitchUI }         from "./src/ui/DimmerSwitchUI.js";
-    import { LampUI }                 from "./src/ui/LampUI.js";
-    import { LutronAuroraUI }         from "./src/ui/LutronAuroraUI.js";
-    import { MotionSensorUI }         from "./src/ui/MotionSensorUI.js";
-    import { WallSwitchModuleUI }     from "./src/ui/WallSwitchModuleUI.js";
-
-    import { ServiceUI }              from "./src/ui/ServiceUI.js";
     import { ButtonUI }               from "./src/ui/ButtonUI.js";
     import { DevicePowerUI }          from "./src/ui/DevicePowerUI.js";
     import { GroupedLightUI }         from "./src/ui/GroupedLightUI.js";
@@ -18,26 +10,13 @@
     import { MotionUI }               from "./src/ui/MotionUI.js";
     import { RelativeRotaryUI }       from "./src/ui/RelativeRotaryUI.js";
     import { TemperatureUI }          from "./src/ui/TemperatureUI.js";
-    import { ZigbeeConnectivityUI }   from "./src/ui/ZigbeeConnectivityUI.js";
-
     import { SceneUI }                from "./src/ui/SceneUI.js";
-    import { RoomUI }                 from "./src/ui/RoomUI.js";
-    import { ZoneUI }                 from "./src/ui/ZoneUI.js";
-
-    import { MotionBehaviorUI }       from "./src/ui/MotionBehaviorUI.js";
-    import { SceneCyclerUI }          from "./src/ui/SceneCyclerUI.js";
+    import { ServiceUI }              from "./src/ui/ServiceUI.js";
+    import { ZigbeeConnectivityUI }   from "./src/ui/ZigbeeConnectivityUI.js";
 
     var nodes = {
         "BridgeConfigNode": BridgeConfigUI,
 
-        "DeviceNode": DeviceUI,
-        "DimmerSwitchNode": DimmerSwitchUI,
-        "LampNode": LampUI,
-        "LutronAuroraNode": LutronAuroraUI,
-        "MotionSensorNode": MotionSensorUI,
-        "WallSwitchModuleNode": WallSwitchModuleUI,
-
-        "ZigbeeConnectivityNode": ZigbeeConnectivityUI,
         "ButtonNode": ButtonUI,
         "DevicePowerNode": DevicePowerUI,
         "GroupedLightNode": GroupedLightUI,
@@ -48,11 +27,7 @@
         "ServiceNode": ServiceUI,
         "SceneNode": SceneUI,
         "RelativeRotaryNode": RelativeRotaryUI,
-        "RoomNode": RoomUI,
-        "ZoneNode": ZoneUI,
-
-        "MotionBehaviorNode": MotionBehaviorUI,
-        "SceneCyclerNode": SceneCyclerUI,
+        "ZigbeeConnectivityNode": ZigbeeConnectivityUI,
     }
 
     Object.keys(nodes).forEach((id) => {

@@ -27,7 +27,7 @@ class GroupedLightNode extends ServiceNode {
                 }
 
             } else if (this.resource.item.on.on==false) {
-                fill = "blue";
+                fill = "grey";
                 text = "off";
             }
         }

@@ -3,7 +3,7 @@ import { BaseUI } from "./BaseUI.js";
 export class ServiceUI extends BaseUI {
     constructor(label="Service",category="hue services",rtype="") {
         super(label,category);
-        console.log("ServiceUI.constructor()");
+        console.log("ServiceUI.constructor(",label,category,rtype,")");
 
         this.config.defaults.name =     { value:"" };
         this.config.defaults.bridge =   { type: "BridgeConfigNode", required: true };
@@ -145,6 +145,7 @@ to be selected, or you can select one from the list which is offered. \
             return;
         }
 
+        console.log("ServiceUI.selectOwner()",bridge.id,rtype);
         this.selectOption(
             "owner",
             "BridgeConfigNode/GetSortedOwnerOptions",
@@ -218,7 +219,7 @@ to be selected, or you can select one from the list which is offered. \
 
     onEditPrepare(config) {
         super.onEditPrepare(config);
-        console.log("ServiceUI.onEditPrepare()");
+        console.log("ServiceUI.onEditPrepare()",config);
         var instance = this;
 
         $('#input-select-rtype-search').click(function()
@@ -229,7 +230,6 @@ to be selected, or you can select one from the list which is offered. \
                 instance.selectType();
             }
         });
-        instance.selectType();
 
         $('#input-select-owner-search').click(function()
         {
@@ -239,7 +239,6 @@ to be selected, or you can select one from the list which is offered. \
                 instance.selectOwner();
             }
         });
-        instance.selectOwner();
 
         $('#input-select-uuid-search').click(function()
         {
@@ -249,7 +248,6 @@ to be selected, or you can select one from the list which is offered. \
                 instance.selectService();
             }
         });
-        instance.selectService();
 
         $('#node-input-owner').change(function() {
             console.log("TemperatureUI[].onEditPrepare().on('change')");
