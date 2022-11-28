@@ -1,6 +1,7 @@
 export class BaseUI {
     constructor(label="Base", category="base") {
         console.log("BaseUI.constructor()");
+        this.category = category;
 
         var instance = this;
         this.config = {
@@ -41,35 +42,41 @@ export class BaseUI {
 
     uiTextInput(id,label) {
         console.log("BaseUI.uiTextInput("+id+")");
+        var prefix = (this.category=="config")? "node-config-input-" : "node-input-";
+
         var item = document.createElement("div");
         item.setAttribute("class","form-row");
         item.setAttribute("id","node-container-" + id);
         item.innerHTML = '\
-            <label for="node-input-'+ id +'"><i class="fa fa-tag"></i> '+ label +'</label>\
-            <input type="text" id="node-input-'+ id + '">';
+            <label for="' + prefix + id +'"><i class="fa fa-tag"></i> '+ label +'</label>\
+            <input type="text" id="' + prefix + id + '">';
         return item.outerHTML;
     }
 
     uiNumberInput(id,label) {
         console.log("BaseUI.uiNumberInput("+id+")");
+        var prefix = (this.category=="config")? "node-config-input-" : "node-input-";
+
         var item = document.createElement("div");
         item.setAttribute("class","form-row");
         item.setAttribute("id","node-container-" + id);
         item.innerHTML = '\
-            <label for="node-input-'+ id +'"><i class="fa fa-tag"></i> '+ label +'</label>\
-            <input type="number" id="node-input-'+ id + '">';
+            <label for="' + prefix + id +'"><i class="fa fa-tag"></i> '+ label +'</label>\
+            <input type="number" id="' + prefix + id + '">';
         return item.outerHTML;
     }
 
     uiCheckboxInput(id,label) {
         console.log("BaseUI.checkboxInput("+id+")");
+        var prefix = (this.category=="config")? "node-config-input-" : "node-input-";
+
         var item = document.createElement("div");
         item.setAttribute("class","form-row");
         item.setAttribute("id","node-container-" + id);
         item.innerHTML = '\
             <div style="display: inline-flex; width: calc(100% - 105px)">\
                 <div id="input-select-'+ id +'" style="flex-grow: 1;">\
-                    <input type="checkbox" id="node-input-'+ id +'" style="flex: 15px;">\
+                    <input type="checkbox" id="' + prefix + id +'" style="flex: 15px;">\
                 </div>\
                 <span style="width: 100%; margin-left: 10px;">\
                     '+ label +'\
@@ -80,14 +87,16 @@ export class BaseUI {
 
     uiSelectInput(id,label) {
         console.log("BaseUI.uiSelectInput("+id+")");
+        var prefix = (this.category=="config")? "node-config-input-" : "node-input-";
+
         var item = document.createElement("div");
         item.setAttribute("class","form-row");
         item.setAttribute("id","node-container-" + id);
         item.innerHTML = '\
-            <label for="node-input-'+ id +'"><i class="fa fa-tag"></i> '+ label +'</label>\
+            <label for="' + prefix + id +'"><i class="fa fa-tag"></i> '+ label +'</label>\
             <div style="display: inline-flex; width: calc(100% - 105px)">\
                 <div id="input-select-'+ id +'" style="flex-grow: 1;">\
-                    <input type="text" id="node-input-'+ id +'" style="width: 100%">\
+                    <input type="text" id="' + prefix + id +'" style="width: 100%">\
                 </div>\
                 <button id="input-select-'+ id +'-search" type="button" class="red-ui-button" style="margin-left: 10px;">\
                     <i class="fa fa-search"></i>\

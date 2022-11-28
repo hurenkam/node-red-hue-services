@@ -68,6 +68,8 @@ export class DimmerSwitchUI extends DeviceUI {
         super.onEditPrepare(config);
         console.log("DimmerSwitchUI.onEditPrepare()");
 
+        // Setup the translation fields as JSON typed input
+        // ==============================================================================
         for (var i = 0; i < 4; i++) {
             ["initial_press","repeat","short_release","long_release"].forEach((item) => {
                 $("#node-input-button"+i+"-"+item).typedInput({
@@ -122,10 +124,11 @@ export class DimmerSwitchUI extends DeviceUI {
 
         });
 
+        // fill the values for the translation fields
+        // ==============================================================================
         for (var i = 0; i < 4; i++) {
             ["initial_press","repeat","short_release","long_release"].forEach((item) => {
                 if (config.buttons[i][item]) {
-                    console.log("DimmerSwitchUI.onEditPrepare()  Found translation:",config.buttons[i][item]);
                     $("#node-input-button"+i+"-"+item).typedInput("value",config.buttons[i][item]);
                 }
             });
