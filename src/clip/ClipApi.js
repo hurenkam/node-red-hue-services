@@ -141,12 +141,12 @@ class ClipApi extends events.EventEmitter {
     }
 
     #registerResource(resource) {
-        console.log("ClipApi[" + (this.name? this.name: this.ip) + "].registerResource(",resource.id(),")");
+        //console.log("ClipApi[" + (this.name? this.name: this.ip) + "].registerResource(",resource.id(),")");
         this.#resources[resource.rid()] = resource;
     }
 
     #unregisterResource(resource) {
-        console.log("ClipApi[" + (this.name? this.name: this.ip) + "].unregisterResource()");
+        //console.log("ClipApi[" + (this.name? this.name: this.ip) + "].unregisterResource()");
         this.#resources.remove(resource.rid());
     }
 
@@ -189,8 +189,6 @@ class ClipApi extends events.EventEmitter {
             return 0;
         });
 
-        console.log(result);
-
         return result.filter(function(resource) {
             if ((models) && (resource.item.product_data) && (resource.item.product_data.model_id)) {
                 return models.includes(resource.item.product_data.model_id);
@@ -219,7 +217,7 @@ class ClipApi extends events.EventEmitter {
     }
 
     getSortedTypeOptions() {
-        console.log("ClipApi[" + this.name + "].getSortedTypeOptions()");
+        //console.log("ClipApi[" + this.name + "].getSortedTypeOptions()");
         var options = [];
         var rtypes = [];
         Object.values(this.resources).forEach((resource)=>{
@@ -241,7 +239,7 @@ class ClipApi extends events.EventEmitter {
     }
 
     getSortedOwnerOptions(rtype) {
-        console.log("ClipApi[" + this.name + "].getSortedOwnerOptions(" + rtype + ")");
+        //console.log("ClipApi[" + this.name + "].getSortedOwnerOptions(" + rtype + ")");
 
         var options = [];
         var rids = [];
@@ -266,7 +264,7 @@ class ClipApi extends events.EventEmitter {
     }
 
     getSortedServiceOptions(uuid,rtype) {
-        console.log("ClipApi[" + this.name + "].getSortedServiceOptions("+ uuid + "," + rtype + ")");
+        //console.log("ClipApi[" + this.name + "].getSortedServiceOptions("+ uuid + "," + rtype + ")");
 
         var options = [];
         var owner = this.#resources[uuid];

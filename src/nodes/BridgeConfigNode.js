@@ -4,7 +4,6 @@ const ClipApi = require('../clip/ClipApi');
 const BaseNode = require('./BaseNode');
 const axios = require('axios');
 const https = require('https');
-const { resourceLimits } = require('worker_threads');
 
 class BridgeConfigNode extends BaseNode {
     #onClose;
@@ -63,7 +62,7 @@ class BridgeConfigNode extends BaseNode {
     }
 
     getClip(caller) {
-        console.log("BridgeConfigNode[" + this.logid() + "].getClip()",caller.constructor.name);
+        //console.log("BridgeConfigNode[" + this.logid() + "].getClip()",caller.constructor.name);
         return this.#clip;
     }
 

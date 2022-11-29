@@ -7,7 +7,7 @@ class Resource extends events.EventEmitter {
         super();
         this.item = item;
         this.#clip = clip;
-        console.log("Resource["+this.id()+"].constructor()");
+        //console.log("Resource["+this.id()+"].constructor()");
     }
 
     id() {
@@ -53,24 +53,24 @@ class Resource extends events.EventEmitter {
     }
 
     destructor() {
-        console.log("Resource["+this.id()+"].destructor()");
+        //console.log("Resource["+this.id()+"].destructor()");
         this.removeAllListeners();
         this.#clip = null;
         this.item = null;
     }
 
     get() {
-        console.log("Resource["+this.id()+"].get()");
+        //console.log("Resource["+this.id()+"].get()");
         return this.#clip.get(this.rtype(),this.rid());
     }
 
     put(data) {
-        console.log("Resource["+this.id()+"].put()");
+        //console.log("Resource["+this.id()+"].put()");
         this.#clip.put(this.rtype(),this.rid(), data);
     }
 
     onEvent(event) {
-        console.log("Resource["+this.id()+"].onEvent()",event);
+        //console.log("Resource["+this.id()+"].onEvent()",event);
         this.updateStatus(event);
         this.emit('update',event);
     }

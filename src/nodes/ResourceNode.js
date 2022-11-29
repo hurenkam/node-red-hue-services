@@ -42,7 +42,7 @@ class ResourceNode extends BaseNode {
     }
 
     onUpdate(event) {
-        console.log("ResourceNode["+this.logid()+"].onUpdate()");
+        //console.log("ResourceNode["+this.logid()+"].onUpdate()");
         this.send({ payload: event });
     }
 
