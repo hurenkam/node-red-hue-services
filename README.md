@@ -1,6 +1,8 @@
 # node-red-contrib-mh-hue
 node-red palette to access hue bridge through clip v2 api
 
+![ScreenShot](screenshots/Screenshot%20from%202022-11-29%2000-31-29.png)
+
 # Status
 (tag v0.5, 29/11/2022)
 
@@ -37,9 +39,6 @@ in my home automation environment seems to work and stability is ok.
 - Support more devices
   - smart button (should be easy to do, but i don't have one to test)
   - tap dial switch (should be similar to a lutron aurora, but i don't have one to test)
-
-## Screenshot
-![ScreenShot](screenshots/Screenshot%20from%202022-11-29%2000-31-29.png)
 
 # Use
 Using these nodes requires a bit of knowledge on the clip v2 api, as i designed this palette
