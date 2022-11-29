@@ -38,10 +38,7 @@ in my home automation environment seems to work and stability is ok.
   - smart button (should be easy to do, but i don't have one to test)
   - tap dial switch (should be similar to a lutron aurora, but i don't have one to test)
 
-## Screenshots
-![ScreenShot](screenshots/Screenshot%20from%202022-11-29%2000-29-23.png)
-![ScreenShot](screenshots/Screenshot%20from%202022-11-29%2000-30-16.png)
-![ScreenShot](screenshots/Screenshot%20from%202022-11-29%2000-30-58.png)
+## Screenshot
 ![ScreenShot](screenshots/Screenshot%20from%202022-11-29%2000-31-29.png)
 
 # Use
