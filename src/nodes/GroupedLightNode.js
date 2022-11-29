@@ -19,7 +19,7 @@ class GroupedLightNode extends ServiceNode {
         var text = "";
 
         var resource = this.getResource(this.config.uuid);
-        if (resource.item.on) {
+        if ((resource) && (resource.item) && (resource.item.on)) {
             if (resource.item.on.on==true) {
                 fill = "yellow";
 

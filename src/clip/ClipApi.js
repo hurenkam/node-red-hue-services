@@ -116,7 +116,7 @@ class ClipApi extends events.EventEmitter {
         if (this.#isResourceRegistered(rid)) {
             return this.#resources[rid];
         } else {
-            console.log("ClipApi[" + (this.name? this.name: this.ip) + "].getResource(",rid,"): Resource not found.");
+            //console.log("ClipApi[" + (this.name? this.name: this.ip) + "].getResource(",rid,"): Resource not found.");
         }
     }
 

@@ -10,7 +10,7 @@ class ResourceNode extends BaseNode {
 
         setTimeout(()=>{
             this.onStartup();
-        },1000);
+        },5000);
     }
 
     getClip(caller) {
@@ -33,8 +33,11 @@ class ResourceNode extends BaseNode {
             }
         }
         var resource = this.getResource(this.config.uuid);
-        resource.on('update',this.#onUpdate);
-
+        if (resource) {
+            resource.on('update',this.#onUpdate);
+        } else {
+            console.log("ResourceNode["+this.logid()+"].onStartup(): Resource not found",this.config.uuid);
+        }
         this.updateStatus();
     }
 
@@ -44,8 +47,11 @@ class ResourceNode extends BaseNode {
     }
 
     onInput(msg) {
-        console.log("ResourceNode[" + this.logid() + "].onInput(",msg,")",this.config);
+        //console.log("ResourceNode[" + this.logid() + "].onInput(",msg,")",this.config);
         var resource = this.getResource(this.config.uuid);
+        if (!resource) {
+            console.log("ResourceNode[" + this.logid() + "].onInput(): Resource not found",this.config.uuid);
+        }
 
         if (msg.rtypes) {
             if ((resource) && (msg.rtypes.includes(resource.rtype()))) {
