@@ -21,7 +21,7 @@ class ServiceListResource extends Resource {
         if ((this.item) && (this.item.services))
         {
             this.item.services.forEach(service => {
-                console.log("ServiceListResource["+this.id()+"].getServices()  service:",service);
+                //console.log("ServiceListResource["+this.id()+"].getServices()  service:",service);
                 var resource = this.#clip.getResource(service.rid);
                 if (resource) {
                     result[service.rid] = resource;

@@ -44,6 +44,8 @@ class ClipApi extends events.EventEmitter {
         this.key = key;
         this.#resources = {};
 
+        events.EventEmitter.defaultMaxListeners = 1024;
+
         var eventsurl = "https://" + ip + "/eventstream/clip/v2";
         this.eventSource = new EventSource(eventsurl, {
             headers: { 'hue-application-key': this.key },
@@ -74,8 +76,9 @@ class ClipApi extends events.EventEmitter {
                 } else {
                     console.log("ClipApi[" + (instance.name? instance.name: instance.ip) + "].constructor(): Missing factory for type", item.type);
                 }
-
             });
+
+            instance.emit('started');
         };
 
         var handleError = async function(error) {
@@ -220,7 +223,7 @@ class ClipApi extends events.EventEmitter {
         //console.log("ClipApi[" + this.name + "].getSortedTypeOptions()");
         var options = [];
         var rtypes = [];
-        Object.values(this.resources).forEach((resource)=>{
+        Object.values(this.#resources).forEach((resource)=>{
             if (resource.owner()) {
                 if (!rtypes.includes(resource.rtype())) {
                     rtypes.push(resource.rtype());

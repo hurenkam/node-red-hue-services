@@ -3,14 +3,18 @@ BaseNode = require("./BaseNode");
 
 class ResourceNode extends BaseNode {
     #onUpdate;
+    #onStartup;
 
     constructor(config) {
         super(config);
         console.log("ResourceNode[" + this.logid() + "].constructor()");
 
-        setTimeout(()=>{
-            this.onStartup();
-        },5000);
+        var instance = this;
+        this.#onStartup = async function() {
+            instance.onStartup();
+        }
+
+        this.getClip(this).on('started',this.#onStartup);
     }
 
     getClip(caller) {
