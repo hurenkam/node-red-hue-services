@@ -2,7 +2,7 @@ import { ResourceUI } from "./ResourceUI.js"
 
 export class SceneUI extends ResourceUI {
     constructor() {
-        super("Scene");
+        super("Scene","hue services");
         console.log("SceneUI.constructor()");
 
         this.config.color = "#FFCCCC";

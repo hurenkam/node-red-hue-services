@@ -18,15 +18,16 @@ class GroupedLightNode extends ServiceNode {
         var shape = "dot";
         var text = "";
 
-        if (this.resource.item.on) {
-            if (this.resource.item.on.on==true) {
+        var resource = this.getResource(this.config.uuid);
+        if (resource.item.on) {
+            if (resource.item.on.on==true) {
                 fill = "yellow";
 
-                if (this.resource.item.dimming) {
-                    text = this.resource.item.dimming.brightness+"%";
+                if (resource.item.dimming) {
+                    text = resource.item.dimming.brightness+"%";
                 }
 
-            } else if (this.resource.item.on.on==false) {
+            } else if (resource.item.on.on==false) {
                 fill = "grey";
                 text = "off";
             }

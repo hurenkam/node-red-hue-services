@@ -28,9 +28,10 @@ class RelativeRotaryNode extends ServiceNode {
         var shape = "dot";
         var text = "";
 
-        if (this.resource.item.relative_rotary) {
-            if (this.resource.item.relative_rotary.last_event!=null) {
-                var event = this.resource.item.relative_rotary.last_event;
+        var resource = this.getResource(this.config.uuid);
+        if (resource.item.relative_rotary) {
+            if (resource.item.relative_rotary.last_event!=null) {
+                var event = resource.item.relative_rotary.last_event;
                 text = event.action + " ";
                 if (event.rotation) {
                     text += (event.rotation.direction == "clock_wise")? ">> " : "<< ";

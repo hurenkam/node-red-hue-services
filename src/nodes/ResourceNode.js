@@ -2,42 +2,38 @@ Resource = require("../clip/Resource");
 BaseNode = require("./BaseNode");
 
 class ResourceNode extends BaseNode {
+    #onUpdate;
+
     constructor(config) {
         super(config);
         console.log("ResourceNode[" + this.logid() + "].constructor()");
 
-        var instance = this;
-        this.clip = BaseNode.nodeAPI.nodes.getNode(config.bridge).clip;
-        //this.clip.on('started',() => {
-        //    instance.onClipStarted();
-        //});
-        setTimeout(()=> {
-            instance.onClipStarted();
-        },5000);
+        setTimeout(()=>{
+            this.onStartup();
+        },1000);
     }
 
-    onClipStarted() {
-        console.log("ResourceNode[" + this.logid() + "].onStartup()");
-        this.resource = this.clip.resources[this.config.uuid];
-        if (!this.resource) {
-            console.log("ResourceNode[" + this.logid() + "].onStartup(): Unable to lookup resource instance for uuid",this.config.uuid);
-        } else {
-            this.onStartup();
-        }
+    getClip(caller) {
+        return BaseNode.nodeAPI.nodes.getNode(this.config.bridge).getClip(caller);
+    }
+
+    getResource(uuid) {
+        return this.getClip(this).getResource(uuid);
     }
 
     onStartup() {
         console.log("ResourceNode[" + this.logid() + "].onStartup()");
         var instance = this;
         
-        this._onUpdate = function(event) {
+        this.#onUpdate = function(event) {
             try {
                 instance.onUpdate(event);
             } catch (error) {
                 console.log(error);
             }
         }
-        this.resource.on('update',this._onUpdate);
+        var resource = this.getResource(this.config.uuid);
+        resource.on('update',this.#onUpdate);
 
         this.updateStatus();
     }
@@ -48,29 +44,34 @@ class ResourceNode extends BaseNode {
     }
 
     onInput(msg) {
-        //console.log("ResourceNode[" + this.logid() + "].onInput(",msg,")");
+        console.log("ResourceNode[" + this.logid() + "].onInput(",msg,")",this.config);
+        var resource = this.getResource(this.config.uuid);
 
         if (msg.rtypes) {
-            if ((this.resource) && (msg.rtypes.includes(this.resource.rtype()))) {
+            if ((resource) && (msg.rtypes.includes(resource.rtype()))) {
                 console.log("ResourceNode[" + this.logid() + "].onInput(",msg.payload,")");
-                this.resource.put(msg.payload);
+                resource.put(msg.payload);
             }
         }
 
         if (msg.rids) {
-            if ((this.resource) && (msg.rids.includes(this.resource.rid()))) {
+            if ((resource) && (msg.rids.includes(resource.rid()))) {
                 console.log("ResourceNode[" + this.logid() + "].onInput(",msg.payload,")");
-                this.resource.put(msg.payload);
+                resource.put(msg.payload);
             }
         }
 
         super.onInput(msg);
     }
 
-    onClose() {
-        console.log("ResourceNode[" + this.logid() + "].onClose()");
-        this.clip = null;
-        super.onClose();
+    destructor() {
+        console.log("ResourceNode[" + this.logid() + "].destructor()");
+        if (this.clipTimeout) {
+            clearTimeout(this.clipTimeout);
+        }
+
+        super.destructor();
+        this.removeAllListeners();
     }
 }
 

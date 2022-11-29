@@ -1,22 +1,13 @@
 const events = require('events');
 
 class Resource extends events.EventEmitter {
+    #clip;
+
     constructor(item,clip) {
         super();
         this.item = item;
-        this.clip = clip;
+        this.#clip = clip;
         console.log("Resource["+this.id()+"].constructor()");
-
-        var instance = this;
-        if (this.item.owner) {
-            setTimeout(function () {
-                if (Object.keys(instance.clip.resources).includes(instance.item.owner.rid)) {
-                    instance.onOwnerAvailable(instance.item.owner.rid,instance.clip.resources[instance.item.owner.rid]);
-                } else {
-                    console.log("Resource[" + instance.id() + "].constructor(): Service "+instance.item.owner.rid+" not yet available.");
-                }
-            },100);
-        }
     }
 
     id() {
@@ -33,12 +24,22 @@ class Resource extends events.EventEmitter {
         return this.item.type;
     }
 
+    owner() {
+        var result = null;
+
+        if (this.item.owner) {
+            result = this.#clip.getResource(this.item.owner.rid);
+        }
+
+        return result;
+    }
+
     name() {
         if ((this.item.metadata) && (this.item.metadata.name))
             return this.item.metadata.name;
 
-        if ((this.owner) && (this.owner.name())) {
-            return this.owner.name();
+        if ((this.owner()) && (this.owner().name())) {
+            return this.owner().name();
         }
 
         return null;
@@ -54,33 +55,28 @@ class Resource extends events.EventEmitter {
     destructor() {
         console.log("Resource["+this.id()+"].destructor()");
         this.removeAllListeners();
-        this.clip = null;
+        this.#clip = null;
         this.item = null;
     }
 
     get() {
         console.log("Resource["+this.id()+"].get()");
-        return clip.get(this.rtype(),this.rid());
+        return this.#clip.get(this.rtype(),this.rid());
     }
 
     put(data) {
         console.log("Resource["+this.id()+"].put()");
-        this.clip.put(this.rtype(),this.rid(), data);
-    }
-
-    onOwnerAvailable(rid,service) {
-        //console.log("ServiceListResource["+this.id()+"].onServiceAvailable("+rid+")");
-        this.owner = service;
+        this.#clip.put(this.rtype(),this.rid(), data);
     }
 
     onEvent(event) {
-        //console.log("Resource["+this.id()+"].onEvent()");
+        console.log("Resource["+this.id()+"].onEvent()",event);
         this.updateStatus(event);
         this.emit('update',event);
     }
 
     updateStatus(event) {
-        //console.log("Resource["+this.id()+"].updateStatus()");
+        //console.log("Resource["+this.id()+"].updateStatus()",event);
         const blacklist = ["id", "id_v1", "owner", "type"];
 
         var instance = this;

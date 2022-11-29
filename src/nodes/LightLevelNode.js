@@ -18,10 +18,11 @@ class LightLevelNode extends ServiceNode {
         var shape = "dot";
         var text = "";
 
-        if (this.resource.item.light) {
-            if (this.resource.item.light.light_level!=null) {
+        var resource = this.getResource(this.config.uuid);
+        if (resource.item.light) {
+            if (resource.item.light.light_level!=null) {
                 fill = "green";
-                text = ""+this.resource.item.light.light_level;
+                text = ""+resource.item.light.light_level;
             }
         }
 

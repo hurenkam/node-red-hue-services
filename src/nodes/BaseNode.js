@@ -17,7 +17,7 @@ class BaseNode {
     
         this._onClose = function () {
             try {
-                instance.onClose();
+                instance.destructor();
             } catch (error) {
                 console.log(error);
             }
@@ -63,14 +63,14 @@ class BaseNode {
     }
 
     onInput(msg) {
-        //console.log("BaseNode[" + this.logid() + "].onInput(",msg,")");
+        console.log("BaseNode[" + this.logid() + "].onInput(",msg,")");
     }
 
-    onClose() {
-        console.log("BaseNode[" + this.logid() + "].onClose()");
+    destructor() {
+        console.log("BaseNode[" + this.logid() + "].destructor()");
         this.off('input',this._onInput);
         this.off('close',this._onClose);
-        //this.config = null;
+        this.config = null;
     }
 }
 

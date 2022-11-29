@@ -1,6 +1,6 @@
 {
   "name": "red-contrib-mh-hue",
-  "version": "1.0.0",
+  "version": "0.5.1",
   "description": "Custom nodes for interfacing with philips hue devices",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,7 +11,7 @@
     "clip"
   ],
   "author": "Mark Hurenkamp",
-  "license": "GPL-2.0-only",
+  "license": "Apache 2.0",
   "node-red": {
     "nodes": {
       "all": "src/all.js"

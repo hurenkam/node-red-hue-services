@@ -18,10 +18,11 @@ class TemperatureNode extends ServiceNode {
         var shape = "dot";
         var text = "";
 
-        if (this.resource.item.temperature) {
-            if (this.resource.item.temperature.temperature!=null) {
+        var resource = this.getResource(this.config.uuid);
+        if (resource.item.temperature) {
+            if (resource.item.temperature.temperature!=null) {
                 fill = "green";
-                text = ""+this.resource.item.temperature.temperature+"c";
+                text = ""+resource.item.temperature.temperature+"c";
             }
         }
 
