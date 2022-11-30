@@ -2,11 +2,12 @@ const Resource = require('./Resource');
 
 class ServiceListResource extends Resource {
     #clip;
+    #rids;
 
     constructor(item,clip) {
         super(item,clip);
         //console.log("ServiceListResource["+this.id()+"].constructor()");
-        this.rids = [];
+        this.#rids = [];
         this.#clip = clip;
     }
 
@@ -35,7 +36,7 @@ class ServiceListResource extends Resource {
         //console.log("ServiceListResource["+this.id()+"].getServiceTypes()");
         var result = [];
         var services = this.getServices();
-        this.rids.forEach((rid) => {
+        this.#rids.forEach((rid) => {
             result.push(services[rid].item.type);
         });
         return result;
@@ -45,7 +46,7 @@ class ServiceListResource extends Resource {
         //console.log("ServiceListResource["+this.id()+"].getServicesByType("+type+")");
         var result = [];
         var services = this.getServices();
-        this.rids.forEach((rid) => {
+        this.#rids.forEach((rid) => {
             if (services[rid].item.type == type) {
                 result.push(services[rid]);
             }

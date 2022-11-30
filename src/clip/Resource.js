@@ -2,10 +2,11 @@ const events = require('events');
 
 class Resource extends events.EventEmitter {
     #clip;
+    #item;
 
     constructor(item,clip) {
         super();
-        this.item = item;
+        this.#item = item;
         this.#clip = clip;
         //console.log("Resource["+this.id()+"].constructor()");
     }
@@ -17,26 +18,26 @@ class Resource extends events.EventEmitter {
     }
 
     rid() {
-        return this.item.id;
+        return this.#item.id;
     }
 
     rtype() {
-        return this.item.type;
+        return this.#item.type;
     }
 
     owner() {
         var result = null;
 
-        if (this.item.owner) {
-            result = this.#clip.getResource(this.item.owner.rid);
+        if (this.#item.owner) {
+            result = this.#clip.getResource(this.#item.owner.rid);
         }
 
         return result;
     }
 
     name() {
-        if ((this.item.metadata) && (this.item.metadata.name))
-            return this.item.metadata.name;
+        if ((this.#item.metadata) && (this.#item.metadata.name))
+            return this.#item.metadata.name;
 
         if ((this.owner()) && (this.owner().name())) {
             return this.owner().name();
@@ -47,8 +48,8 @@ class Resource extends events.EventEmitter {
 
     typeName() {
         var result = this.rtype();
-        if ((this.item.metadata) && (this.item.metadata.control_id))
-            result += this.item.metadata.control_id;
+        if ((this.#item.metadata) && (this.#item.metadata.control_id))
+            result += this.#item.metadata.control_id;
         return result;
     }
 
@@ -56,7 +57,7 @@ class Resource extends events.EventEmitter {
         //console.log("Resource["+this.id()+"].destructor()");
         this.removeAllListeners();
         this.#clip = null;
-        this.item = null;
+        this.#item = null;
     }
 
     get() {
@@ -82,7 +83,7 @@ class Resource extends events.EventEmitter {
         var instance = this;
         Object.keys(event).forEach((key) => {
             if (!blacklist.includes(key)) {
-                instance.item[key] = event[key];
+                instance.#item[key] = event[key];
             }
         });
     }
