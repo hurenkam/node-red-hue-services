@@ -89,7 +89,12 @@ class ClipApi extends events.EventEmitter {
             console.log("ClipApi[" + (instance.name? instance.name: instance.ip) + "].constructor()  error:", error);
         }
 
-        this.#restAPI = new RestApi(instance.name,instance.ip,500,{"hue-application-key": instance.key});
+        this.#restAPI = new RestApi(
+            instance.name,
+            instance.ip,
+            { tokensPerInterval: 3, interval: "second" },
+            {"hue-application-key": instance.key}
+        );
         this.#restAPI.get("/clip/v2/resource")
             .then(handleResourceList)
             .catch(handleError);

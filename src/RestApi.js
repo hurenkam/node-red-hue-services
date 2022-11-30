@@ -5,12 +5,11 @@ const limiter = require('limiter');
 class RestApi {
     constructor(name,ip,throttle,headers) {
         this._name = name;
-        this.limiter = new limiter.RateLimiter({ tokensPerInterval: 3, interval: "second" });
+        this.limiter = new limiter.RateLimiter(throttle);
 
         console.log("RestApi["+this._name+"].constructor()");
 
         this._ip = ip;
-        this._throttle = throttle;
         this._headers = { "Content-Type": "application/json; charset=utf-8" };
         if (headers) {
             Object.keys(headers).forEach(key => {
