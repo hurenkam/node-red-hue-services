@@ -39,6 +39,10 @@ class ResourceNode extends BaseNode {
         super.destructor();
     }
 
+    resource() {
+        return this.#resource;
+    }
+
     rid() {
         return this.config.uuid;
     }

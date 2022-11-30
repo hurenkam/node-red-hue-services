@@ -18,7 +18,7 @@ class LightNode extends ServiceNode {
         var shape = "dot";
         var text = "";
 
-        var resource = this.getResource(this.config.uuid);
+        var resource = this.resource();
         if ((resource) && (resource.item) && (resource.item.on)) {
             if (resource.item.on.on==true) {
                 fill = "yellow";

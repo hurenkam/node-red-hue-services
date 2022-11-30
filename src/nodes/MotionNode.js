@@ -18,7 +18,7 @@ class MotionNode extends ServiceNode {
         var shape = "dot";
         var text = "";
 
-        var resource = this.getResource(this.config.uuid);
+        var resource = this.resource();
         if ((resource) && (resource.item) && (resource.item.motion)) {
             if (resource.item.motion.motion!=null) {
                 fill = (resource.item.motion.motion==true)? "blue" : "grey";

@@ -19,7 +19,7 @@ class ZigbeeConnectivityNode extends ServiceNode {
         var text = "";
 
         console.log("ZigbeeConnectivityNode[" + this.logid() + "].updateStatus()");
-        var resource = this.getResource(this.config.uuid);
+        var resource = this.resource();
         //console.log(resource.item);
         if ((resource) && (resource.item) && (resource.item.status!=null)) {
             fill = (resource.item.status == "connected")? "green": "red";

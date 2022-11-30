@@ -28,7 +28,7 @@ class ButtonNode extends ServiceNode {
         var shape = "dot";
         var text = "";
 
-        var resource = this.getResource(this.config.uuid);
+        var resource = this.resource();
         if ((resource) && (resource.item) && (resource.item.button)) {
             if (resource.item.button.last_event!=null) {
                 text = resource.item.button.last_event;
