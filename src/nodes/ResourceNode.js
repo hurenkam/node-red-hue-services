@@ -3,32 +3,19 @@ BaseNode = require("./BaseNode");
 
 class ResourceNode extends BaseNode {
     #onUpdate;
-    #onStartup;
+    #resource;
 
     constructor(config) {
         super(config);
         console.log("ResourceNode[" + this.logid() + "].constructor()");
+        this.getClip(this).requestStartup(this);
+    }
+
+    start(resource) {
+        console.log("ResourceNode[" + this.logid() + "].start()");
+        this.#resource = resource;
 
         var instance = this;
-        this.#onStartup = async function() {
-            instance.onStartup();
-        }
-
-        this.getClip(this).on('started',this.#onStartup);
-    }
-
-    getClip(caller) {
-        return BaseNode.nodeAPI.nodes.getNode(this.config.bridge).getClip(caller);
-    }
-
-    getResource(uuid) {
-        return this.getClip(this).getResource(uuid);
-    }
-
-    onStartup() {
-        console.log("ResourceNode[" + this.logid() + "].onStartup()");
-        var instance = this;
-        
         this.#onUpdate = function(event) {
             try {
                 instance.onUpdate(event);
@@ -36,13 +23,28 @@ class ResourceNode extends BaseNode {
                 console.log(error);
             }
         }
-        var resource = this.getResource(this.config.uuid);
-        if (resource) {
-            resource.on('update',this.#onUpdate);
-        } else {
-            console.log("ResourceNode["+this.logid()+"].onStartup(): Resource not found",this.config.uuid);
-        }
+
+        this.#resource.on('update',this.#onUpdate);
         this.updateStatus();
+    }
+
+    destructor() {
+        console.log("ResourceNode[" + this.logid() + "].destructor()");
+        if (this.clipTimeout) {
+            clearTimeout(this.clipTimeout);
+        }
+
+        this.removeAllListeners();
+        this.#resource = null;
+        super.destructor();
+    }
+
+    rid() {
+        return this.config.uuid;
+    }
+
+    getClip(caller) {
+        return BaseNode.nodeAPI.nodes.getNode(this.config.bridge).getClip(caller);
     }
 
     onUpdate(event) {
@@ -52,7 +54,7 @@ class ResourceNode extends BaseNode {
 
     onInput(msg) {
         //console.log("ResourceNode[" + this.logid() + "].onInput(",msg,")",this.config);
-        var resource = this.getResource(this.config.uuid);
+        var resource = this.#resource;
         if (!resource) {
             console.log("ResourceNode[" + this.logid() + "].onInput(): Resource not found",this.config.uuid);
         }
@@ -72,16 +74,6 @@ class ResourceNode extends BaseNode {
         }
 
         super.onInput(msg);
-    }
-
-    destructor() {
-        console.log("ResourceNode[" + this.logid() + "].destructor()");
-        if (this.clipTimeout) {
-            clearTimeout(this.clipTimeout);
-        }
-
-        super.destructor();
-        this.removeAllListeners();
     }
 }
 

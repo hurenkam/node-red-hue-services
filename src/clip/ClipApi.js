@@ -8,6 +8,8 @@ const ServiceListResource = require('./ServiceListResource');
 class ClipApi extends events.EventEmitter {
     #restAPI;
     #resources;
+    #startQ;
+    #isStarted;
 
     #factory =  {
         "behavior_script": Resource,
@@ -43,8 +45,8 @@ class ClipApi extends events.EventEmitter {
         this.ip = ip;
         this.key = key;
         this.#resources = {};
-
-        events.EventEmitter.defaultMaxListeners = 1024;
+        this.#startQ = [];
+        this.#isStarted = false;
 
         var eventsurl = "https://" + ip + "/eventstream/clip/v2";
         this.eventSource = new EventSource(eventsurl, {
@@ -78,7 +80,9 @@ class ClipApi extends events.EventEmitter {
                 }
             });
 
-            instance.emit('started');
+            instance.#startQ.forEach(resource => resource.start(instance.#resources[resource.rid()]));
+            instance.#isStarted = true;
+            instance.#startQ = null;
         };
 
         var handleError = async function(error) {
@@ -89,6 +93,14 @@ class ClipApi extends events.EventEmitter {
         this.#restAPI.get("/clip/v2/resource")
             .then(handleResourceList)
             .catch(handleError);
+    }
+
+    requestStartup(resource) {
+        if (this.#isStarted) {
+            resource.start();
+        } else {
+            this.#startQ.push(resource);
+        }
     }
 
     destructor() {
