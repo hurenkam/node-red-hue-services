@@ -1,9 +1,12 @@
 const axios = require('axios');
 const https = require('https');
+const limiter = require('limiter');
 
 class RestApi {
     constructor(name,ip,throttle,headers) {
         this._name = name;
+        this.limiter = new limiter.RateLimiter({ tokensPerInterval: 3, interval: "second" });
+
         console.log("RestApi["+this._name+"].constructor()");
 
         this._ip = ip;
@@ -60,29 +63,21 @@ class RestApi {
 
             var request = this._requestQ.shift();
             this._request(request.url, request.method, request.data)
-            .then(function (result) {
+            .then(async (result) => {
+                await local.limiter.removeTokens(1,()=>{});
                 request.resolve(result.data);
-                //console.log("RestApi[" + local._name + "]._handleRequest(" + request.url + ") result: ", result.data);
-
-                // if a request was handled, then wait throttle time before handling next request
-                local._timeout = setTimeout(local._handleRequest.bind(local), local._throttle);
+                this._timeout = setTimeout(this._handleRequest.bind(this), 0);
             })
             .catch((error) => {
-                if ((error.request) && (error.request.res)) {
-                    //console.log("RestApi[" + this._name + "]._handleRequest(" + request.url + ") error: " + error.request.res.statusMessage + " (" + error.request.res.statusCode + ")");
-                    request.reject({ statusCode: error.request.res.statusCode, statusMessage: error.request.res.statusMessage });
-                } else {
-                    console.log("RestApi[" + this._name + "]._handleRequest(" + request.url + ") error: ");
-                    console.log(error);
-                    request.reject();
-                }
+                console.log("RestApi[" + this._name + "]._handleRequest(" + request.url + ") error: ");
+                console.log(error);
+                request.reject();
 
-                // Wait 5m before handling next request
-                local._timeout = setTimeout(local._handleRequest.bind(local), local._throttle + 2000);
+                // back off for a few seconds, just in case we ran into a 429 error.
+                local._timeout = setTimeout(local._handleRequest.bind(local), 5000);
             });
 
         } else {
-
             // if no request was pending, then check again soon
             this._timeout = setTimeout(this._handleRequest.bind(this), 100);
         }

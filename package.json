@@ -1,5 +1,5 @@
 {
-  "name": "red-contrib-mh-hue",
+  "name": "@mark.hurenkamp/node-red-hue-services",
   "version": "0.5.1",
   "description": "Custom nodes for interfacing with philips hue devices",
   "scripts": {
@@ -22,6 +22,6 @@
     "axios": "^0.26.1",
     "eventsource": "^2.0.0",
     "http": "",
-    "limiter": "^1.0.0"
+    "limiter": "^2.0.0"
   }
 }
