@@ -30,8 +30,8 @@ in my home automation environment seems to work and stability is ok.
   ~~bridge needs to be configured manually with an ip address and known key.~~
 - ~~Provide better low level support for simple resources as 'grouped_light' or 'light'.~~
 - ~~Provide a generic sevice node (to allow using as of yet unsupported services)~~
-- --Use scope, this is probably required if i want to upload this as a package.--
-- --Fix packaging, now I'm using a symlink to point to my *UI.js files, this needs a proper solution.--
+- ~~Use scope, this is probably required if i want to upload this as a package.~~
+- ~~Fix packaging, now I'm using a symlink to point to my *UI.js files, this needs a proper solution.~~
 - Upload package to node-red library
 
 ## Postponed until after 0.5.x release
@@ -53,11 +53,11 @@ will be sent as a put request to the clip interface.
 
 The following command will for instance switch a light, room or zone on:
 
-```{ "rtypes": ["light", "grouped_light"], "payload": { "on": { "on": true } } }```
+`{ "rtypes": ["light", "grouped_light"], "payload": { "on": { "on": true } } }`
 
 And the following command wil set the brightness to 50%:
 
-```{ "rtypes": ["light", "grouped_light"], "payload": { "dimming": { "brightness": 50 } } }```
+`{ "rtypes": ["light", "grouped_light"], "payload": { "dimming": { "brightness": 50 } } }`
 
 Do note that to address a node, you must either provide an msg.rids array that contains the rid
 of the resource you wish to address, or an msg.rtypes array that contains the rtype of the resource
