@@ -15,14 +15,15 @@
   "node-red": {
     "nodes": {
       "files": "src/files.js",
+      "debug": "src/debug.js",
       "all": "src/all.js"
     }
   },
   "dependencies": {
     "axios": "^0.26.1",
+    "debug": "^4.3.4",
     "eventsource": "^2.0.0",
     "http": "",
-    "limiter": "^2.0.0",
-    "debug":"^3.0.0"
+    "limiter": "^2.0.0"
   }
 }
