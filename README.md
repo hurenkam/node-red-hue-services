@@ -70,12 +70,15 @@ runtime by sending appropriate GET / POST / DELETE requests to the node-red /deb
 (default: http://localhost:1880/debug):
 
 Use the following command to retrieve the current settings:
+
 `curl -i -H "Accept: application/json" 'localhost:1880/debug'`
 
 Use the following command to enable error and warning logging:
+
 `curl -i -H "Accept: application/json" 'localhost:1880/debug' -d "namespaces='error:*,warn:*"`
 
 Use the following command to disable debug logging:
+
 `curl -i -H "Accept: application/json" 'localhost:1880/debug' -X "DELETE"`
 
 # Credits
