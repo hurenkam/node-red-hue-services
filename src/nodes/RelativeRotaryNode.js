@@ -1,6 +1,8 @@
 ServiceNode = require("./ServiceNode");
 
 class RelativeRotaryNode extends ServiceNode {
+    #fill;
+
     constructor(config) {
         super(config);
         console.log("RelativeRotaryNode[" + this.logid() + "].constructor()");

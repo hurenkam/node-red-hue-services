@@ -1,6 +1,8 @@
 ServiceNode = require("./ServiceNode");
 
 class ButtonNode extends ServiceNode {
+    #fill;
+
     constructor(config) {
         super(config);
         console.log("ButtonNode[" + this.logid() + "].constructor()");

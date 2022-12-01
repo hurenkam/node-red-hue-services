@@ -1,7 +1,10 @@
 import { BaseUI } from "./BaseUI.js";
 
 export class ResourceUI extends BaseUI {
-    constructor(label="Resource",category="hue resources") {
+    #rtype;
+    #models;
+
+    constructor(label="Resource",category="hue services",rtype=null,models=null) {
         super(label,category);
         console.log("ResourceUI.constructor()");
 
@@ -13,8 +16,8 @@ export class ResourceUI extends BaseUI {
         this.config.color = "#EEEEEE";
         this.config.icon = "font-awesome/fa-gears";
 
-        this.rtype = null;
-        this.models = null;
+        this.#rtype = rtype;
+        this.#models = models;
     }
 
     buildHelp() {
@@ -114,9 +117,9 @@ and present them as a selection list.\n\n\
             "uuid",
             "BridgeConfigNode/GetSortedResourceOptions",
             {
-                type: this.rtype,
+                type: this.#rtype,
                 bridge_id: bridge.id,
-                models: this.models
+                models: this.#models
             }
         );
     }

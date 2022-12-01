@@ -14,8 +14,6 @@ export class ServiceUI extends BaseUI {
         this.config.inputs = 1;
         this.config.color = "#EEEEEE";
         this.config.icon = "font-awesome/fa-gears";
-
-        this.models = null;
     }
 
     buildHelp() {
