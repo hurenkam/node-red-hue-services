@@ -22,6 +22,7 @@
     "axios": "^0.26.1",
     "eventsource": "^2.0.0",
     "http": "",
-    "limiter": "^2.0.0"
+    "limiter": "^2.0.0",
+    "debug":"^3.0.0"
   }
 }

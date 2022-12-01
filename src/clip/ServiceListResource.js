@@ -1,8 +1,8 @@
 const Resource = require('./Resource');
 
 const _error = require('debug')('error').extend('ServiceListResource');
-const _warn  = require('debug')(' warn').extend('ServiceListResource');
-const _info  = require('debug')(' info').extend('ServiceListResource');
+const _warn  = require('debug')('warn').extend('ServiceListResource');
+const _info  = require('debug')('info').extend('ServiceListResource');
 const _trace = require('debug')('trace').extend('ServiceListResource');
 
 class ServiceListResource extends Resource {

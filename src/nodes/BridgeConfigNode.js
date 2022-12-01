@@ -6,8 +6,8 @@ const axios = require('axios');
 const https = require('https');
 
 const _error = require('debug')('error').extend('BridgeConfigNode');
-const _warn  = require('debug')(' warn').extend('BridgeConfigNode');
-const _info  = require('debug')(' info').extend('BridgeConfigNode');
+const _warn  = require('debug')('warn').extend('BridgeConfigNode');
+const _info  = require('debug')('info').extend('BridgeConfigNode');
 const _trace = require('debug')('trace').extend('BridgeConfigNode');
 
 class BridgeConfigNode extends BaseNode {

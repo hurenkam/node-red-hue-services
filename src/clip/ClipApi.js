@@ -6,8 +6,8 @@ const Resource = require('./Resource');
 const ServiceListResource = require('./ServiceListResource');
 
 const _error = require('debug')('error').extend('ClipApi');
-const _warn  = require('debug')(' warn').extend('ClipApi');
-const _info  = require('debug')(' info').extend('ClipApi');
+const _warn  = require('debug')('warn').extend('ClipApi');
+const _info  = require('debug')('info').extend('ClipApi');
 const _trace = require('debug')('trace').extend('ClipApi');
 
 class ClipApi extends events.EventEmitter {
@@ -77,6 +77,7 @@ class ClipApi extends events.EventEmitter {
             const messages = JSON.parse(streammessage.data);
             messages.forEach((message) => {
                 message.data.forEach((event) => {
+                    this.#trace("constructor().onEvent(",event,")");
                     if (Object.keys(this.#resources).includes(event.id)) {
                         this.#resources[event.id].onEvent(event);
                     }

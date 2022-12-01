@@ -2,8 +2,8 @@ Resource = require("../clip/Resource");
 BaseNode = require("./BaseNode");
 
 const _error = require('debug')('error').extend('ResourceNode');
-const _warn  = require('debug')(' warn').extend('ResourceNode');
-const _info  = require('debug')(' info').extend('ResourceNode');
+const _warn  = require('debug')('warn').extend('ResourceNode');
+const _info  = require('debug')('info').extend('ResourceNode');
 const _trace = require('debug')('trace').extend('ResourceNode');
 
 class ResourceNode extends BaseNode {

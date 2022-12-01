@@ -1,8 +1,8 @@
 const events = require('events');
 
 const _error = require('debug')('error').extend('Resource');
-const _warn  = require('debug')(' warn').extend('Resource');
-const _info  = require('debug')(' info').extend('Resource');
+const _warn  = require('debug')('warn').extend('Resource');
+const _info  = require('debug')('info').extend('Resource');
 const _trace = require('debug')('trace').extend('Resource');
 
 class Resource extends events.EventEmitter {
