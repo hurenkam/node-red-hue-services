@@ -7,10 +7,11 @@ module.exports = function (RED) {
     const debug = require('debug');
 
     // GET: Retrieves current setting, but beware:
-    //      There is a bug in the debug module where it not
-    //      always accepts the same namespaces as input
-    //      causing the GET sometimes to error and leave
-    //      debugging disabled alltogether.
+    //      There seems to be a bug in the debug module 
+    //      where it not always accepts the same namespaces
+    //      as input causing the GET sometimes to error and
+    //      leave debugging disabled alltogether.
+    //      See https://github.com/debug-js/debug/issues/918
     //
     //      Use the following command to retrieve the settings:
     //      curl -i -H "Accept: application/json" 'localhost:1880/debug'
