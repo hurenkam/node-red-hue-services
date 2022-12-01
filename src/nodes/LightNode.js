@@ -19,15 +19,15 @@ class LightNode extends ServiceNode {
         var text = "";
 
         var resource = this.resource();
-        if ((resource) && (resource.item) && (resource.item.on)) {
-            if (resource.item.on.on==true) {
+        if ((resource) && (resource.item()) && (resource.item().on)) {
+            if (resource.item().on.on==true) {
                 fill = "yellow";
 
-                if (resource.item.dimming) {
-                    text = resource.item.dimming.brightness+"%";
+                if (resource.item().dimming) {
+                    text = resource.item().dimming.brightness+"%";
                 }
 
-            } else if (resource.item.on.on==false) {
+            } else if (resource.item().on.on==false) {
                 fill = "grey";
                 text = "off";
             }

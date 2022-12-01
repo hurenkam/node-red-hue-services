@@ -34,7 +34,7 @@
         var idUI = id.replace("Node","UI");
         var idHelp = id.replace("Node","Help");
         var node = new nodes[id]();
-        console.log(id,idUI,idHelp,new nodes[id]().config);
+        console.log(id,idUI,idHelp,node.config);
 
         var template = document.createElement("script");
         template.setAttribute("type","text/html");

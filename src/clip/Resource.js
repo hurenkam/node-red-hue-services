@@ -11,6 +11,10 @@ class Resource extends events.EventEmitter {
         //console.log("Resource["+this.id()+"].constructor()");
     }
 
+    item() {
+        return this.#item;
+    }
+
     id() {
         var id = this.rtype()+"/"+this.rid()
         var name = this.name();

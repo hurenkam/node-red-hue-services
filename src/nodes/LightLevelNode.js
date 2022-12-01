@@ -19,10 +19,10 @@ class LightLevelNode extends ServiceNode {
         var text = "";
 
         var resource = this.resource();
-        if ((resource) && (resource.item) && (resource.item.light)) {
-            if (resource.item.light.light_level!=null) {
+        if ((resource) && (resource.item()) && (resource.item().light)) {
+            if (resource.item().light.light_level!=null) {
                 fill = "green";
-                text = ""+resource.item.light.light_level;
+                text = ""+resource.item().light.light_level;
             }
         }
 
