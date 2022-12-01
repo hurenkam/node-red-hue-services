@@ -1,6 +1,5 @@
 export class BaseUI {
     #category;
-    #help;
 
     constructor(label="Base", category="base") {
         console.log("BaseUI.constructor()");
@@ -22,8 +21,6 @@ export class BaseUI {
             oneditsave:    function() { instance.onEditSave(this) },
             oneditcancel:  function() { instance.onEditCancel(this) },
         }
-
-        this.#help = this.buildHelp();
     }
 
     buildHelp() {
@@ -110,12 +107,13 @@ export class BaseUI {
     
     manual() {
         var text = "";
-        Object.keys(this.#help).forEach((key)=>{
-            if ((this.#help[key]) && (this.#help[key]!="")) {
+        var help = this.buildHelp();
+        Object.keys(help).forEach((key)=>{
+            if ((help[key]) && (help[key]!="")) {
                 if (key != "intro") {
                     text += "\n### " + key + "\n";
                 }
-                text += this.#help[key];
+                text += help[key];
             }
         });
         return text;
