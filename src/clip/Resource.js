@@ -1,14 +1,30 @@
 const events = require('events');
 
+const _error = require('debug')('error').extend('Resource');
+const _warn  = require('debug')(' warn').extend('Resource');
+const _info  = require('debug')(' info').extend('Resource');
+const _trace = require('debug')('trace').extend('Resource');
+
 class Resource extends events.EventEmitter {
     #clip;
     #item;
+
+    #error;
+    #warn;
+    #info;
+    #trace;
 
     constructor(item,clip) {
         super();
         this.#item = item;
         this.#clip = clip;
-        //console.log("Resource["+this.id()+"].constructor()");
+
+        this.#error = _error.extend("["+this.id()+"]");
+        this.#warn  = _warn. extend("["+this.id()+"]");
+        this.#info  = _info. extend("["+this.id()+"]");
+        this.#trace = _trace.extend("["+this.id()+"]");
+
+        this.#info("constructor()");
     }
 
     item() {
@@ -58,30 +74,30 @@ class Resource extends events.EventEmitter {
     }
 
     destructor() {
-        //console.log("Resource["+this.id()+"].destructor()");
+        this.#info("destructor()");
         this.removeAllListeners();
         this.#clip = null;
         this.#item = null;
     }
 
     get() {
-        //console.log("Resource["+this.id()+"].get()");
+        this.#trace("get()");
         return this.#clip.get(this.rtype(),this.rid());
     }
 
     put(data) {
-        //console.log("Resource["+this.id()+"].put()");
+        this.#trace("put(",data,")");
         this.#clip.put(this.rtype(),this.rid(), data);
     }
 
     onEvent(event) {
-        //console.log("Resource["+this.id()+"].onEvent()",event);
+        this.#trace("onEvent()",event);
         this.updateStatus(event);
         this.emit('update',event);
     }
 
     updateStatus(event) {
-        //console.log("Resource["+this.id()+"].updateStatus()",event);
+        this.#trace("updateStatus()",event);
         const blacklist = ["id", "id_v1", "owner", "type"];
 
         var instance = this;

@@ -1,26 +1,31 @@
 ServiceNode = require("./ServiceNode");
 
 class ZigbeeConnectivityNode extends ServiceNode {
+    #info;
+    #trace;
+
     constructor(config) {
         super(config);
-        console.log("ZigbeeConnectivityNode[" + this.logid() + "].constructor()");
+        this.#info = require('debug')('info').extend('ZigbeeConnectivityNode').extend("["+this.logid()+"]");
+        this.#trace = require('debug')('trace').extend('ZigbeeConnectivityNode').extend("["+this.logid()+"]");
+        this.#info("constructor()");
     }
 
     onUpdate(event) {
+        this.#trace("onUpdate()");
         this.updateStatus();
         super.onUpdate(event);
     }
 
     updateStatus() {
+        this.#trace("updateStatus()");
         super.updateStatus();
 
         var fill = "grey";
         var shape = "dot";
         var text = "";
 
-        console.log("ZigbeeConnectivityNode[" + this.logid() + "].updateStatus()");
         var resource = this.resource();
-        //console.log(resource.item);
         if ((resource) && (resource.item) && (resource.item.status!=null)) {
             fill = (resource.item.status == "connected")? "green": "red";
             text = resource.item.status;

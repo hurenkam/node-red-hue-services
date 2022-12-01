@@ -2,50 +2,70 @@ const axios = require('axios');
 const https = require('https');
 const limiter = require('limiter');
 
+const _error = require('debug')('error').extend('RestApi');
+const _warn  = require('debug')(' warn').extend('RestApi');
+const _info  = require('debug')(' info').extend('RestApi');
+const _trace = require('debug')('trace').extend('RestApi');
+
 class RestApi {
+    #ip;
+    #headers;
+    #requestQ;
+    #timeout;
+    #limiter;
+
+    #error;
+    #warn;
+    #info;
+    #trace;
+
     constructor(name,ip,throttle,headers) {
-        this._name = name;
-        this.limiter = new limiter.RateLimiter(throttle);
+        this.#limiter = new limiter.RateLimiter(throttle);
 
-        console.log("RestApi["+this._name+"].constructor()");
+        this.#error = _error.extend("["+name+"]");
+        this.#warn  = _warn. extend("["+name+"]");
+        this.#info  = _info. extend("["+name+"]");
+        this.#trace = _trace.extend("["+name+"]");
 
-        this._ip = ip;
-        this._headers = { "Content-Type": "application/json; charset=utf-8" };
+        this.#info("constructor()");
+
+        this.#ip = ip;
+        this.#headers = { "Content-Type": "application/json; charset=utf-8" };
         if (headers) {
             Object.keys(headers).forEach(key => {
-                this._headers[key] = headers[key];
+                this.#headers[key] = headers[key];
             });
         };
 
-        this._requestQ = [];
-        this._handleRequest();
-        this._timeout = null;
+        this.#requestQ = [];
+        this.#handleRequest();
+        this.#timeout = null;
     }
 
     destructor() {
-        console.log("RestApi["+this._name+"].destructor()");
-        if (this._timeout) {
-            clearTimeout(this._timeout);
-            this._timeout = null;
+        this.#info("destructor()");
+        if (this.#timeout) {
+            clearTimeout(this.#timeout);
+            this.#timeout = null;
         }
 
-        if (this._requestQ) {
-            this._requestQ.forEach(item => {
+        if (this.#requestQ) {
+            this.#requestQ.forEach(item => {
                 item.resolve = null;
                 item.reject = null;
             });
         }
-        this._requestQ = null;
+        this.#requestQ = null;
     }
 
-    async _request(url, method="GET", data=null) {
-        var realurl = "https://" + this._ip + url;
-        console.log("RestApi[" + this._name + "]._request(" + realurl + ", " + method + ",",data,")");
+    async #request(url, method="GET", data=null) {
+        var realurl = "https://" + this.#ip + url;
+        this.#info("_request(" + realurl + ", " + method + ",",data,")");
 
         var request = {
             "method": method,
             "url": realurl,
-            "headers": this._headers,
+            "headers": this.#headers,
             "httpsAgent": new https.Agent({ rejectUnauthorized: false })
         }
         if (data) {
@@ -55,62 +75,62 @@ class RestApi {
         return axios(request);
     }
 
-    _handleRequest() {
-        if (this._requestQ.length > 0) {
-            console.log("RestApi[" + this._name + "]._handleRequest() pending: " + this._requestQ.length);
+    #handleRequest() {
+        if (this.#requestQ.length > 0) {
+            this.#info("_handleRequest() pending: " + this.#requestQ.length);
             var local = this;
 
-            var request = this._requestQ.shift();
-            this._request(request.url, request.method, request.data)
+            var request = this.#requestQ.shift();
+            this.#request(request.url, request.method, request.data)
             .then(async (result) => {
-                await local.limiter.removeTokens(1,()=>{});
+                await local.#limiter.removeTokens(1,()=>{});
                 request.resolve(result.data);
-                this._timeout = setTimeout(this._handleRequest.bind(this), 0);
+                this.#timeout = setTimeout(this.#handleRequest.bind(this), 0);
             })
             .catch((error) => {
-                console.log("RestApi[" + this._name + "]._handleRequest(" + request.url + ") error: ");
-                console.log(error);
+                this.#error("_handleRequest(" + request.url + ") error: ");
+                this.#error(error);
                 request.reject();
 
                 // back off for a few seconds, just in case we ran into a 429 error.
-                local._timeout = setTimeout(local._handleRequest.bind(local), 5000);
+                local.#timeout = setTimeout(local.#handleRequest.bind(local), 5000);
             });
 
         } else {
             // if no request was pending, then check again soon
-            this._timeout = setTimeout(this._handleRequest.bind(this), 100);
+            this.#timeout = setTimeout(this.#handleRequest.bind(this), 100);
         }
     }
 
     get(url) {
-        console.log("RestApi[" + this._name + "].get(" + url + ")");
+        this.#trace("get(" + url + ")");
         var local = this;
         return new Promise(function (resolve, reject) {
-            local._requestQ.push({ url: url, method: "GET", data: null, resolve: resolve, reject: reject });
+            local.#requestQ.push({ url: url, method: "GET", data: null, resolve: resolve, reject: reject });
         });
     }
 
     put(url, data) {
-        console.log("RestApi[" + this._name + "].put(" + url + ")");
+        this.#trace("put(" + url + ")");
         var local = this;
         return new Promise(function (resolve, reject) {
-            local._requestQ.push({ url: url, method: "PUT", data: data, resolve: resolve, reject: reject });
+            local.#requestQ.push({ url: url, method: "PUT", data: data, resolve: resolve, reject: reject });
         });
     }
 
     post(url, data) {
-        console.log("RestApi[" + this._name + "].post(" + url + ")");
+        this.#trace(".post(" + url + ")");
         var local = this;
         return new Promise(function (resolve, reject) {
-            local._requestQ.push({ url: url, method: "POST", data: data, resolve: resolve, reject: reject });
+            local.#requestQ.push({ url: url, method: "POST", data: data, resolve: resolve, reject: reject });
         });
     }
 
     delete(url, data) {
-        console.log("RestApi[" + this._name + "].delete(" + url + ")");
+        this.#trace(".delete(" + url + ")");
         var local = this;
         return new Promise(function (resolve, reject) {
-            local._requestQ.push({ url: url, method: "DELETE", data: data, resolve: resolve, reject: reject });
+            local.#requestQ.push({ url: url, method: "DELETE", data: data, resolve: resolve, reject: reject });
         });
     }
 }

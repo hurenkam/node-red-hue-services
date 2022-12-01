@@ -1,17 +1,24 @@
 ServiceNode = require("./ServiceNode");
 
 class MotionNode extends ServiceNode {
+    #info;
+    #trace;
+
     constructor(config) {
         super(config);
-        console.log("MotionNode[" + this.logid() + "].constructor()");
+        this.#info = require('debug')('info').extend('MotionNode').extend("["+this.logid()+"]");
+        this.#trace = require('debug')('trace').extend('MotionNode').extend("["+this.logid()+"]");
+        this.#info("constructor()");
     }
 
     onUpdate(event) {
+        this.#trace("onUpdate(",event,")")
         this.updateStatus();
         super.onUpdate(event);
     }
 
     updateStatus() {
+        this.#trace("updateStatus()")
         super.updateStatus();
 
         var fill = "grey";

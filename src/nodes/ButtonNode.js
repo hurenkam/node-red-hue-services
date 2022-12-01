@@ -3,14 +3,21 @@ ServiceNode = require("./ServiceNode");
 class ButtonNode extends ServiceNode {
     #fill;
 
+    #info;
+    #trace;
+
     constructor(config) {
         super(config);
-        console.log("ButtonNode[" + this.logid() + "].constructor()");
+
+        this.#info = require('debug')('info').extend('ButtonNode').extend("["+this.logid()+"]");
+        this.#trace = require('debug')('trace').extend('ButtonNode').extend("["+this.logid()+"]");
+        this.#info("constructor()");
 
         this.#fill = "grey";
     }
 
     onUpdate(event) {
+        this.#trace("onUpdate(",event,")");
         this.#fill = "blue";
         
         var instance = this;
@@ -24,6 +31,7 @@ class ButtonNode extends ServiceNode {
     }
 
     updateStatus() {
+        this.#trace("updateStatus()");
         super.updateStatus();
 
         var fill = this.#fill;

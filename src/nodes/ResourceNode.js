@@ -1,18 +1,34 @@
 Resource = require("../clip/Resource");
 BaseNode = require("./BaseNode");
 
+const _error = require('debug')('error').extend('ResourceNode');
+const _warn  = require('debug')(' warn').extend('ResourceNode');
+const _info  = require('debug')(' info').extend('ResourceNode');
+const _trace = require('debug')('trace').extend('ResourceNode');
+
 class ResourceNode extends BaseNode {
     #onUpdate;
     #resource;
 
+    #error;
+    #warn;
+    #info;
+    #trace;
+
     constructor(config) {
         super(config);
-        console.log("ResourceNode[" + this.logid() + "].constructor()");
+
+        this.#error = _error.extend("["+this.logid()+"]");
+        this.#warn  = _warn. extend("["+this.logid()+"]");
+        this.#info  = _info. extend("["+this.logid()+"]");
+        this.#trace = _trace.extend("["+this.logid()+"]");
+
+        this.#info("constructor()");
         this.getClip(this).requestStartup(this);
     }
 
     start(resource) {
-        console.log("ResourceNode[" + this.logid() + "].start()");
+        this.#info("start()");
         this.#resource = resource;
 
         var instance = this;
@@ -20,7 +36,7 @@ class ResourceNode extends BaseNode {
             try {
                 instance.onUpdate(event);
             } catch (error) {
-                console.log(error);
+                this.#error(error);
             }
         }
 
@@ -29,7 +45,7 @@ class ResourceNode extends BaseNode {
     }
 
     destructor() {
-        console.log("ResourceNode[" + this.logid() + "].destructor()");
+        this.#info("destructor()");
         if (this.clipTimeout) {
             clearTimeout(this.clipTimeout);
         }
@@ -52,27 +68,26 @@ class ResourceNode extends BaseNode {
     }
 
     onUpdate(event) {
-        //console.log("ResourceNode["+this.logid()+"].onUpdate()");
+        this.#trace("onUpdate()");
         this.send({ payload: event });
     }
 
     onInput(msg) {
-        //console.log("ResourceNode[" + this.logid() + "].onInput(",msg,")",this.config);
         var resource = this.#resource;
         if (!resource) {
-            console.log("ResourceNode[" + this.logid() + "].onInput(): Resource not found",this.config.uuid);
+            this.#trace("onInput(): Resource not found",this.config.uuid);
         }
 
         if (msg.rtypes) {
             if ((resource) && (msg.rtypes.includes(resource.rtype()))) {
-                console.log("ResourceNode[" + this.logid() + "].onInput(",msg.payload,")");
+                this.#trace("onInput(",msg.payload,")");
                 resource.put(msg.payload);
             }
         }
 
         if (msg.rids) {
             if ((resource) && (msg.rids.includes(resource.rid()))) {
-                console.log("ResourceNode[" + this.logid() + "].onInput(",msg.payload,")");
+                this.#trace("onInput(",msg.payload,")");
                 resource.put(msg.payload);
             }
         }

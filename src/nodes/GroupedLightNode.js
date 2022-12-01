@@ -1,17 +1,24 @@
 ServiceNode = require("./ServiceNode");
 
 class GroupedLightNode extends ServiceNode {
+    #info;
+    #trace;
+
     constructor(config) {
         super(config);
-        console.log("GroupedLightNode[" + this.logid() + "].constructor()");
+        this.#info = require('debug')('info').extend('GroupedLightNode').extend("["+this.logid()+"]");
+        this.#trace = require('debug')('trace').extend('GroupedLightNode').extend("["+this.logid()+"]");
+        this.#info("constructor()");
     }
 
     onUpdate(event) {
+        this.#trace("onUpdate(",event,")");
         this.updateStatus();
         super.onUpdate(event);
     }
 
     updateStatus() {
+        this.#trace("updateStatus()");
         super.updateStatus();
 
         var fill = "grey";

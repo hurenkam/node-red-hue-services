@@ -1,17 +1,24 @@
 ServiceNode = require("./ServiceNode");
 
 class TemperatureNode extends ServiceNode {
+    #info;
+    #trace;
+
     constructor(config) {
         super(config);
-        console.log("TemperatureNode[" + this.logid() + "].constructor()");
+        this.#info = require('debug')('info').extend('TemperatureNode').extend("["+this.logid()+"]");
+        this.#trace = require('debug')('trace').extend('TemperatureNode').extend("["+this.logid()+"]");
+        this.#info("constructor()");
     }
 
     onUpdate(event) {
+        this.#trace("onUpdate(",event,")");
         this.updateStatus();
         super.onUpdate(event);
     }
 
     updateStatus() {
+        this.#trace("updateStatus()");
         super.updateStatus();
 
         var fill = "grey";

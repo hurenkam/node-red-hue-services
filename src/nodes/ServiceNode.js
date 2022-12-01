@@ -1,9 +1,12 @@
 ResourceNode = require("./ResourceNode");
 
 class ServiceNode extends ResourceNode {
+    #info;
+
     constructor(config) {
         super(config);
-        console.log("ServiceNode[" + this.logid() + "].constructor()");
+        this.#info = require('debug')('info').extend('ServiceNode').extend("["+this.logid()+"]");
+        this.#info("constructor()");
     }
 }
 

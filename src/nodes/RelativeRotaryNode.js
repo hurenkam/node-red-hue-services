@@ -3,14 +3,20 @@ ServiceNode = require("./ServiceNode");
 class RelativeRotaryNode extends ServiceNode {
     #fill;
 
+    #info;
+    #trace;
+
     constructor(config) {
         super(config);
-        console.log("RelativeRotaryNode[" + this.logid() + "].constructor()");
+        this.#info = require('debug')('info').extend('RelativeRotaryNode').extend("["+this.logid()+"]");
+        this.#trace = require('debug')('trace').extend('RelativeRotaryNode').extend("["+this.logid()+"]");
+        this.#info("constructor()");
 
         this.#fill = "grey";
     }
 
     onUpdate(event) {
+        this.#trace("onUpdate(",event,")");
         this.#fill = "blue";
         
         var instance = this;
@@ -24,6 +30,7 @@ class RelativeRotaryNode extends ServiceNode {
     }
 
     updateStatus() {
+        this.#trace("updateStatus()");
         super.updateStatus();
 
         var fill = this.#fill;

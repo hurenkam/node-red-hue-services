@@ -1,11 +1,27 @@
+const _error = require('debug')('error').extend('BaseNode');
+const _warn  = require('debug')(' warn').extend('BaseNode');
+const _info  = require('debug')(' info').extend('BaseNode');
+const _trace = require('debug')('trace').extend('BaseNode');
+
 class BaseNode {
     static nodeAPI = null;
     #onInput;
     #onClose;
 
+    #error;
+    #warn;
+    #info;
+    #trace;
+
     constructor(config) {
         this.config = config;
-        console.log("BaseNode[" + this.logid() + "].constructor()");
+
+        this.#error = _error.extend("["+this.logid()+"]");
+        this.#warn  = _warn. extend("["+this.logid()+"]");
+        this.#info  = _info. extend("["+this.logid()+"]");
+        this.#trace = _trace.extend("["+this.logid()+"]");
+
+        this.#info("constructor()");
         BaseNode.nodeAPI.nodes.createNode(this,config);
         var instance = this;
 
@@ -13,7 +29,7 @@ class BaseNode {
             try {
                 instance.onInput(msg);
             } catch (error) {
-                console.log(error);
+                this.#error(error);
             }
         }
     
@@ -21,7 +37,7 @@ class BaseNode {
             try {
                 instance.destructor();
             } catch (error) {
-                console.log(error);
+                this.#error(error);
             }
         }
     
@@ -34,18 +50,22 @@ class BaseNode {
     }
 
     getStatusFill() {
+        this.#trace("getStatusFill()");
         return null;
     }
 
     getStatusText() {
+        this.#trace("getStatusText()");
         return null;
     }
 
     getStatusShape() {
+        this.#trace("getStatusShape()");
         return null;
     }
 
     updateStatus() {
+        this.#trace("updateStatus()");
         try {
             var fill =  this.getStatusFill();
             var shape = this.getStatusShape();
@@ -60,16 +80,16 @@ class BaseNode {
                 text:  text
             });
         } catch (error) {
-            console.log(error);
+            this.#error(error);
         }
     }
 
     onInput(msg) {
-        console.log("BaseNode[" + this.logid() + "].onInput(",msg,")");
+        this.#trace("onInput(",msg,")");
     }
 
     destructor() {
-        console.log("BaseNode[" + this.logid() + "].destructor()");
+        this.#info("destructor()");
         this.off('input',this.#onInput);
         this.off('close',this.#onClose);
         this.config = null;
