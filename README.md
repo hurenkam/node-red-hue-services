@@ -30,8 +30,9 @@ in my home automation environment seems to work and stability is ok.
   ~~bridge needs to be configured manually with an ip address and known key.~~
 - ~~Provide better low level support for simple resources as 'grouped_light' or 'light'.~~
 - ~~Provide a generic sevice node (to allow using as of yet unsupported services)~~
-- Use scope, this is probably required if i want to upload this as a package.
-- Fix packaging, now I'm using a symlink to point to my *UI.js files, this needs a proper solution.
+- --Use scope, this is probably required if i want to upload this as a package.--
+- --Fix packaging, now I'm using a symlink to point to my *UI.js files, this needs a proper solution.--
+- Upload package to node-red library
 
 ## Postponed until after 0.5.x release
 - Improve 'smart' modes for Switch and Motion devices
@@ -62,7 +63,22 @@ Do note that to address a node, you must either provide an msg.rids array that c
 of the resource you wish to address, or an msg.rtypes array that contains the rtype of the resource
 you wish to address.
 
-# credits
+# Debug
+(see src/debug.js)
+The server side classes are instrumented with logging using the debug module, this can be changed
+runtime by sending appropriate GET / POST / DELETE requests to the node-red /debug endpoint
+(default: http://localhost:1880/debug):
+
+Use the following command to retrieve the current settings:
+`curl -i -H "Accept: application/json" 'localhost:1880/debug'`
+
+Use the following command to enable error and warning logging:
+`curl -i -H "Accept: application/json" 'localhost:1880/debug' -d "namespaces='error:*,warn:*"`
+
+Use the following command to disable debug logging:
+`curl -i -H "Accept: application/json" 'localhost:1880/debug' -X "DELETE"`
+
+# Credits
 Credit where credit is due, this was inspired by the node-red-contrib-huemagic project, which stopped working for me at some point.
 That is when i decided to go and dive into this, and create my own wrapper around the hue clip v2 api.
 
