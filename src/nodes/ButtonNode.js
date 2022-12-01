@@ -5,15 +5,15 @@ class ButtonNode extends ServiceNode {
         super(config);
         console.log("ButtonNode[" + this.logid() + "].constructor()");
 
-        this.fill = "grey";
+        this.#fill = "grey";
     }
 
     onUpdate(event) {
-        this.fill = "blue";
+        this.#fill = "blue";
         
         var instance = this;
         setTimeout(()=>{
-            instance.fill = "grey";
+            instance.#fill = "grey";
             instance.updateStatus();
         },3000);
 
@@ -24,7 +24,7 @@ class ButtonNode extends ServiceNode {
     updateStatus() {
         super.updateStatus();
 
-        var fill = this.fill;
+        var fill = this.#fill;
         var shape = "dot";
         var text = "";
 

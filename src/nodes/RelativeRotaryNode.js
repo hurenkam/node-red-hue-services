@@ -5,15 +5,15 @@ class RelativeRotaryNode extends ServiceNode {
         super(config);
         console.log("RelativeRotaryNode[" + this.logid() + "].constructor()");
 
-        this.fill = "grey";
+        this.#fill = "grey";
     }
 
     onUpdate(event) {
-        this.fill = "blue";
+        this.#fill = "blue";
         
         var instance = this;
         setTimeout(()=>{
-            instance.fill = "grey";
+            instance.#fill = "grey";
             instance.updateStatus();
         },1000);
 
@@ -24,7 +24,7 @@ class RelativeRotaryNode extends ServiceNode {
     updateStatus() {
         super.updateStatus();
 
-        var fill = this.fill;
+        var fill = this.#fill;
         var shape = "dot";
         var text = "";
 

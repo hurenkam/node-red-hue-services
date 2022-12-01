@@ -1,5 +1,7 @@
 class BaseNode {
     static nodeAPI = null;
+    #onInput;
+    #onClose;
 
     constructor(config) {
         this.config = config;
@@ -7,7 +9,7 @@ class BaseNode {
         BaseNode.nodeAPI.nodes.createNode(this,config);
         var instance = this;
 
-        this._onInput = function (msg) {
+        this.#onInput = function (msg) {
             try {
                 instance.onInput(msg);
             } catch (error) {
@@ -15,7 +17,7 @@ class BaseNode {
             }
         }
     
-        this._onClose = function () {
+        this.#onClose = function () {
             try {
                 instance.destructor();
             } catch (error) {
@@ -23,8 +25,8 @@ class BaseNode {
             }
         }
     
-        this.on('input', this._onInput);
-        this.on('close', this._onClose);
+        this.on('input', this.#onInput);
+        this.on('close', this.#onClose);
     }
 
     logid() {
@@ -68,8 +70,8 @@ class BaseNode {
 
     destructor() {
         console.log("BaseNode[" + this.logid() + "].destructor()");
-        this.off('input',this._onInput);
-        this.off('close',this._onClose);
+        this.off('input',this.#onInput);
+        this.off('close',this.#onClose);
         this.config = null;
     }
 }
