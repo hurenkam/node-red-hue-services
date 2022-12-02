@@ -32,7 +32,7 @@ in my home automation environment seems to work and stability is ok.
 - ~~Provide a generic sevice node (to allow using as of yet unsupported services)~~
 - ~~Use scope, this is probably required if i want to upload this as a package.~~
 - ~~Fix packaging, now I'm using a symlink to point to my *UI.js files, this needs a proper solution.~~
-- Upload package to node-red library
+- ~~Upload package to node-red library~~
 
 ## Postponed until after 0.5.x release
 - Improve 'smart' modes for Switch and Motion devices
