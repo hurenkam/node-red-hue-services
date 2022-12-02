@@ -66,23 +66,24 @@ you wish to address.
 # Design
 ```mermaid
 classDiagram
+direction LR
 BaseNode <|-- BridgeConfigNode
 BaseNode <|-- ResourceNode
 ResourceNode <|-- SceneNode
 ResourceNode <|-- ServiceNode
 ServiceNode <|-- ButtonNode
-ServiceNode <|--- DevicePowerNode
+ServiceNode <|-- DevicePowerNode
 ServiceNode <|-- GroupedLightNode
-ServiceNode <|--- LightLevelNode
+ServiceNode <|-- LightLevelNode
 ServiceNode <|-- LightNode
-ServiceNode <|--- MotionNode
+ServiceNode <|-- MotionNode
 ServiceNode <|-- RelativeRotaryNode
-ServiceNode <|--- TemperatureNode
+ServiceNode <|-- TemperatureNode
 ServiceNode <|-- ZigbeeConnectivityNode
 
 BridgeConfigNode --> ClipApi
 ClipApi --> RestApi
-ClipApi --* Resource
+ClipApi *-- Resource
 Resource <|-- ServiceListResource
 ```
 
@@ -110,31 +111,10 @@ Classes have 4 loglevels:
 - info
 - debug
 
-Log messages are typically built like this: <loglevel>:<class>:<name or id> <logmessage>, where
+Log messages are typically built like this: `<loglevel>:<class>:<name or id> <logmessage>`, where
 currently the following classes exist (see the code). Each level of each class can be enabled
 or disabled seperately, and even per instance.
 
-Clip classes:
-- RestApi
-- ClipApi
-- Resource
-- ServiceListResource
-
-Node classes:
-- BaseNode
-- BridgeConfigNode
-- ButtonNode
-- DevicePowerNode
-- GroupedLightNode
-- LightNode
-- LightLevelNode
-- MotionNode
-- RelativeRotaryNode
-- ResourceNode
-- SceneNode
-- ServiceNode
-- TemperatureNode
-- ZigbeeConnectivityNode
 
 # Credits
 Credit where credit is due, this was inspired by the node-red-contrib-huemagic project, which stopped working for me at some point.
