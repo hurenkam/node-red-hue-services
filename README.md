@@ -89,10 +89,10 @@ sequenceDiagram
 classDiagram
 
 class BaseNode {
-    +nodeApi$
+    +config
     #onInput
     #onClose
-    
+
     +constructor(config)
     +logid()
     +getStatusFill()
@@ -111,7 +111,7 @@ class ResourceNode {
     +start(resource)
     +resource()
     +rid()
-    +clip()
+    +bridge()
     +onUpdate(event)
     +onInput(msg)
     +destructor()
@@ -131,6 +131,7 @@ class BridgeConfigNode {
     #uninitClip()
     +onClipError(error)
     +clip()
+    +requestStartup(resource)
     +destructor()
     
     +DiscoverBridges()$
@@ -264,23 +265,23 @@ class ZigbeeConnectivityNode {
 direction LR
 BaseNode <|-- BridgeConfigNode
 BaseNode <|-- ResourceNode
+ResourceNode ..> BridgeConfigNode
+ResourceNode --> Resource
 ResourceNode <|-- ServiceNode
-ServiceNode <|-- ButtonNode
-ServiceNode <|-- DevicePowerNode
-ServiceNode <|-- GroupedLightNode
-ServiceNode <|-- LightLevelNode
-ServiceNode <|-- LightNode
-ServiceNode <|-- MotionNode
-ServiceNode <|-- RelativeRotaryNode
-ServiceNode <|-- TemperatureNode
-ServiceNode <|-- ZigbeeConnectivityNode
+ResourceNode <|-- ButtonNode
+ResourceNode <|-- DevicePowerNode
+ResourceNode <|-- GroupedLightNode
+ResourceNode <|-- LightLevelNode
+ResourceNode <|-- LightNode
+ResourceNode <|-- MotionNode
+ResourceNode <|-- RelativeRotaryNode
 ResourceNode <|-- SceneNode
+ResourceNode <|-- TemperatureNode
+ResourceNode <|-- ZigbeeConnectivityNode
 
 BridgeConfigNode --> ClipApi
-ClipApi *-- Resource
 ClipApi --> RestApi
-Resource <|-- ServiceListResource
-ResourceNode --> Resource
+ClipApi *-- Resource
 
 ```
 
