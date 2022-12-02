@@ -85,12 +85,12 @@ class Resource extends events.EventEmitter {
     }
 
     services() {
-        this.#info("getServices()");
+        this.#info("services()");
         var result = {};
         if ((this.item()) && (this.item().services))
         {
             this.item().services.forEach(service => {
-                this.#trace("getServices()  service:",service);
+                this.#trace("services()  service:",service);
                 var resource = this.clip().getResource(service.rid);
                 if (resource) {
                     result[service.rid] = resource;

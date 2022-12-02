@@ -292,8 +292,8 @@ class ClipApi extends events.EventEmitter {
         var options = [];
         var rids = [];
         Object.values(this.#resources).forEach((resource)=>{
-            if (resource.getServices) {
-                Object.values(resource.getServices()).forEach((service) => {
+            if (resource.services) {
+                Object.values(resource.services()).forEach((service) => {
                     if ((service.rtype() == rtype) && (!rids.includes(resource.rid()))) {
                         rids.push(resource.rid());
                         options.push({ value: resource.rid(), label: resource.name() });
@@ -317,7 +317,7 @@ class ClipApi extends events.EventEmitter {
 
         var options = [];
         var owner = this.#resources[uuid];
-        var services = owner.getServices();
+        var services = owner.services();
         Object.values(services).forEach((service) => {
             if (service.rtype() == rtype) {
                 options.push({ value: service.rid(), label: service.typeName() });
