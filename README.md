@@ -63,6 +63,29 @@ Do note that to address a node, you must either provide an msg.rids array that c
 of the resource you wish to address, or an msg.rtypes array that contains the rtype of the resource
 you wish to address.
 
+# Design
+```mermaid
+classDiagram
+BaseNode <|-- BridgeConfigNode
+BaseNode <|-- ResourceNode
+ResourceNode <|-- SceneNode
+ResourceNode <|-- ServiceNode
+ServiceNode <|-- ButtonNode
+ServiceNode <|--- DevicePowerNode
+ServiceNode <|-- GroupedLightNode
+ServiceNode <|--- LightLevelNode
+ServiceNode <|-- LightNode
+ServiceNode <|--- MotionNode
+ServiceNode <|-- RelativeRotaryNode
+ServiceNode <|--- TemperatureNode
+ServiceNode <|-- ZigbeeConnectivityNode
+
+BridgeConfigNode --> ClipApi
+ClipApi --> RestApi
+ClipApi --* Resource
+Resource <|-- ServiceListResource
+```
+
 # Debug
 (see src/debug.js)
 The server side classes are instrumented with logging using the debug module, this can be changed
@@ -80,6 +103,38 @@ Use the following command to enable error and warning logging:
 Use the following command to disable debug logging:
 
 `curl -i -H "Accept: application/json" 'localhost:1880/debug' -X "DELETE"`
+
+Classes have 4 loglevels:
+- error
+- warn
+- info
+- debug
+
+Log messages are typically built like this: <loglevel>:<class>:<name or id> <logmessage>, where
+currently the following classes exist (see the code). Each level of each class can be enabled
+or disabled seperately, and even per instance.
+
+Clip classes:
+- RestApi
+- ClipApi
+- Resource
+- ServiceListResource
+
+Node classes:
+- BaseNode
+- BridgeConfigNode
+- ButtonNode
+- DevicePowerNode
+- GroupedLightNode
+- LightNode
+- LightLevelNode
+- MotionNode
+- RelativeRotaryNode
+- ResourceNode
+- SceneNode
+- ServiceNode
+- TemperatureNode
+- ZigbeeConnectivityNode
 
 # Credits
 Credit where credit is due, this was inspired by the node-red-contrib-huemagic project, which stopped working for me at some point.
