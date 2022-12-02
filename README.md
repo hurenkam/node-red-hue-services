@@ -48,6 +48,7 @@ to offer an easy low level interface towards clip.
 The basic principle of the nodes is that you select the proper id on the bridge, then clip events
 associated with that resource id will come out as `msg.payload`, and whatever `msg.payload` is piped in
 at the input will be sent as a put request to the clip v2 interface.
+(See here: https://developers.meethue.com/develop/hue-api-v2 )
 
 The following command will for instance switch a light, room or zone on:
 
