@@ -89,6 +89,80 @@ sequenceDiagram
 ## Class Diagram
 ```mermaid
 classDiagram
+
+class BaseNode {
+    +constructor(config)
+    +logid()
+    +getStatusFill()
+    +getStatusText()
+    +getStatusShape()
+    +updateStatus()
+    +onInput(msg)
+    +destructor()
+}
+
+class ResourceNode {
+    +constructor(config)
+    +start(resource)
+    +resource()
+    +rid()
+    +clip()
+    +onUpdate(event)
+    +onInput(msg)
+    +destructor()
+}
+
+class ServiceNode {
+    +constructor(config)
+}
+
+class BridgeConfigNode {
+    #onClose
+    #onClipError
+    #clip
+    
+    +constructor(config)
+    #initClip()
+    #uninitClip()
+    +onClipError(error)
+    +clip()
+    +destructor()
+    
+    +DiscoverBridges()$
+    +AcquireApplicationKey()$
+}
+
+class ClipApi {
+    +constructor()
+    +requestStartup(resource)
+    +getResource(rid)
+    +get(rtype,rid)
+    +put(rtype,rid,data)
+    +post(rtype,rid,data)
+    +delete(rtype,rid)
+    #isResourceRegistered(rid)
+    #registerResource(resource)
+    #unregisterResource(resource)
+    +getSortedServicesById(rid)
+    +getSortedResourcesByTypeAndModel(type,models)
+    +getSortedResourceOptions(type,models)
+    +getSortedTypeOptions()
+    +getSortedOwnerOptions()
+    +getSortedServiceOptions()
+    +destructor()
+}
+
+class RestApi {
+    +constructor()
+    #request(url,method,data)
+    #handleRequest()
+    +get(url)
+    +put(url,data)
+    +post(url,data)
+    +delete(url)
+    +destructor()
+}
+
 direction LR
 BaseNode <|-- BridgeConfigNode
 BaseNode <|-- ResourceNode
@@ -105,8 +179,8 @@ ServiceNode <|-- ZigbeeConnectivityNode
 ResourceNode <|-- SceneNode
 
 BridgeConfigNode --> ClipApi
-ClipApi --> RestApi
 ClipApi *-- Resource
+ClipApi --> RestApi
 Resource <|-- ServiceListResource
 ResourceNode --> Resource
 
