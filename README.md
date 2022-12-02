@@ -134,7 +134,7 @@ class BridgeConfigNode {
     +destructor()
     
     +DiscoverBridges()$
-    +AcquireApplicationKey()$
+    +AcquireApplicationKey(ip)$
 }
 
 class ClipApi {
