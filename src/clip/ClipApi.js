@@ -3,7 +3,7 @@ const EventSource = require('eventsource');
 const RestApi = require('../RestApi');
 
 const Resource = require('./Resource');
-const ServiceListResource = require('./ServiceListResource');
+//const ServiceListResource = require('./ServiceListResource');
 
 const _error = require('debug')('error').extend('ClipApi');
 const _warn  = require('debug')('warn').extend('ClipApi');
@@ -28,9 +28,9 @@ class ClipApi extends events.EventEmitter {
         "behavior_script": Resource,
         "behavior_instance": Resource,
         "bridge": Resource,
-        "bridge_home": ServiceListResource,
+        "bridge_home": Resource,
         "button": Resource,
-        "device": ServiceListResource,
+        "device": Resource,
         "device_power": Resource,
         "entertainment": Resource,
         "entertainment_configuration": Resource,
@@ -42,13 +42,13 @@ class ClipApi extends events.EventEmitter {
         "matter": Resource,
         "motion": Resource,
         "relative_rotary": Resource,
-        "room": ServiceListResource,
+        "room": Resource,
         "scene": Resource,
         "temperature": Resource,
         "zgp_connectivity": Resource,
         "zigbee_connectivity": Resource,
         "zigbee_device_discovery": Resource,
-        "zone": ServiceListResource
+        "zone": Resource
     };
 
     constructor(ip,key,name) {

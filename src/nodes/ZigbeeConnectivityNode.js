@@ -1,6 +1,6 @@
-ServiceNode = require("./ServiceNode");
+ResourceNode = require("./ResourceNode");
 
-class ZigbeeConnectivityNode extends ServiceNode {
+class ZigbeeConnectivityNode extends ResourceNode {
     #info;
     #trace;
 

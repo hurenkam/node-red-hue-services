@@ -1,6 +1,6 @@
-ResourceNode = require("./ResourceNode");
+ServiceNode = require("./ServiceNode");
 
-class SceneNode extends ResourceNode {
+class SceneNode extends ServiceNode {
     #info;
 
     constructor(config) {

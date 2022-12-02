@@ -1,6 +1,6 @@
-ServiceNode = require("./ServiceNode");
+ResourceNode = require("./ResourceNode");
 
-class MotionNode extends ServiceNode {
+class MotionNode extends ResourceNode {
     #info;
     #trace;
 

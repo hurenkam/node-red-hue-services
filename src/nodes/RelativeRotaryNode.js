@@ -1,6 +1,6 @@
-ServiceNode = require("./ServiceNode");
+ResourceNode = require("./ResourceNode");
 
-class RelativeRotaryNode extends ServiceNode {
+class RelativeRotaryNode extends ResourceNode {
     #fill;
 
     #info;

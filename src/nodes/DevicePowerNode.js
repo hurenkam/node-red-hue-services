@@ -1,6 +1,6 @@
-ServiceNode = require("./ServiceNode");
+ResourceNode = require("./ResourceNode");
 
-class DevicePowerNode extends ServiceNode {
+class DevicePowerNode extends ResourceNode {
     #info;
     #trace;
 

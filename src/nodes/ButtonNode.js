@@ -1,6 +1,6 @@
-ServiceNode = require("./ServiceNode");
+ResourceNode = require("./ResourceNode");
 
-class ButtonNode extends ServiceNode {
+class ButtonNode extends ResourceNode {
     #fill;
 
     #info;

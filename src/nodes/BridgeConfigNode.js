@@ -33,17 +33,13 @@ class BridgeConfigNode extends BaseNode {
         var instance = this;
 
         bridges[this.id] = { id: this.id, name: config.name, instance: this };
-        this.#initClip();
+        this.#initClip(config.ip,config.key,config.name);
 
         this.#onClose = function() {
             try {
                 instance.destructor();
             } catch (error) {
                 this.#error(error);
-                if (error.statusCode == 429) {
-                    instance.#uninitClip();
-                    instance.#initClip();
-                }
             }
         }
         this.on('close', this.#onClose);
@@ -54,17 +50,17 @@ class BridgeConfigNode extends BaseNode {
         super.destructor();
     }
 
-    #initClip() {
+    #initClip(ip,key,name) {
         var instance = this;
         this.#onClipError = function(event) {
             try {
                 instance.onClipError(event);
             } catch (error) {
-                this.#error(error);
+                instance.#error(error);
             }
         }
 
-        this.#clip = new ClipApi(this.config.ip,this.config.key,this.config.name);
+        this.#clip = new ClipApi(ip,key,name);
         this.#clip.on('error',this.#onClipError);
     }
 
@@ -77,8 +73,12 @@ class BridgeConfigNode extends BaseNode {
         this.#error("onClipError()",error);
     }
 
-    getClip(caller) {
+    clip() {
         return this.#clip;
+    }
+
+    requestStartup(resource) {
+        this.clip().requestStartup(resource);
     }
 
     static async DiscoverBridges() {
@@ -194,7 +194,7 @@ BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetBridgeOptions', async funct
 BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedServicesById', async function (req, res, next) {
     _info("/GetSortedServicesById");
     _trace(req.query);
-    var clip = bridges[req.query.bridge_id].instance.getClip(this);
+    var clip = bridges[req.query.bridge_id].instance.clip();
     var services = clip.getSortedServicesById(req.query.uuid,req.query.rtype);
     var options = [];
     services.forEach((service) => {
@@ -209,7 +209,7 @@ BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedServicesById', async 
 BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedResourceOptions', async function (req, res, next) {
     _info("/GetSortedResourceOptions");
     _trace(req.query);
-    var clip = bridges[req.query.bridge_id].instance.getClip(this);
+    var clip = bridges[req.query.bridge_id].instance.clip();
     var options = clip.getSortedResourceOptions(req.query.type, req.query.models);
     res.end(JSON.stringify(Object(options)));
 });
@@ -217,7 +217,7 @@ BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedResourceOptions', asy
 BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedTypeOptions', async function (req, res, next) {
     _info("/GetSortedTypeOptions");
     _trace(req.query);
-    var clip = bridges[req.query.bridge_id].instance.getClip(this);
+    var clip = bridges[req.query.bridge_id].instance.clip();
     var options = clip.getSortedTypeOptions();
     res.end(JSON.stringify(Object(options)));
 });
@@ -226,7 +226,7 @@ BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedTypeOptions', async f
 BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedOwnerOptions', async function (req, res, next) {
     _info("/GetSortedOwnerOptions");
     _trace(req.query);
-    var clip = bridges[req.query.bridge_id].instance.getClip(this);
+    var clip = bridges[req.query.bridge_id].instance.clip();
     var options = clip.getSortedOwnerOptions(req.query.rtype);
     res.end(JSON.stringify(Object(options)));
 });
@@ -234,7 +234,7 @@ BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedOwnerOptions', async 
 BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedServiceOptions', async function (req, res, next) {
     _info("/GetSortedServiceOptions");
     _trace(req.query);
-    var clip = bridges[req.query.bridge_id].instance.getClip(this);
+    var clip = bridges[req.query.bridge_id].instance.clip();
     var options = clip.getSortedServiceOptions(req.query.owner,req.query.rtype);
     res.end(JSON.stringify(Object(options)));
 });

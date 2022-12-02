@@ -27,6 +27,17 @@ class Resource extends events.EventEmitter {
         this.#info("constructor()");
     }
 
+    destructor() {
+        this.#info("destructor()");
+        this.removeAllListeners();
+        this.#clip = null;
+        this.#item = null;
+    }
+
+    clip() {
+        return this.#clip;
+    }
+
     item() {
         return this.#item;
     }
@@ -49,7 +60,7 @@ class Resource extends events.EventEmitter {
         var result = null;
 
         if (this.#item.owner) {
-            result = this.#clip.getResource(this.#item.owner.rid);
+            result = this.clip().getResource(this.#item.owner.rid);
         }
 
         return result;
@@ -73,21 +84,30 @@ class Resource extends events.EventEmitter {
         return result;
     }
 
-    destructor() {
-        this.#info("destructor()");
-        this.removeAllListeners();
-        this.#clip = null;
-        this.#item = null;
+    services() {
+        this.#info("getServices()");
+        var result = {};
+        if ((this.item()) && (this.item().services))
+        {
+            this.item().services.forEach(service => {
+                this.#trace("getServices()  service:",service);
+                var resource = this.clip().getResource(service.rid);
+                if (resource) {
+                    result[service.rid] = resource;
+                }
+            });
+        }
+        return result;
     }
 
     get() {
         this.#trace("get()");
-        return this.#clip.get(this.rtype(),this.rid());
+        return this.clip().get(this.rtype(),this.rid());
     }
 
     put(data) {
         this.#trace("put(",data,")");
-        this.#clip.put(this.rtype(),this.rid(), data);
+        this.clip().put(this.rtype(),this.rid(), data);
     }
 
     onEvent(event) {

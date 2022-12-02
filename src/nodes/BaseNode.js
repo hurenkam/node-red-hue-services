@@ -15,7 +15,7 @@ class BaseNode {
 
     constructor(config) {
         this.config = config;
-
+        
         this.#error = _error.extend("["+this.logid()+"]");
         this.#warn  = _warn. extend("["+this.logid()+"]");
         this.#info  = _info. extend("["+this.logid()+"]");
@@ -92,7 +92,6 @@ class BaseNode {
         this.#info("destructor()");
         this.off('input',this.#onInput);
         this.off('close',this.#onClose);
-        this.config = null;
     }
 }
 

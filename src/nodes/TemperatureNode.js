@@ -1,6 +1,6 @@
-ServiceNode = require("./ServiceNode");
+ResourceNode = require("./ResourceNode");
 
-class TemperatureNode extends ServiceNode {
+class TemperatureNode extends ResourceNode {
     #info;
     #trace;
 
