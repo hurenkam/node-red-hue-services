@@ -64,12 +64,34 @@ of the resource you wish to address, or an msg.rtypes array that contains the rt
 you wish to address.
 
 # Design
+
+## Incoming Event
+```mermaid
+sequenceDiagram
+    actor Bridge
+    Bridge ->> ClipApi: message
+    ClipApi ->> Resource: onEvent
+    Resource ->> ResourceNode: update(event)
+    ResourceNode ->> Output: msg.payload = event
+```
+
+## Outgoing Message
+```mermaid
+sequenceDiagram
+    actor Bridge
+    Input ->> ResourceNode: msg.payload, msg.rtypes | msg.rids
+    ResourceNode ->> Resource: put msg.payload
+    Resource ->> ClipApi: put rid, data
+    ClipApi ->> RestApi: put /clip/v2/rid data
+    RestApi ->> Bridge: put
+```
+
+## Class Diagram
 ```mermaid
 classDiagram
 direction LR
 BaseNode <|-- BridgeConfigNode
 BaseNode <|-- ResourceNode
-ResourceNode <|-- SceneNode
 ResourceNode <|-- ServiceNode
 ServiceNode <|-- ButtonNode
 ServiceNode <|-- DevicePowerNode
@@ -80,11 +102,14 @@ ServiceNode <|-- MotionNode
 ServiceNode <|-- RelativeRotaryNode
 ServiceNode <|-- TemperatureNode
 ServiceNode <|-- ZigbeeConnectivityNode
+ResourceNode <|-- SceneNode
 
 BridgeConfigNode --> ClipApi
 ClipApi --> RestApi
 ClipApi *-- Resource
 Resource <|-- ServiceListResource
+ResourceNode --> Resource
+
 ```
 
 # Debug
