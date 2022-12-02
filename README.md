@@ -43,13 +43,11 @@ in my home automation environment seems to work and stability is ok.
 
 # Use
 Using these nodes requires a bit of knowledge on the clip v2 api, as i designed this palette
-to offer an easy low level interface towards clip. Some of the devices have an intelligent mode
-that allow higher level use cases (motion sensor and dimmer switch). The smart behavior is not
-yet finished thoug, and documentation has not even started yet.
+to offer an easy low level interface towards clip.
 
 The basic principle of the nodes is that you select the proper id on the bridge, then clip events
-associated with that resource id will come out as payload, and whatever payload is piped in
-will be sent as a put request to the clip interface.
+associated with that resource id will come out as `msg.payload`, and whatever `msg.payload` is piped in
+at the input will be sent as a put request to the clip v2 interface.
 
 The following command will for instance switch a light, room or zone on:
 
@@ -91,6 +89,10 @@ sequenceDiagram
 classDiagram
 
 class BaseNode {
+    +nodeApi$
+    #onInput
+    #onClose
+    
     +constructor(config)
     +logid()
     +getStatusFill()
@@ -102,6 +104,9 @@ class BaseNode {
 }
 
 class ResourceNode {
+    #onUpdate
+    #resource
+    
     +constructor(config)
     +start(resource)
     +resource()
@@ -133,6 +138,14 @@ class BridgeConfigNode {
 }
 
 class ClipApi {
+    #restApi
+    #resources
+    #startQ
+    #isStarted
+    #name
+    #ip
+    #key
+    
     +constructor()
     +requestStartup(resource)
     +getResource(rid)
@@ -153,7 +166,13 @@ class ClipApi {
 }
 
 class RestApi {
-    +constructor()
+    #ip
+    #headers
+    #requestQ
+    #timeout
+    #limiter
+    
+    +constructor(name,ip,throttle,headers)
     #request(url,method,data)
     #handleRequest()
     +get(url)
@@ -161,6 +180,85 @@ class RestApi {
     +post(url,data)
     +delete(url)
     +destructor()
+}
+
+class Resource {
+    #clip
+    #item
+    
+    +constructor(item,clip)
+    +clip()
+    +item()
+    +id()
+    +rid()
+    +rtype()
+    +owner()
+    +name()
+    +typeName()
+    +services()
+    +get()
+    +put(data)
+    +onEvent(event)
+    +updateStatus(event)
+    +destructor()
+}
+
+class ButtonNode {
+    +constructor(config)
+    +onUpdate(event)
+    +updateStatus()
+}
+
+class DevicePowerNode {
+    +constructor(config)
+    +onUpdate(event)
+    +updateStatus()
+}
+
+class GroupedLightNode {
+    +constructor(config)
+    +onUpdate(event)
+    +updateStatus()
+}
+
+class LightLevelNode {
+    +constructor(config)
+    +onUpdate(event)
+    +updateStatus()
+}
+
+class LightNode {
+    +constructor(config)
+    +onUpdate(event)
+    +updateStatus()
+}
+
+class MotionNode {
+    +constructor(config)
+    +onUpdate(event)
+    +updateStatus()
+}
+
+class RelativeRotaryNode {
+    +constructor(config)
+    +onUpdate(event)
+    +updateStatus()
+}
+
+class SceneNode {
+    +constructor(config)
+}
+
+class TemperatureNode {
+    +constructor(config)
+    +onUpdate(event)
+    +updateStatus()
+}
+
+class ZigbeeConnectivityNode {
+    +constructor(config)
+    +onUpdate(event)
+    +updateStatus()
 }
 
 direction LR
