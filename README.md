@@ -1,4 +1,4 @@
-# node-red-contrib-mh-hue
+# node-red-hue-services
 node-red palette to access hue bridge through clip v2 api
 
 ![ScreenShot](screenshots/Screenshot%20from%202022-11-29%2000-31-29.png)
