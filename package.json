@@ -1,7 +1,19 @@
 {
   "name": "@hurenkam/node-red-hue-services",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "Custom nodes for interfacing with philips hue devices",
+  "author": "Mark Hurenkamp",
+  "license": "Apache 2.0",
+  "maintainers": [
+    "Mark Hurenkamp <mark.hurenkamp@xs4all.nl>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hurenkam/node-red-hue-services.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hurenkam/node-red-hue-services/issues"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,9 +22,6 @@
     "hue",
     "clip"
   ],
-  "repository": "github:hurenkam/node-red-hue-services",
-  "author": "Mark Hurenkamp",
-  "license": "Apache 2.0",
   "node-red": {
     "version": ">=2.0.0",
     "nodes": {
