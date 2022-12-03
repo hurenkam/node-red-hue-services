@@ -1,6 +1,6 @@
 {
   "name": "@hurenkam/node-red-hue-services",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Custom nodes for interfacing with philips hue devices",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -25,10 +25,9 @@
       "node": ">=12.0.0"
   },
   "dependencies": {
-    "axios": "^0.26.1",
+    "axios": "^1.1.3",
     "debug": "^4.3.4",
-    "eventsource": "^2.0.0",
-    "http": "",
-    "limiter": "^2.0.0"
+    "eventsource": "^2.0.2",
+    "limiter": "^2.1.0"
   }
 }

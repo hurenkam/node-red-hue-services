@@ -137,7 +137,7 @@ class ClipApi extends events.EventEmitter {
         if (this.eventSource != null) {
             this.eventSource.onmessage = null;
             this.eventSource.close();
-            delete this.eventSource();
+            delete this.eventSource;
         };
 
         this.eventSource = null;
