@@ -1,6 +1,6 @@
 {
   "name": "@hurenkam/node-red-hue-services",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Custom nodes for interfacing with philips hue devices",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
