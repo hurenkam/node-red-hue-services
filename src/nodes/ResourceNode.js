@@ -24,8 +24,9 @@ class ResourceNode extends BaseNode {
         this.#trace = _trace.extend("["+this.logid()+"]");
 
         this.#info("constructor()");
-        //this.getClip(this).requestStartup(this);
-        this.bridge().requestStartup(this);
+        if (this.bridge()) {
+            this.bridge().requestStartup(this);
+        }
     }
 
     start(resource) {
@@ -41,7 +42,7 @@ class ResourceNode extends BaseNode {
             }
         }
 
-        this.#resource.on('update',this.#onUpdate);
+        this.resource().on('update',this.#onUpdate);
         this.updateStatus();
     }
 
@@ -74,7 +75,7 @@ class ResourceNode extends BaseNode {
     }
 
     onInput(msg) {
-        var resource = this.#resource;
+        var resource = this.resource();
         if (!resource) {
             this.#trace("onInput(): Resource not found",this.rid());
         }

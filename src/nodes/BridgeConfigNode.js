@@ -78,7 +78,9 @@ class BridgeConfigNode extends BaseNode {
     }
 
     requestStartup(resource) {
-        this.clip().requestStartup(resource);
+        if (this.clip()) {
+            this.clip().requestStartup(resource);
+        }
     }
 
     static async DiscoverBridges() {
