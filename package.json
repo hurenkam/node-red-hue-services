@@ -10,14 +10,19 @@
     "hue",
     "clip"
   ],
+  "repository": "github:hurenkam/node-red-hue-services",
   "author": "Mark Hurenkamp",
   "license": "Apache 2.0",
   "node-red": {
+    "version": ">=2.0.0",
     "nodes": {
       "files": "src/files.js",
       "debug": "src/debug.js",
       "all": "src/all.js"
     }
+  },
+  "engines": {
+      "node": ">=12.0.0"
   },
   "dependencies": {
     "axios": "^0.26.1",
