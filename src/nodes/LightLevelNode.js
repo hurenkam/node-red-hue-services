@@ -26,10 +26,10 @@ class LightLevelNode extends ResourceNode {
         var text = "";
 
         var resource = this.resource();
-        if ((resource) && (resource.item()) && (resource.item().light)) {
-            if (resource.item().light.light_level!=null) {
+        if ((resource) && (resource.data()) && (resource.data().light)) {
+            if (resource.data().light.light_level!=null) {
                 fill = "green";
-                text = ""+resource.item().light.light_level;
+                text = ""+resource.data().light.light_level;
             }
         }
 

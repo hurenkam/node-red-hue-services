@@ -236,8 +236,8 @@ class ClipApi extends events.EventEmitter {
 
         //this.#trace("getSortedResourcesByTypeAndModel(",type,",",models,") options:",options);
         return result.filter(function(resource) {
-            if ((models) && (resource.item.product_data) && (resource.item.product_data.model_id)) {
-                return models.includes(resource.item.product_data.model_id);
+            if ((models) && (resource.data().product_data) && (resource.data().product_data.model_id)) {
+                return models.includes(resource.data().product_data.model_id);
             } else {
                 return true;
             }

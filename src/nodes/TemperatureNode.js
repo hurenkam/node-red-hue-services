@@ -26,10 +26,10 @@ class TemperatureNode extends ResourceNode {
         var text = "";
 
         var resource = this.resource();
-        if ((resource) && (resource.item()) && (resource.item().temperature)) {
-            if (resource.item().temperature.temperature!=null) {
+        if ((resource) && (resource.data()) && (resource.data().temperature)) {
+            if (resource.data().temperature.temperature!=null) {
                 fill = "green";
-                text = ""+resource.item().temperature.temperature+"c";
+                text = ""+resource.data().temperature.temperature+"c";
             }
         }
 

@@ -38,9 +38,9 @@ class RelativeRotaryNode extends ResourceNode {
         var text = "";
 
         var resource = this.resource();
-        if ((resource) && (resource.item()) && (resource.item().relative_rotary)) {
-            if (resource.item().relative_rotary.last_event!=null) {
-                var event = resource.item().relative_rotary.last_event;
+        if ((resource) && (resource.data()) && (resource.data().relative_rotary)) {
+            if (resource.data().relative_rotary.last_event!=null) {
+                var event = resource.data().relative_rotary.last_event;
                 text = event.action + " ";
                 if (event.rotation) {
                     text += (event.rotation.direction == "clock_wise")? ">> " : "<< ";

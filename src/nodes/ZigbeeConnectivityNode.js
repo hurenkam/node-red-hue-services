@@ -26,9 +26,9 @@ class ZigbeeConnectivityNode extends ResourceNode {
         var text = "";
 
         var resource = this.resource();
-        if ((resource) && (resource.item) && (resource.item.status!=null)) {
-            fill = (resource.item.status == "connected")? "green": "red";
-            text = resource.item.status;
+        if ((resource) && (resource.data) && (resource.data().status!=null)) {
+            fill = (resource.data().status == "connected")? "green": "red";
+            text = resource.data().status;
         }
 
         this.status({fill: fill, shape: shape, text: text});

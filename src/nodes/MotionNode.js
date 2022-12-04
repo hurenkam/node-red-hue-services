@@ -26,10 +26,10 @@ class MotionNode extends ResourceNode {
         var text = "";
 
         var resource = this.resource();
-        if ((resource) && (resource.item()) && (resource.item().motion)) {
-            if (resource.item().motion.motion!=null) {
-                fill = (resource.item().motion.motion==true)? "blue" : "grey";
-                text = (resource.item().motion.motion==true)? "motion" : "no motion";
+        if ((resource) && (resource.data()) && (resource.data().motion)) {
+            if (resource.data().motion.motion!=null) {
+                fill = (resource.data().motion.motion==true)? "blue" : "grey";
+                text = (resource.data().motion.motion==true)? "motion" : "no motion";
             }
         }
 

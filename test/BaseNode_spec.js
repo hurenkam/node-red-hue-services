@@ -1,5 +1,6 @@
 const helper = require("node-red-node-test-helper");
 const assert = require('assert');
+const TestBaseNode = require("./mocks/TestBaseNode");
 
 const testnodes = function(RED) {
     "use strict";
@@ -40,16 +41,18 @@ describe('Base Node', function () {
             name: "base node",
         }];
 
-        helper.load(testnodes, flow, function () {
-            var payload = { on: { on: true }};
-            var msg = { payload: payload };
+        var payload = { on: { on: true }};
+        var msg = { payload: payload };
 
-            var n1 = helper.getNode("n1");
-            n1.reportInput = function(msg) {
+        TestBaseNode.mock = { 
+            onInput: function(msg) {
                 msg.should.have.property('payload',payload);
                 done();
-            };
+            }
+        };
 
+        helper.load(testnodes, flow, function () {
+            var n1 = helper.getNode("n1");
             n1.receive(msg);
         });
     });
@@ -61,11 +64,14 @@ describe('Base Node', function () {
             name: "base node",
         }];
 
+        TestBaseNode.mock = {
+            getStatusFill: function() {
+                done();
+            }
+        };
+
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
-            n1.returnStatusFill = function() {
-                done();
-            };
             n1.updateStatus();
         });
     });
@@ -77,11 +83,14 @@ describe('Base Node', function () {
             name: "base node",
         }];
 
+        TestBaseNode.mock = {
+            getStatusText: function() {
+                done();
+            }
+        };
+
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
-            n1.returnStatusText = function() {
-                done();
-            };
             n1.updateStatus();
         });
     });
@@ -93,11 +102,14 @@ describe('Base Node', function () {
             name: "base node",
         }];
 
+        TestBaseNode.mock = {
+            getStatusShape: function() {
+                done();
+            }
+        };
+
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
-            n1.returnStatusShape = function() {
-                done();
-            };
             n1.updateStatus();
         });
     });
@@ -109,14 +121,26 @@ describe('Base Node', function () {
             name: "base node",
         }];
 
-        helper.load(testnodes, flow, function () {
-            var n1 = helper.getNode("n1");
-            n1.reportStatus = function(status) {
+        TestBaseNode.mock = {
+            getStatusShape: function() {
+                return null;
+            },
+            getStatusText: function() {
+                return null;
+            },
+            getStatusFill: function() {
+                return null;
+            },
+            status: function(status) {
                 status.should.have.property('shape',null);
                 status.should.have.property('text',null);
                 status.should.have.property('fill',null);
                 done();
-            };
+            }
+        };
+
+        helper.load(testnodes, flow, function () {
+            var n1 = helper.getNode("n1");
             n1.updateStatus();
         });
     });
@@ -128,25 +152,26 @@ describe('Base Node', function () {
             name: "base node",
         }];
 
-        helper.load(testnodes, flow, function () {
-            var n1 = helper.getNode("n1");
-
-            n1.returnStatusShape = function() {
+        TestBaseNode.mock = {
+            getStatusShape: function() {
                 return "ring";
-            };
-            n1.returnStatusText = function() {
+            },
+            getStatusText: function() {
                 return "text";
-            };
-            n1.returnStatusFill = function() {
+            },
+            getStatusFill: function() {
                 return "green";
-            };
-            n1.reportStatus = function(status) {
+            },
+            status: function(status) {
                 status.should.have.property('shape','ring');
                 status.should.have.property('text','text');
                 status.should.have.property('fill','green');
                 done();
-            };
+            }
+        };
 
+        helper.load(testnodes, flow, function () {
+            var n1 = helper.getNode("n1");
             n1.updateStatus();
         });
     });
@@ -158,17 +183,18 @@ describe('Base Node', function () {
             name: "base node",
         }];
 
-        helper.load(testnodes, flow, function () {
-            var n1 = helper.getNode("n1");
-
-            n1.returnStatusFill = function() {
+        TestBaseNode.mock = {
+            getStatusFill: function() {
                 return "green";
-            };
-            n1.reportStatus = function(status) {
+            },
+            status: function(status) {
                 status.should.have.property('shape','dot');
                 done();
-            };
+            }
+        };
 
+        helper.load(testnodes, flow, function () {
+            var n1 = helper.getNode("n1");
             n1.updateStatus();
         });
     });
@@ -180,17 +206,18 @@ describe('Base Node', function () {
             name: "base node",
         }];
 
-        helper.load(testnodes, flow, function () {
-            var n1 = helper.getNode("n1");
-
-            n1.returnStatusShape = function() {
+        TestBaseNode.mock = {
+            getStatusShape: function() {
                 return "dot";
-            };
-            n1.reportStatus = function(status) {
+            },
+            status: function(status) {
                 status.should.have.property('fill','grey');
                 done();
-            };
+            }
+        };
 
+        helper.load(testnodes, flow, function () {
+            var n1 = helper.getNode("n1");
             n1.updateStatus();
         });
     });

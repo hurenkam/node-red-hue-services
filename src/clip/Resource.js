@@ -7,16 +7,16 @@ const _trace = require('debug')('trace').extend('Resource');
 
 class Resource extends events.EventEmitter {
     #clip;
-    #item;
+    #data;
 
     #error;
     #warn;
     #info;
     #trace;
 
-    constructor(item,clip) {
+    constructor(data,clip) {
         super();
-        this.#item = item;
+        this.#data = data;
         this.#clip = clip;
 
         this.#error = _error.extend("["+this.id()+"]");
@@ -31,15 +31,15 @@ class Resource extends events.EventEmitter {
         this.#info("destructor()");
         this.removeAllListeners();
         this.#clip = null;
-        this.#item = null;
+        this.#data = null;
     }
 
     clip() {
         return this.#clip;
     }
 
-    item() {
-        return this.#item;
+    data() {
+        return this.#data;
     }
 
     id() {
@@ -49,26 +49,26 @@ class Resource extends events.EventEmitter {
     }
 
     rid() {
-        return this.#item.id;
+        return this.data().id;
     }
 
     rtype() {
-        return this.#item.type;
+        return this.data().type;
     }
 
     owner() {
         var result = null;
 
-        if (this.#item.owner) {
-            result = this.clip().getResource(this.#item.owner.rid);
+        if (this.data().owner) {
+            result = this.clip().getResource(this.#data.owner.rid);
         }
 
         return result;
     }
 
     name() {
-        if ((this.#item.metadata) && (this.#item.metadata.name))
-            return this.#item.metadata.name;
+        if ((this.data().metadata) && (this.data().metadata.name))
+            return this.data().metadata.name;
 
         if ((this.owner()) && (this.owner().name())) {
             return this.owner().name();
@@ -79,17 +79,17 @@ class Resource extends events.EventEmitter {
 
     typeName() {
         var result = this.rtype();
-        if ((this.#item.metadata) && (this.#item.metadata.control_id))
-            result += this.#item.metadata.control_id;
+        if ((this.#data.metadata) && (this.#data.metadata.control_id))
+            result += this.#data.metadata.control_id;
         return result;
     }
 
     services() {
         this.#info("services()");
         var result = {};
-        if ((this.item()) && (this.item().services))
+        if ((this.data()) && (this.data().services))
         {
-            this.item().services.forEach(service => {
+            this.data().services.forEach(service => {
                 this.#trace("services()  service:",service);
                 var resource = this.clip().getResource(service.rid);
                 if (resource) {
@@ -123,7 +123,7 @@ class Resource extends events.EventEmitter {
         var instance = this;
         Object.keys(event).forEach((key) => {
             if (!blacklist.includes(key)) {
-                instance.#item[key] = event[key];
+                instance.#data[key] = event[key];
             }
         });
     }

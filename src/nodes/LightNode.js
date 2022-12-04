@@ -26,15 +26,15 @@ class LightNode extends ResourceNode {
         var text = "";
 
         var resource = this.resource();
-        if ((resource) && (resource.item()) && (resource.item().on)) {
-            if (resource.item().on.on==true) {
+        if ((resource) && (resource.data()) && (resource.data().on)) {
+            if (resource.data().on.on==true) {
                 fill = "yellow";
 
-                if (resource.item().dimming) {
-                    text = resource.item().dimming.brightness+"%";
+                if (resource.data().dimming) {
+                    text = resource.data().dimming.brightness+"%";
                 }
 
-            } else if (resource.item().on.on==false) {
+            } else if (resource.data().on.on==false) {
                 fill = "grey";
                 text = "off";
             }
