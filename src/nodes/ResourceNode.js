@@ -47,10 +47,6 @@ class ResourceNode extends BaseNode {
 
     destructor() {
         this.#info("destructor()");
-        if (this.clipTimeout) {
-            clearTimeout(this.clipTimeout);
-        }
-
         this.removeAllListeners();
         this.#resource = null;
         super.destructor();

@@ -60,7 +60,7 @@ class Resource extends events.EventEmitter {
         var result = null;
 
         if (this.data().owner) {
-            result = this.clip().getResource(this.#data.owner.rid);
+            result = this.clip().getResource(this.data().owner.rid);
         }
 
         return result;
