@@ -1,4 +1,3 @@
-Resource = require("../clip/Resource");
 BaseNode = require("./BaseNode");
 
 const _error = require('debug')('error').extend('ResourceNode');

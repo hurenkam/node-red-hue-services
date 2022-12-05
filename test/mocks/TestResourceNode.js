@@ -9,6 +9,12 @@ class TestResourceNode extends ResourceNode {
         }
         return super.bridge();
     }
+    updateStatus() {
+        if (TestResourceNode.mock.updateStatus) {
+            return TestResourceNode.mock.updateStatus();
+        }
+        return super.updateStatus();
+    }
 }
 
 module.exports = TestResourceNode;
