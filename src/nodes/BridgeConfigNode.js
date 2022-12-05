@@ -39,7 +39,7 @@ class BridgeConfigNode extends BaseNode {
             try {
                 instance.destructor();
             } catch (error) {
-                this.#error(error);
+                instance.#error(error.message,error.stack);
             }
         }
         this.on('close', this.#onClose);
@@ -56,7 +56,7 @@ class BridgeConfigNode extends BaseNode {
             try {
                 instance.onClipError(event);
             } catch (error) {
-                instance.#error(error);
+                instance.#error(error.message,error.stack);
             }
         }
 
@@ -156,7 +156,7 @@ BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/DiscoverBridges', async functi
         res.end(JSON.stringify(Object(options)));
     })
     .catch(function(error) {
-        _error("/DiscoverBridges  Error:",error);
+        _error("/DiscoverBridges  Error:",error.message,error.stack);
         res.end(JSON.stringify(Object(options)));
     });
 });
@@ -175,7 +175,7 @@ BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/AcquireApplicationKey', async 
             res.end(JSON.stringify(Object({ key: data })));
         })
         .catch(function(error) {
-            _error("/AcquireApplicationKey Error:",error);
+            _error("/AcquireApplicationKey Error:",error.message,error.stack);
             res.end(JSON.stringify(Object({ error: error })));
         });
     }

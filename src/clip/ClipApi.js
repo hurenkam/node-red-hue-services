@@ -3,7 +3,6 @@ const EventSource = require('eventsource');
 const RestApi = require('../RestApi');
 
 const Resource = require('./Resource');
-//const ServiceListResource = require('./ServiceListResource');
 
 const _error = require('debug')('error').extend('ClipApi');
 const _warn  = require('debug')('warn').extend('ClipApi');
@@ -18,6 +17,7 @@ class ClipApi extends events.EventEmitter {
     #name;
     #ip;
     #key;
+    #eventSource;
 
     #error;
     #warn;
@@ -53,6 +53,7 @@ class ClipApi extends events.EventEmitter {
 
     constructor(ip,key,name) {
         super();
+
         this.#name = name;
         this.#ip = ip;
         this.#key = key;
@@ -67,60 +68,100 @@ class ClipApi extends events.EventEmitter {
 
         this.#info("constructor("+ip+","+key+","+name+")");
 
-        var eventsurl = "https://" + ip + "/eventstream/clip/v2";
-        this.eventSource = new EventSource(eventsurl, {
+        this.#restAPI = new RestApi(
+            this.#name,
+            this.#ip,
+            { tokensPerInterval: 3, interval: "second" },
+            {"hue-application-key": this.#key}
+        );
+
+        this._startListeningToEventStream();
+        this._requestResources();
+    }
+
+    _startListeningToEventStream() {
+        this.#info("_startListeningToEventStream()");
+        var url = "https://" + this.#ip + "/eventstream/clip/v2";
+        this.#eventSource = new EventSource(url, {
             headers: { 'hue-application-key': this.#key },
             https: { rejectUnauthorized: false },
         });
 
-        this.eventSource.onmessage = (streammessage) => {
-            const messages = JSON.parse(streammessage.data);
-            messages.forEach((message) => {
-                message.data.forEach((event) => {
-                    this.#trace("constructor().onEvent(",event,")");
-                    if (Object.keys(this.#resources).includes(event.id)) {
-                        this.#resources[event.id].onEvent(event);
-                    }
-                });
-            });
+        this.#eventSource.onmessage = (streammessage) => {
+            this._processStreamMessage(streammessage);
         };
+    }
 
-        var instance = this;
-        var handleResourceList = async function(response) {
-            response.data.forEach((item) => {constructor(",ip,",",key,")
-                instance.#trace("constructor()  found resource:", item);
+    _processStreamMessage(streammessage) {
+        this.#trace("_processStreamMessage()");
 
-                if (Object.keys(instance.#factory).includes(item.type)) {
-                    if (!instance.#isResourceRegistered(item.id)) {
-                        var resource = new instance.#factory[item.type](item,instance);
-                        instance.#registerResource(resource);
-                    }
-                } else {
-                    instance.#warn("constructor(): Missing factory for type", item.type);
-                }
+        const messages = JSON.parse(streammessage.data);
+        messages.forEach((message) => {
+            message.data.forEach((event) => {
+                this._processStreamEvent(event);
             });
+        });
+    }
 
-            instance.#startQ.forEach(resource => resource.start(instance.#resources[resource.rid()]));
-            instance.#isStarted = true;
-            instance.#startQ = null;
+    _processStreamEvent(event) {
+        this.#trace("_processStreamEvent(",event,")");
+
+        if (Object.keys(this.#resources).includes(event.id)) {
+            this.#resources[event.id].onEvent(event);
+        }
+    }
+
+    _requestResources() {
+        this.#info("_requestResources()");
+        var instance = this;
+
+        var handleResourceList = async function(response) {
+            instance._processResources(response);
         };
 
         var handleError = async function(error) {
-            instance.#error("constructor()  error:", error);
+            instance.#error("constructor()  error:", error.message,error.stack);
         }
 
-        this.#restAPI = new RestApi(
-            instance.#name,
-            instance.#ip,
-            { tokensPerInterval: 3, interval: "second" },
-            {"hue-application-key": instance.#key}
-        );
         this.#restAPI.get("/clip/v2/resource")
             .then(handleResourceList)
             .catch(handleError);
     }
 
+    _processResources(response) {
+        this.#info("_processResources()");
+
+        response.data.forEach((item) => {
+            this.#trace("constructor()  found resource:", item);
+
+            if (Object.keys(this.#factory).includes(item.type)) {
+                if (!this.#isResourceRegistered(item.id)) {
+                    var resource = new this.#factory[item.type](item,this);
+                    this.#registerResource(resource);
+                }
+            } else {
+                this.#warn("constructor(): Missing factory for type", item.type);
+            }
+        });
+
+        this.#startQ.forEach(resource => resource.start(this.#resources[resource.rid()]));
+        this.#isStarted = true;
+        this.#startQ = null;
+    }
+
+    _stopListeningToEventStream() {
+        this.#info("_stopListeningToEventStream()");
+        if (this.#eventSource != null) {
+            this.#eventSource.onmessage = null;
+            this.#eventSource.close();
+            //delete this.#eventSource;
+        };
+
+        this.#eventSource = null;
+    }
+
     requestStartup(resource) {
+        this.#trace("requestStartup()");
         if (this.#isStarted) {
             resource.start();
         } else {
@@ -134,13 +175,7 @@ class ClipApi extends events.EventEmitter {
         this.removeAllListeners();
         this.#restAPI.destructor();
 
-        if (this.eventSource != null) {
-            this.eventSource.onmessage = null;
-            this.eventSource.close();
-            delete this.eventSource;
-        };
-
-        this.eventSource = null;
+        this._stopListeningToEventStream();
 
         var instance = this;
         Object.keys(this.#resources).forEach((id) => {

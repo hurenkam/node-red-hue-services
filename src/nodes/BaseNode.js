@@ -29,7 +29,7 @@ class BaseNode {
             try {
                 instance.onInput(msg);
             } catch (error) {
-                this.#error(error);
+                this.#error(error.message,error.stack);
             }
         }
     
@@ -37,7 +37,7 @@ class BaseNode {
             try {
                 instance.destructor();
             } catch (error) {
-                this.#error(error);
+                this.#error(error.message,error.stack);
             }
         }
     
@@ -80,7 +80,7 @@ class BaseNode {
                 text:  text
             });
         } catch (error) {
-            this.#error(error);
+            this.#error(error.message,error.stack);
         }
     }
 
