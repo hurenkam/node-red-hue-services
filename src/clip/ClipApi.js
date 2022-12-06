@@ -68,28 +68,35 @@ class ClipApi extends events.EventEmitter {
 
         this.#info("constructor("+ip+","+key+","+name+")");
 
-        this.#restAPI = new RestApi(
+        this.#restAPI = this._initRestApi();
+        this.#eventSource = this._initEventStream();
+        this._requestResources();
+    }
+
+    _initRestApi() {
+        var restAPI = new RestApi(
             this.#name,
             this.#ip,
             { tokensPerInterval: 3, interval: "second" },
             {"hue-application-key": this.#key}
         );
-
-        this._startListeningToEventStream();
-        this._requestResources();
+        return restAPI;
     }
 
-    _startListeningToEventStream() {
-        this.#info("_startListeningToEventStream()");
+    _initEventStream() {
+        this.#info("_initEventStream()");
+
         var url = "https://" + this.#ip + "/eventstream/clip/v2";
-        this.#eventSource = new EventSource(url, {
+        var eventSource = new EventSource(url, {
             headers: { 'hue-application-key': this.#key },
             https: { rejectUnauthorized: false },
         });
 
-        this.#eventSource.onmessage = (streammessage) => {
+        eventSource.onmessage = (streammessage) => {
             this._processStreamMessage(streammessage);
         };
+
+        return eventSource;
     }
 
     _processStreamMessage(streammessage) {
@@ -106,8 +113,8 @@ class ClipApi extends events.EventEmitter {
     _processStreamEvent(event) {
         this.#trace("_processStreamEvent(",event,")");
 
-        if (Object.keys(this.#resources).includes(event.id)) {
-            this.#resources[event.id].onEvent(event);
+        if (this._isResourceRegistered(event.id)) {
+            this.getResource(event.id).onEvent(event);
         }
     }
 
@@ -135,9 +142,9 @@ class ClipApi extends events.EventEmitter {
             this.#trace("constructor()  found resource:", item);
 
             if (Object.keys(this.#factory).includes(item.type)) {
-                if (!this.#isResourceRegistered(item.id)) {
+                if (!this._isResourceRegistered(item.id)) {
                     var resource = new this.#factory[item.type](item,this);
-                    this.#registerResource(resource);
+                    this._registerResource(resource);
                 }
             } else {
                 this.#warn("constructor(): Missing factory for type", item.type);
@@ -149,8 +156,22 @@ class ClipApi extends events.EventEmitter {
         this.#startQ = null;
     }
 
-    _stopListeningToEventStream() {
-        this.#info("_stopListeningToEventStream()");
+    _isResourceRegistered(uuid) {
+        return Object.keys(this.#resources).includes(uuid);
+    }
+
+    _registerResource(resource) {
+        this.#trace("#registerResource(",resource.id(),")");
+        this.#resources[resource.rid()] = resource;
+    }
+
+    _unregisterResource(resource) {
+        this.#trace("#unregisterResource()");
+        this.#resources.remove(resource.rid());
+    }
+
+    _stopEventStream() {
+        this.#info("_stopEventStream()");
         if (this.#eventSource != null) {
             this.#eventSource.onmessage = null;
             this.#eventSource.close();
@@ -173,14 +194,16 @@ class ClipApi extends events.EventEmitter {
         this.#info("destructor()");
         this.emit('stopped');
         this.removeAllListeners();
-        this.#restAPI.destructor();
-
-        this._stopListeningToEventStream();
+        if (this.#restAPI) {
+            this.#restAPI.destructor();
+            this.#restAPI = null;
+        }
+        this._stopEventStream();
 
         var instance = this;
         Object.keys(this.#resources).forEach((id) => {
             var resource = instance.resource[id];
-            instance.#unregisterResource(resource);
+            instance._unregisterResource(resource);
             resource.destructor();
         });
 
@@ -188,7 +211,7 @@ class ClipApi extends events.EventEmitter {
     }
 
     getResource(rid) {
-        if (this.#isResourceRegistered(rid)) {
+        if (this._isResourceRegistered(rid)) {
             return this.#resources[rid];
         } else {
             this.#warn("getResource(",rid,"): Resource not found.");
@@ -213,20 +236,6 @@ class ClipApi extends events.EventEmitter {
     delete(rtype,rid,data) {
         this.#trace("delete(",rtype,",",rid,",",data,")");
         return this.#restAPI.delete("/clip/v2/resource/" + rtype + "/" + rid, data);
-    }
-
-    #isResourceRegistered(uuid) {
-        return Object.keys(this.#resources).includes(uuid);
-    }
-
-    #registerResource(resource) {
-        this.#trace("#registerResource(",resource.id(),")");
-        this.#resources[resource.rid()] = resource;
-    }
-
-    #unregisterResource(resource) {
-        this.#trace("#unregisterResource()");
-        this.#resources.remove(resource.rid());
     }
 
     getSortedServicesById(uuid) {

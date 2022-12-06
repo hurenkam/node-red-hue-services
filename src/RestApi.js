@@ -76,7 +76,7 @@ class RestApi {
     }
 
     #handleRequest() {
-        if (this.#requestQ.length > 0) {
+        if ((this.#requestQ) && (this.#requestQ.length > 0)) {
             this.#info("_handleRequest() pending: " + this.#requestQ.length);
             var local = this;
 
