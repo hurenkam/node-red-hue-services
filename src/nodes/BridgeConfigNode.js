@@ -193,21 +193,6 @@ BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetBridgeOptions', async funct
     res.end(JSON.stringify(Object(options)));
 });
 
-BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedServicesById', async function (req, res, next) {
-    _info("/GetSortedServicesById");
-    _trace(req.query);
-    var clip = bridges[req.query.bridge_id].instance.clip();
-    var services = clip.getSortedServicesById(req.query.uuid,req.query.rtype);
-    var options = [];
-    services.forEach((service) => {
-        options.push({ 
-            value: service.rid(), 
-            label: service.typeName() 
-        });
-    });
-    res.end(JSON.stringify(Object(options)));
-});
-
 BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedResourceOptions', async function (req, res, next) {
     _info("/GetSortedResourceOptions");
     _trace(req.query);

@@ -83,6 +83,10 @@ class ClipApi extends events.EventEmitter {
         return restAPI;
     }
 
+    _restApi() {
+        return this.#restAPI;
+    }
+
     _initEventStream() {
         this.#info("_initEventStream()");
 
@@ -130,7 +134,7 @@ class ClipApi extends events.EventEmitter {
             instance.#error("constructor()  error:", error.message,error.stack);
         }
 
-        this.#restAPI.get("/clip/v2/resource")
+        this._restApi().get("/clip/v2/resource")
             .then(handleResourceList)
             .catch(handleError);
     }
@@ -167,7 +171,7 @@ class ClipApi extends events.EventEmitter {
 
     _unregisterResource(resource) {
         this.#trace("#unregisterResource()");
-        this.#resources.remove(resource.rid());
+        delete(this.#resources[resource.rid()]);
     }
 
     _stopEventStream() {
@@ -175,7 +179,6 @@ class ClipApi extends events.EventEmitter {
         if (this.#eventSource != null) {
             this.#eventSource.onmessage = null;
             this.#eventSource.close();
-            //delete this.#eventSource;
         };
 
         this.#eventSource = null;
@@ -220,50 +223,29 @@ class ClipApi extends events.EventEmitter {
 
     get(rtype,rid) {
         this.#trace("get(",rtype,",",rid,")");
-        return this.#restAPI.get("/clip/v2/resource/" + rtype + "/" + rid);
+        return this._restApi().get("/clip/v2/resource/" + rtype + "/" + rid);
     }
 
     put(rtype,rid,data) {
         this.#trace("put(",rtype,",",rid,",",data,")");
-        return this.#restAPI.put("/clip/v2/resource/" + rtype + "/" + rid, data);
+        return this._restApi().put("/clip/v2/resource/" + rtype + "/" + rid, data);
     }
 
     post(rtype,rid,data) {
         this.#trace("post(",rtype,",",rid,",",data,")");
-        return this.#restAPI.post("/clip/v2/resource/" + rtype + "/" + rid, data);
+        return this._restApi().post("/clip/v2/resource/" + rtype + "/" + rid, data);
     }
 
     delete(rtype,rid,data) {
         this.#trace("delete(",rtype,",",rid,",",data,")");
-        return this.#restAPI.delete("/clip/v2/resource/" + rtype + "/" + rid, data);
-    }
-
-    getSortedServicesById(uuid) {
-        this.#trace("getSortedServicesById(" + uuid + "," + rtype + ")");
-
-        var services = [];
-        Object.values(this.#resources[uuid].services).forEach(service => {
-            services.push(service);
-        });
-
-        if (services) {
-            services.sort(function (a, b) {
-                if (a.typeName() > b.typeName()) return 1;
-                if (a.typeName() < b.typeName()) return -1;
-                return 0;
-            });
-        }
-        services.unshift(this.#resources[uuid]);
-
-        //this.#trace("getSortedServicesById(" + uuid + "," + rtype + ") services:",services);
-        return services;
+        return this._restApi().delete("/clip/v2/resource/" + rtype + "/" + rid, data);
     }
 
     getSortedResourcesByTypeAndModel(type,models) {
         this.#trace("getSortedResourcesByTypeAndModel(",type,",",models,")");
         var instance = this;
         var keys = Object.keys(instance.#resources).filter(function(key) {
-            var value = instance.resources[key];
+            var value = instance.#resources[key];
             return ((value.rtype() == type))
         });
 
@@ -280,8 +262,12 @@ class ClipApi extends events.EventEmitter {
 
         //this.#trace("getSortedResourcesByTypeAndModel(",type,",",models,") options:",options);
         return result.filter(function(resource) {
-            if ((models) && (resource.data().product_data) && (resource.data().product_data.model_id)) {
-                return models.includes(resource.data().product_data.model_id);
+            if (models) {
+                if ((resource.data().product_data) && (resource.data().product_data.model_id)) {
+                    return models.includes(resource.data().product_data.model_id);
+                } else {
+                    return false;
+                }
             } else {
                 return true;
             }
@@ -322,8 +308,7 @@ class ClipApi extends events.EventEmitter {
 
         options.sort(function (a, b) {
             if (a.label > b.label) return 1;
-            if (a.label < b.label) return -1;
-            return 0;
+            return -1;
         });
 
         this.#trace("getSortedTypeOptions() options:",options);

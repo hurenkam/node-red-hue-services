@@ -1,14 +1,10 @@
 var helper = require("node-red-node-test-helper");
+const BaseNode = require('../src/nodes/BaseNode');
 const TestResourceNode = require("./mocks/TestResourceNode");
 const assert = require('assert');
-const { mock } = require("./mocks/TestResourceNode");
-const { TIMEOUT } = require("dns");
 
 var testnodes = function(RED) {
     "use strict";
-
-    const BaseNode = require('../src/nodes/BaseNode');
-    const TestResourceNode = require('./mocks/TestResourceNode');
 
     BaseNode.nodeAPI = RED;
     RED.nodes.registerType("ResourceNode",TestResourceNode);
