@@ -1,5 +1,4 @@
 const ClipApi = require('../src/clip/ClipApi')
-const expect = require('chai').expect;
 const sinon = require('sinon');
 const { assert } = require('chai');
 
@@ -567,7 +566,7 @@ describe('ClipApi', function () {
         resources.forEach(resource => {
             clip._registerResource(resource);
         });
-        var result = clip.getSortedTypeOptions("light");
+        var result = clip.getSortedTypeOptions();
         assert.equal(result.length,5);
         resources.forEach(resource => {
             clip._unregisterResource(resource);
@@ -577,10 +576,197 @@ describe('ClipApi', function () {
         done();
     });
 
-    // ===========================================
-    // TODO:
-    // ===========================================
+    it('should return matching types when getSortedOwnerOptions is called.', function (done) {
+        sandbox.stub(ClipApi.prototype,'_initRestApi').callsFake(() => null);
+        sandbox.stub(ClipApi.prototype,'_initEventStream').callsFake(() => null);
+        sandbox.stub(ClipApi.prototype,'_requestResources').callsFake(() => null);
 
-    // getSortedOwnerOptions(rtype)
-    // getSortedServiceOptions(uuid,rtype)
+        var resources = [
+            {
+                id: function() { return "041b26f5-cb27-40ea-955c-8436285823cd"; },
+                rid: function() { return "041b26f5-cb27-40ea-955c-8436285823cd"; },
+                rtype: function() { return "device"; },
+                name: function() { return "name2"; },
+                services: function() { return [
+                    {
+                        id: function() { return "7ae38812-75e1-4393-bbeb-ab9db8726d2c"; },
+                        rid: function() { return "7ae38812-75e1-4393-bbeb-ab9db8726d2c"; },
+                        rtype: function() { return "device_power"; },
+                    },
+                    {
+                        id: function() { return "bde386c8-fe79-4cad-9609-491e50d412f5"; },
+                        rid: function() { return "bde386c8-fe79-4cad-9609-491e50d412f5"; },
+                        rtype: function() { return "zigbee_connectivity"; },
+                    }
+                ]; }
+            },
+            {
+                id: function() { return "84216428-9c3d-4c03-85b7-9e42adbbe975"; },
+                rid: function() { return "84216428-9c3d-4c03-85b7-9e42adbbe975"; },
+                rtype: function() { return "device"; },
+                name: function() { return "name1"; },
+                services: function() { return [
+                    {
+                        id: function() { return "c9aef6ff-1ba6-4d92-b9a9-4f87e95e90b0"; },
+                        rid: function() { return "c9aef6ff-1ba6-4d92-b9a9-4f87e95e90b0"; },
+                        rtype: function() { return "device_power"; },
+                    },
+                    {
+                        id: function() { return "3731be73-36fb-4d04-8a57-086eb51f80c8"; },
+                        rid: function() { return "3731be73-36fb-4d04-8a57-086eb51f80c8"; },
+                        rtype: function() { return "zigbee_connectivity"; },
+                    }
+                ]; }
+            },
+            {
+                id: function() { return "8d9341f8-63d5-46d6-8b41-7da87290b398"; },
+                rid: function() { return "8d9341f8-63d5-46d6-8b41-7da87290b398"; },
+                rtype: function() { return "device"; },
+                name: function() { return "name3"; },
+                services: function() { return [
+                    {
+                        id: function() { return "f85fae4c-5996-434d-8598-bfc4364de5d8"; },
+                        rid: function() { return "f85fae4c-5996-434d-8598-bfc4364de5d8"; },
+                        rtype: function() { return "device_power"; },
+                    },
+                    {
+                        id: function() { return "7d3b7ed2-c619-4d62-8232-c738f35ca25e"; },
+                        rid: function() { return "7d3b7ed2-c619-4d62-8232-c738f35ca25e"; },
+                        rtype: function() { return "zigbee_connectivity"; },
+                    }
+                ]; }
+            },
+            {
+                id: function() { return "9e66209b-f177-4411-8ab6-65277589f39c"; },
+                rid: function() { return "9e66209b-f177-4411-8ab6-65277589f39c"; },
+                rtype: function() { return "device"; },
+                name: function() { return "name1"; },
+                services: function() { return [
+                    {
+                        id: function() { return "6fd13b8c-1e60-4bb9-b43e-a2bd53ff328f"; },
+                        rid: function() { return "6fd13b8c-1e60-4bb9-b43e-a2bd53ff328f"; },
+                        rtype: function() { return "device_power"; },
+                    },
+                    {
+                        id: function() { return "161df2c4-6f5d-4a70-809b-de33dfc1b094"; },
+                        rid: function() { return "161df2c4-6f5d-4a70-809b-de33dfc1b094"; },
+                        rtype: function() { return "zigbee_connectivity"; },
+                    }
+                ]; }
+            },
+            {
+                id: function() { return "006a2033-c3ba-479d-9120-a31fe4682ce6"; },
+                rid: function() { return "006a2033-c3ba-479d-9120-a31fe4682ce6"; },
+                rtype: function() { return "device"; },
+                name: function() { return "name"; },
+            }
+        ];
+
+        var clip = new ClipApi();
+        resources.forEach(resource => {
+            clip._registerResource(resource);
+        });
+        var result = clip.getSortedOwnerOptions("zigbee_connectivity");
+        assert.equal(result.length,4);
+        resources.forEach(resource => {
+            clip._unregisterResource(resource);
+        });
+        clip.destructor();
+
+        done();
+    });
+
+    it('should return matching types when getSortedOwnerOptions is called.', function (done) {
+        sandbox.stub(ClipApi.prototype,'_initRestApi').callsFake(() => null);
+        sandbox.stub(ClipApi.prototype,'_initEventStream').callsFake(() => null);
+        sandbox.stub(ClipApi.prototype,'_requestResources').callsFake(() => null);
+
+        var resources = [
+            {
+                id: function() { return "8d9341f8-63d5-46d6-8b41-7da87290b398"; },
+                rid: function() { return "8d9341f8-63d5-46d6-8b41-7da87290b398"; },
+                rtype: function() { return "device"; },
+                name: function() { return "name3"; },
+                services: function() { return [
+                    {
+                        id: function() { return "f85fae4c-5996-434d-8598-bfc4364de5d8"; },
+                        rid: function() { return "f85fae4c-5996-434d-8598-bfc4364de5d8"; },
+                        rtype: function() { return "device_power"; },
+                    },
+                    {
+                        id: function() { return "7d3b7ed2-c619-4d62-8232-c738f35ca25e"; },
+                        rid: function() { return "7d3b7ed2-c619-4d62-8232-c738f35ca25e"; },
+                        rtype: function() { return "zigbee_connectivity"; },
+                    }
+                ]; }
+            },
+            {
+                id: function() { return "9e66209b-f177-4411-8ab6-65277589f39c"; },
+                rid: function() { return "9e66209b-f177-4411-8ab6-65277589f39c"; },
+                rtype: function() { return "device"; },
+                name: function() { return "name1"; },
+                services: function() { return [
+                    {
+                        id: function() { return "6fd13b8c-1e60-4bb9-b43e-a2bd53ff328f"; },
+                        rid: function() { return "6fd13b8c-1e60-4bb9-b43e-a2bd53ff328f"; },
+                        rtype: function() { return "device_power"; },
+                        typeName: function() { return "device_power"; },
+                    },
+                    {
+                        id: function() { return "161df2c4-6f5d-4a70-809b-de33dfc1b094"; },
+                        rid: function() { return "161df2c4-6f5d-4a70-809b-de33dfc1b094"; },
+                        rtype: function() { return "zigbee_connectivity"; },
+                        typeName: function() { return "zigbee_connectivity"; },
+                    },
+                    {
+                        id: function() { return "0469dfdf-1ff4-445e-8186-8199f8e83d82"; },
+                        rid: function() { return "0469dfdf-1ff4-445e-8186-8199f8e83d82"; },
+                        rtype: function() { return "button"; },
+                        typeName: function() { return "button1"; },
+                    },
+                    {
+                        id: function() { return "button2"; },
+                        id: function() { return "button2"; },
+                        rid: function() { return "636030af-eca9-4b19-90ff-39463f6182f3"; },
+                        rtype: function() { return "button"; },
+                        typeName: function() { return "button3"; },
+                    },
+                    {
+                        id: function() { return "button2"; },
+                        id: function() { return "button2"; },
+                        rid: function() { return "636030af-eca9-4b19-90ff-39463f6182f3"; },
+                        rtype: function() { return "button"; },
+                        typeName: function() { return "button2"; },
+                    },
+                    {
+                        id: function() { return "button2"; },
+                        id: function() { return "button2"; },
+                        rid: function() { return "636030af-eca9-4b19-90ff-39463f6182f3"; },
+                        rtype: function() { return "button"; },
+                        typeName: function() { return "button4"; },
+                    },
+                    {
+                        id: function() { return "button2"; },
+                        id: function() { return "button2"; },
+                        rid: function() { return "636030af-eca9-4b19-90ff-39463f6182f3"; },
+                        rtype: function() { return "button"; },
+                        typeName: function() { return "button4"; },
+                    }
+                ]; }
+            }
+        ];
+
+        var clip = new ClipApi();
+        resources.forEach(resource => {
+            clip._registerResource(resource);
+        });
+        var result = clip.getSortedServiceOptions("9e66209b-f177-4411-8ab6-65277589f39c","button");
+        assert.equal(result.length,4);
+        resources.forEach(resource => {
+            clip._unregisterResource(resource);
+        });
+        clip.destructor();
+
+        done();
+    });
 });
