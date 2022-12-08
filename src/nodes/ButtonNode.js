@@ -32,7 +32,6 @@ class ButtonNode extends ResourceNode {
 
     updateStatus() {
         this.#trace("updateStatus()");
-        super.updateStatus();
 
         var fill = this.#fill;
         var shape = "dot";

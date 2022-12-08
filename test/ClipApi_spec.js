@@ -1,6 +1,7 @@
 const ClipApi = require('../src/clip/ClipApi')
 const sinon = require('sinon');
-const { assert } = require('chai');
+//const { assert } = require('chai');
+const assert = require('assert');
 
 describe('ClipApi', function () {
     beforeEach(()=>{
@@ -726,13 +727,11 @@ describe('ClipApi', function () {
                     },
                     {
                         id: function() { return "button2"; },
-                        id: function() { return "button2"; },
                         rid: function() { return "636030af-eca9-4b19-90ff-39463f6182f3"; },
                         rtype: function() { return "button"; },
                         typeName: function() { return "button3"; },
                     },
                     {
-                        id: function() { return "button2"; },
                         id: function() { return "button2"; },
                         rid: function() { return "636030af-eca9-4b19-90ff-39463f6182f3"; },
                         rtype: function() { return "button"; },
@@ -740,13 +739,11 @@ describe('ClipApi', function () {
                     },
                     {
                         id: function() { return "button2"; },
-                        id: function() { return "button2"; },
                         rid: function() { return "636030af-eca9-4b19-90ff-39463f6182f3"; },
                         rtype: function() { return "button"; },
                         typeName: function() { return "button4"; },
                     },
                     {
-                        id: function() { return "button2"; },
                         id: function() { return "button2"; },
                         rid: function() { return "636030af-eca9-4b19-90ff-39463f6182f3"; },
                         rtype: function() { return "button"; },
@@ -761,7 +758,7 @@ describe('ClipApi', function () {
             clip._registerResource(resource);
         });
         var result = clip.getSortedServiceOptions("9e66209b-f177-4411-8ab6-65277589f39c","button");
-        assert.equal(result.length,4);
+        assert.equal(result.length,5);
         resources.forEach(resource => {
             clip._unregisterResource(resource);
         });

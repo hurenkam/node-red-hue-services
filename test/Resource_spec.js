@@ -1,5 +1,6 @@
+const Resource = require('../src/clip/Resource')
 const assert = require('assert');
-const TestResource = require('./mocks/TestResource');
+const sinon = require('sinon');
 
 class TestClip {
     static mock = {}
@@ -22,27 +23,27 @@ class TestClip {
 }
 
 describe('Resource', function () {
-    //afterEach(function () {
-    //    helper.unload();
-    //});
+    beforeEach(()=>{
+        sandbox = sinon.createSandbox();
+    });
+
+    afterEach(function () {
+        sandbox.restore();
+    });
+
 
     it('should construct and destruct', function (done) {
-        var resource = new TestResource({
-            id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
-            type: "button",
-        }, {
-            name: "clip"
-        });
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource();
         resource.destructor();
         done();
     });
 
     it('should return data', function (done) {
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "button",
-        }, {
-            name: "clip"
         });
         var data = resource.data();
         assert.equal(data.type,"button");
@@ -50,7 +51,8 @@ describe('Resource', function () {
     });
 
     it('should return clip', function (done) {
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "button",
         }, {
@@ -62,7 +64,8 @@ describe('Resource', function () {
     });
 
     it('should return rid', function (done) {
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "button",
         }, {
@@ -74,7 +77,8 @@ describe('Resource', function () {
     });
 
     it('should return rtype', function (done) {
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "button",
         }, {
@@ -92,7 +96,8 @@ describe('Resource', function () {
             }
         }
 
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "button",
             metadata: {
@@ -116,7 +121,8 @@ describe('Resource', function () {
             }
         }
 
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "button",
             owner: {
@@ -140,7 +146,8 @@ describe('Resource', function () {
             }
         }
 
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "button",
             owner: { 
@@ -154,7 +161,8 @@ describe('Resource', function () {
     });
 
     it('should return null when looking up owner() if owner was not set', function (done) {
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "button",
         }, new TestClip());
@@ -164,7 +172,8 @@ describe('Resource', function () {
     });
 
     it('should return type as typeName if no control_id is present', function (done) {
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "button",
         }, {
@@ -176,7 +185,8 @@ describe('Resource', function () {
     });
 
     it('should return type with number as typeName if control_id is present', function (done) {
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "button",
             metadata: { 
@@ -202,7 +212,8 @@ describe('Resource', function () {
             }
         }
 
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "device",
             services: [{
@@ -231,7 +242,8 @@ describe('Resource', function () {
             }
         }
 
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "device",
         }, new TestClip());
@@ -247,7 +259,8 @@ describe('Resource', function () {
             }
         }
 
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "device",
             services: [{
@@ -273,7 +286,8 @@ describe('Resource', function () {
             },
         }
 
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "device",
             metadata: {
@@ -293,7 +307,8 @@ describe('Resource', function () {
             },
         }
 
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "device",
             metadata: {
@@ -307,7 +322,8 @@ describe('Resource', function () {
         TestClip.mock = {
         }
 
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "device",
             metadata: {
@@ -332,16 +348,11 @@ describe('Resource', function () {
     });
 
     it('should call updateStatus(event) when onEvent(event) is callled', function (done) {
-        TestClip.mock = {
-        }
-
-        TestResource.mock = {
-            updateStatus: function(event) {
-                done();
-            }
-        }
-
-        var resource = new TestResource({
+        TestClip.mock = {}
+        
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        sandbox.stub(Resource.prototype,'updateStatus').callsFake(() => done());
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "device",
             metadata: {
@@ -357,15 +368,11 @@ describe('Resource', function () {
     });
 
     it('should emit update event when onEvent(event) is callled', function (done) {
-        TestClip.mock = {
-        }
+        TestClip.mock = {}
 
-        TestResource.mock = {
-            updateStatus: function(event) {
-            }
-        }
-
-        var resource = new TestResource({
+        sandbox.stub(Resource.prototype,'id').callsFake(() => "id");
+        sandbox.stub(Resource.prototype,'updateStatus').callsFake(() => {});
+        var resource = new Resource({
             id: "1801c6af-fff3-40b4-b5fa-2a056ce7a192",
             type: "device",
             metadata: {
