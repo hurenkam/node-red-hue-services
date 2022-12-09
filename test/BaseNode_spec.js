@@ -1,6 +1,7 @@
 const helper = require("node-red-node-test-helper");
 const assert = require('assert');
-const TestBaseNode = require("./mocks/TestBaseNode");
+const sinon = require('sinon');
+const BaseNode = require("../src/nodes/BaseNode");
 
 const testnodes = function(RED) {
     "use strict";
@@ -8,16 +9,21 @@ const testnodes = function(RED) {
     const BaseNode = require('../src/nodes/BaseNode');
     BaseNode.nodeAPI = RED;
 
-    const TestBaseNode = require('./mocks/TestBaseNode');
-    RED.nodes.registerType("BaseNode",TestBaseNode);
+    RED.nodes.registerType("BaseNode",BaseNode);
 }
 
 describe('Base Node', function () {
+    beforeEach(()=>{
+        sandbox = sinon.createSandbox();
+    });
+
     afterEach(function () {
         helper.unload();
+        sandbox.restore();
     });
 
     it('should store config.name property', function (done) {
+
         var flow = [{
             id: "n1",
             type: "BaseNode",
@@ -44,12 +50,11 @@ describe('Base Node', function () {
         var payload = { on: { on: true }};
         var msg = { payload: payload };
 
-        TestBaseNode.mock = { 
-            onInput: function(msg) {
-                msg.should.have.property('payload',payload);
-                done();
-            }
-        };
+        const fake = sandbox.fake((msg) => { 
+            msg.should.have.property('payload',payload);
+            done();
+        });
+        sandbox.replace(BaseNode.prototype,'onInput',fake);
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
@@ -64,11 +69,10 @@ describe('Base Node', function () {
             name: "base node",
         }];
 
-        TestBaseNode.mock = {
-            getStatusFill: function() {
-                done();
-            }
-        };
+        const fake = sandbox.fake(() => { 
+            done();
+        });
+        sandbox.replace(BaseNode.prototype,'getStatusFill',fake);
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
@@ -83,11 +87,10 @@ describe('Base Node', function () {
             name: "base node",
         }];
 
-        TestBaseNode.mock = {
-            getStatusText: function() {
-                done();
-            }
-        };
+        const fake = sandbox.fake(() => { 
+            done();
+        });
+        sandbox.replace(BaseNode.prototype,'getStatusText',fake);
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
@@ -102,11 +105,10 @@ describe('Base Node', function () {
             name: "base node",
         }];
 
-        TestBaseNode.mock = {
-            getStatusShape: function() {
-                done();
-            }
-        };
+        const fake = sandbox.fake(() => { 
+            done();
+        });
+        sandbox.replace(BaseNode.prototype,'getStatusShape',fake);
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
@@ -121,23 +123,14 @@ describe('Base Node', function () {
             name: "base node",
         }];
 
-        TestBaseNode.mock = {
-            getStatusShape: function() {
-                return null;
-            },
-            getStatusText: function() {
-                return null;
-            },
-            getStatusFill: function() {
-                return null;
-            },
-            status: function(status) {
-                status.should.have.property('shape',null);
-                status.should.have.property('text',null);
-                status.should.have.property('fill',null);
-                done();
-            }
-        };
+        const fakeShape = sandbox.fake(() => null);
+        const fakeText = sandbox.fake(() => null);
+        const fakeFill = sandbox.fake(() => null);
+        const fakeStatus = sandbox.fake(() => { done(); });
+        sandbox.replace(BaseNode.prototype,'getStatusShape',fakeShape);
+        sandbox.replace(BaseNode.prototype,'getStatusText',fakeText);
+        sandbox.replace(BaseNode.prototype,'getStatusFill',fakeFill);
+        sandbox.replace(BaseNode.prototype,'status',fakeStatus);
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
@@ -152,23 +145,19 @@ describe('Base Node', function () {
             name: "base node",
         }];
 
-        TestBaseNode.mock = {
-            getStatusShape: function() {
-                return "ring";
-            },
-            getStatusText: function() {
-                return "text";
-            },
-            getStatusFill: function() {
-                return "green";
-            },
-            status: function(status) {
-                status.should.have.property('shape','ring');
-                status.should.have.property('text','text');
-                status.should.have.property('fill','green');
-                done();
-            }
-        };
+        const fakeShape = sandbox.fake(() => { return "ring" });
+        const fakeText = sandbox.fake(() => { return "text" });
+        const fakeFill = sandbox.fake(() => { return "green" });
+        const fakeStatus = sandbox.fake((status) => {
+            status.should.have.property('shape','ring');
+            status.should.have.property('text','text');
+            status.should.have.property('fill','green');
+            done();
+        });
+        sandbox.replace(BaseNode.prototype,'getStatusShape',fakeShape);
+        sandbox.replace(BaseNode.prototype,'getStatusText',fakeText);
+        sandbox.replace(BaseNode.prototype,'getStatusFill',fakeFill);
+        sandbox.replace(BaseNode.prototype,'status',fakeStatus);
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
@@ -183,15 +172,17 @@ describe('Base Node', function () {
             name: "base node",
         }];
 
-        TestBaseNode.mock = {
-            getStatusFill: function() {
-                return "green";
-            },
-            status: function(status) {
-                status.should.have.property('shape','dot');
-                done();
-            }
-        };
+        const fakeShape = sandbox.fake(() => { return null });
+        const fakeText = sandbox.fake(() => { return null });
+        const fakeFill = sandbox.fake(() => { return "green" });
+        const fakeStatus = sandbox.fake((status) => {
+            status.should.have.property('shape','dot');
+            done();
+        });
+        sandbox.replace(BaseNode.prototype,'getStatusShape',fakeShape);
+        sandbox.replace(BaseNode.prototype,'getStatusText',fakeText);
+        sandbox.replace(BaseNode.prototype,'getStatusFill',fakeFill);
+        sandbox.replace(BaseNode.prototype,'status',fakeStatus);
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
@@ -206,15 +197,17 @@ describe('Base Node', function () {
             name: "base node",
         }];
 
-        TestBaseNode.mock = {
-            getStatusShape: function() {
-                return "dot";
-            },
-            status: function(status) {
-                status.should.have.property('fill','grey');
-                done();
-            }
-        };
+        const fakeShape = sandbox.fake(() => { return "dot" });
+        const fakeText = sandbox.fake(() => { return null });
+        const fakeFill = sandbox.fake(() => { return null });
+        const fakeStatus = sandbox.fake((status) => {
+            status.should.have.property('fill','grey');
+            done();
+        });
+        sandbox.replace(BaseNode.prototype,'getStatusShape',fakeShape);
+        sandbox.replace(BaseNode.prototype,'getStatusText',fakeText);
+        sandbox.replace(BaseNode.prototype,'getStatusFill',fakeFill);
+        sandbox.replace(BaseNode.prototype,'status',fakeStatus);
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
@@ -232,7 +225,6 @@ describe('Base Node', function () {
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
-            var logid = n1.logid();
             assert.equal(n1.logid(),name);
             done();
         });
@@ -247,7 +239,6 @@ describe('Base Node', function () {
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode(id);
-            var logid = n1.logid();
             assert.equal(n1.logid(),id);
             done();
         });

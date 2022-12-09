@@ -22,7 +22,7 @@ describe('Bridge Config Node (instance)', function () {
     afterEach(function () {
         sandbox.restore();
         helper.unload();
-      });
+    });
 
     it('should be loaded', function (done) {
         const fakeClip = sandbox.fake(() => { return {

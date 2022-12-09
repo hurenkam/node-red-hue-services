@@ -29,16 +29,15 @@ class ResourceNode extends BaseNode {
     }
 
     start(resource) {
+        if (resource==null)
+            return;
+
         this.#info("start()");
         this.#resource = resource;
 
         var instance = this;
         this.#onUpdate = function(event) {
-            try {
-                instance.onUpdate(event);
-            } catch (error) {
-                this.#error(error);
-            }
+            instance.onUpdate(event);
         }
 
         this.resource().on('update',this.#onUpdate);

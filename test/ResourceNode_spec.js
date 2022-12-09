@@ -1,59 +1,23 @@
 var helper = require("node-red-node-test-helper");
 const BaseNode = require('../src/nodes/BaseNode');
-const TestResourceNode = require("./mocks/TestResourceNode");
+const ResourceNode = require("../src/nodes/ResourceNode");
 const assert = require('assert');
+const sinon = require('sinon');
 
 var testnodes = function(RED) {
     "use strict";
-
     BaseNode.nodeAPI = RED;
-    RED.nodes.registerType("ResourceNode",TestResourceNode);
-}
-
-class TestBridge {
-    static mock = { }
-    requestStartup(resource) {
-        if (TestBridge.mock.requestStartup) {
-            return TestBridge.mock.requestStartup(resource);
-        }
-    }
-}
-
-class TestResource {
-    static mock = { }
-
-    constructor(data) {
-        this.data = data;
-    }
-
-    on(event,callback) {
-        if (TestResource.mock.on) {
-            return TestResource.mock.on(event,callback);
-        }
-    }
-
-    rid() {
-        if (TestResource.mock.rid) {
-            return TestResource.mock.rid();
-        }
-    }
-
-    rtype() {
-        if (TestResource.mock.rtype) {
-            return TestResource.mock.rtype();
-        }
-    }
-
-    put(msg) {
-        if (TestResource.mock.put) {
-            return TestResource.mock.put(msg);
-        }
-    }
+    RED.nodes.registerType("ResourceNode",ResourceNode);
 }
 
 describe('Resource Node', function () {
+    beforeEach(()=>{
+        sandbox = sinon.createSandbox();
+    });
+
     afterEach(function () {
-      helper.unload();
+        helper.unload();
+        sandbox.restore();
     });
 
     it('should be loaded', function (done) {
@@ -72,23 +36,19 @@ describe('Resource Node', function () {
     });
 
     it('should call bridge.requestStartup on construction', function (done) {
-        class TestBridge {
-            requestStartup(resource) {
-                //console.log("TestBridge.requestStartup()",resource);
-                done();
-            }
-        }
+        const fake = sandbox.fake(() => {
+            return {
+                requestStartup: function(resource) {
+                    done();
+                }
+            };
+        });
+        sandbox.replace(ResourceNode.prototype,'bridge',fake);
 
         var flow = [{ 
             id: "n1",
             type: "ResourceNode",
         }];
-
-        TestResourceNode.mock = { 
-            bridge: function () {
-                return new TestBridge();
-            }
-        }
 
         helper.load(testnodes, flow, function () {
             helper.getNode("n1");
@@ -101,22 +61,21 @@ describe('Resource Node', function () {
             type: "ResourceNode",
         }];
 
-        TestResourceNode.mock = {
-            bridge: function () {
-                return new TestBridge();
-            }
-        }
-
-        TestResource.mock = {
-            on: function(event,callback) {
-                assert.equal(event,'update');
-                done();
-            }
-        }
+        const fake = sandbox.fake(() => {
+            return {
+                requestStartup: function(resource) {}
+            };
+        });
+        sandbox.replace(ResourceNode.prototype,'bridge',fake);
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
-            n1.start(new TestResource({}));
+            n1.start({
+                on: function(event,callback) {
+                    assert.equal(event,'update');
+                    done();
+                }
+            });
         });
     });
 
@@ -126,20 +85,22 @@ describe('Resource Node', function () {
             type: "ResourceNode",
         }];
 
-        TestResourceNode.mock = {
-            bridge: function () {
-                return new TestBridge();
-            },
-            updateStatus: function() {
-                done();
-            }
-        }
-
-        TestResource.mock = { }
+        const fakeRequestStartup = sandbox.fake(() => {
+            return { requestStartup: function(resource) {} };
+        });
+        const fakeUpdateStatus = sandbox.fake(() => {
+            done();
+        });
+        sandbox.replace(ResourceNode.prototype,'bridge',fakeRequestStartup);
+        sandbox.replace(ResourceNode.prototype,'updateStatus',fakeUpdateStatus);
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
-            n1.start(new TestResource({}));
+            n1.start({
+                on: function(event,callback) {
+                    assert.equal(event,'update');
+                }
+            });
         });
     });
 
@@ -149,19 +110,21 @@ describe('Resource Node', function () {
             type: "ResourceNode",
         }];
 
-        TestResourceNode.mock = {
-            bridge: function () {
-                return new TestBridge();
-            },
-        }
-
-        TestResource.mock = { }
+        const fake = sandbox.fake(() => {
+            return { requestStartup: function(resource) {} };
+        });
+        sandbox.replace(ResourceNode.prototype,'bridge',fake);
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
-            n1.start(new TestResource({ name: "test resource" }));
+            n1.start({
+                on: function(event,callback) {
+                    assert.equal(event,'update');
+                },
+                data: function() { return { name: "test resource" } }
+            });
             var resource = n1.resource();
-            assert.equal(resource.data.name, "test resource");
+            assert.equal(resource.data().name, "test resource");
             done();
         });
     });
@@ -174,13 +137,10 @@ describe('Resource Node', function () {
             uuid: uuid
         }];
 
-        TestResourceNode.mock = {
-            bridge: function () {
-                return new TestBridge();
-            },
-        }
-
-        TestResource.mock = { }
+        const fake = sandbox.fake(() => {
+            return { requestStartup: function(resource) {} };
+        });
+        sandbox.replace(ResourceNode.prototype,'bridge',fake);
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
@@ -204,8 +164,6 @@ describe('Resource Node', function () {
             type: "helper"
         }];
 
-        TestResourceNode.mock = { }
-
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -223,20 +181,20 @@ describe('Resource Node', function () {
             name: "resource node",
         }];
 
-        TestResourceNode.mock = {
-            bridge: function () {
-                return new TestBridge();
-            }
-        }
-
-        TestResource.mock = {
-            rtype: function() { return "button" },
-            put: function(msg) { done(); }
-        }
+        const fake = sandbox.fake(() => {
+            return { requestStartup: function(resource) {} };
+        });
+        sandbox.replace(ResourceNode.prototype,'bridge',fake);
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
-            n1.start(new TestResource({ name: "test resource" }));
+            n1.start({
+                on: function(event,callback) {
+                    assert.equal(event,'update');
+                },
+                rtype: function() { return "button" },
+                put: function(msg) { done(); }
+            });
             n1.receive({ rtypes: ["button"], payload: {} });
         });
     });
@@ -249,20 +207,20 @@ describe('Resource Node', function () {
             uuid: "1c0fb40c-41af-4ed3-a2e0-552398dbd0d8"
         }];
 
-        TestResourceNode.mock = {
-            bridge: function () {
-                return new TestBridge();
-            }
-        }
-
-        TestResource.mock = {
-            rid: function() { return "1c0fb40c-41af-4ed3-a2e0-552398dbd0d8" },
-            put: function(msg) { done(); }
-        }
+        const fake = sandbox.fake(() => {
+            return { requestStartup: function(resource) {} };
+        });
+        sandbox.replace(ResourceNode.prototype,'bridge',fake);
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
-            n1.start(new TestResource({ name: "test resource" }));
+            n1.start({
+                on: function(event,callback) {
+                    assert.equal(event,'update');
+                },
+                rid: function() { return "1c0fb40c-41af-4ed3-a2e0-552398dbd0d8" },
+                put: function(msg) { done(); }
+            });
             n1.receive({ rids: ["1c0fb40c-41af-4ed3-a2e0-552398dbd0d8"], payload: {} });
         });
     });
@@ -275,20 +233,20 @@ describe('Resource Node', function () {
             uuid: "1c0fb40c-41af-4ed3-a2e0-552398dbd0d8"
         }];
 
-        TestResourceNode.mock = {
-            bridge: function () {
-                return new TestBridge();
-            }
-        }
-
-        TestResource.mock = {
-            rid: function() { return "1c0fb40c-41af-4ed3-a2e0-552398dbd0d8" },
-            put: function(msg) { assert.fail('did not expect resource.put() to be called'); }
-        }
+        const fake = sandbox.fake(() => {
+            return { requestStartup: function(resource) {} };
+        });
+        sandbox.replace(ResourceNode.prototype,'bridge',fake);
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
-            n1.start(new TestResource({ name: "test resource" }));
+            n1.start({
+                on: function(event,callback) {
+                    assert.equal(event,'update');
+                },
+                rid: function() { return "1c0fb40c-41af-4ed3-a2e0-552398dbd0d8" },
+                put: function(msg) { assert.fail('did not expect resource.put() to be called'); }
+            });
             n1.receive({ rids: ["4157244d-f3ba-4fa3-857b-b946b3d661ce"], payload: {} });
             setTimeout(() => {
                 done();
@@ -304,20 +262,43 @@ describe('Resource Node', function () {
             uuid: "1c0fb40c-41af-4ed3-a2e0-552398dbd0d8"
         }];
 
-        TestResourceNode.mock = {
-            bridge: function () {
-                return new TestBridge();
-            }
-        }
-
-        TestResource.mock = {
-            rtype: function() { return "button" },
-            put: function(msg) { assert.fail('did not expect resource.put() to be called'); }
-        }
+        const fake = sandbox.fake(() => {
+            return { requestStartup: function(resource) {} };
+        });
+        sandbox.replace(ResourceNode.prototype,'bridge',fake);
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
-            n1.start(new TestResource({ name: "test resource" }));
+            n1.start({
+                on: function(event,callback) {
+                    assert.equal(event,'update');
+                },
+                rtype: function() { return "button" },
+                put: function(msg) { assert.fail('did not expect resource.put() to be called'); }
+            });
+            n1.receive({ rtypes: ["light"], payload: {} });
+            setTimeout(() => {
+                done();
+            }, 0);
+        });
+    });
+
+    it('should not call resource.put when onInput(msg) is called and resource==null', function (done) {
+        var flow = [{
+            id: "n1",
+            type: "ResourceNode",
+            name: "resource node",
+            uuid: "1c0fb40c-41af-4ed3-a2e0-552398dbd0d8"
+        }];
+
+        const fake = sandbox.fake(() => {
+            return { requestStartup: function(resource) {} };
+        });
+        sandbox.replace(ResourceNode.prototype,'bridge',fake);
+
+        helper.load(testnodes, flow, function () {
+            var n1 = helper.getNode("n1");
+            n1.start(null);
             n1.receive({ rtypes: ["light"], payload: {} });
             setTimeout(() => {
                 done();
