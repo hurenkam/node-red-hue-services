@@ -33,6 +33,9 @@ in my home automation environment seems to work and stability is ok.
 - ~~Use scope, this is probably required if i want to upload this as a package.~~
 - ~~Fix packaging, now I'm using a symlink to point to my *UI.js files, this needs a proper solution.~~
 - ~~Upload package to node-red library~~
+- ~~Unit Tests for Clip~~
+- ~~Unit Tests for Nodes~~
+- Unit Tests for UI
 
 ## Postponed until after 0.5.x release
 - Improve 'smart' modes for Switch and Motion devices
