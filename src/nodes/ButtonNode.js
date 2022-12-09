@@ -24,7 +24,7 @@ class ButtonNode extends ResourceNode {
         setTimeout(()=>{
             instance.#fill = "grey";
             instance.updateStatus();
-        },3000);
+        },1000);
 
         this.updateStatus();
         super.onUpdate(event);

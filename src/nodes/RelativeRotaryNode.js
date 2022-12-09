@@ -31,7 +31,6 @@ class RelativeRotaryNode extends ResourceNode {
 
     updateStatus() {
         this.#trace("updateStatus()");
-        super.updateStatus();
 
         var fill = this.#fill;
         var shape = "dot";
@@ -41,9 +40,9 @@ class RelativeRotaryNode extends ResourceNode {
         if ((resource) && (resource.data()) && (resource.data().relative_rotary)) {
             if (resource.data().relative_rotary.last_event!=null) {
                 var event = resource.data().relative_rotary.last_event;
-                text = event.action + " ";
+                text = event.action;
                 if (event.rotation) {
-                    text += (event.rotation.direction == "clock_wise")? ">> " : "<< ";
+                    text += (event.rotation.direction == "clock_wise")? " >> " : " << ";
                     text += event.rotation.duration + " | " + event.rotation.steps;
                 }
             }

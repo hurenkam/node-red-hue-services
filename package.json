@@ -15,7 +15,7 @@
     "url": "https://github.com/hurenkam/node-red-hue-services/issues"
   },
   "scripts": {
-    "test": "mocha \"test/**/*_spec.js\""
+    "test": "nyc --reporter=text --reporter=html mocha \"test/**/*_spec.js\""
   },
   "keywords": [
     "node-red",
@@ -27,6 +27,7 @@
     "nodes": {
       "files": "src/files.js",
       "debug": "src/debug.js",
+      "hue": "src/hue.js",
       "all": "src/all.js"
     }
   },

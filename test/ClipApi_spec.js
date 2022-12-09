@@ -677,7 +677,7 @@ describe('ClipApi', function () {
         done();
     });
 
-    it('should return matching types when getSortedOwnerOptions is called.', function (done) {
+    it('should return matching types when getSortedServiceOptions is called.', function (done) {
         sandbox.stub(ClipApi.prototype,'_initRestApi').callsFake(() => null);
         sandbox.stub(ClipApi.prototype,'_initEventStream').callsFake(() => null);
         sandbox.stub(ClipApi.prototype,'_requestResources').callsFake(() => null);

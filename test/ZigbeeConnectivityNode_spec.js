@@ -8,12 +8,12 @@ const testnodes = function(RED) {
     const BaseNode = require('../src/nodes/BaseNode');
     BaseNode.nodeAPI = RED;
 
-    RED.nodes.registerType("DevicePowerNode",DevicePowerNode);
+    RED.nodes.registerType("ZigbeeConnectivityNode",ZigbeeConnectivityNode);
 }
-const DevicePowerNode = require('../src/nodes/DevicePowerNode');
+const ZigbeeConnectivityNode = require('../src/nodes/ZigbeeConnectivityNode');
 const { isNull } = require("util");
 
-describe('DevicePowerNode', function () {
+describe('ZigbeeConnectivityNode', function () {
     beforeEach(()=>{
         sandbox = sinon.createSandbox();
     });
@@ -26,8 +26,8 @@ describe('DevicePowerNode', function () {
     it('should load', function (done) {
         var flow = [{
             id: "n1",
-            type: "DevicePowerNode",
-            name: "device power node",
+            type: "ZigbeeConnectivityNode",
+            name: "zigbee connectivity node",
         }];
 
         helper.load(testnodes, flow, function () {
@@ -35,7 +35,7 @@ describe('DevicePowerNode', function () {
             n1.should.have.property('config');
 
             var config = n1.config;
-            config.should.have.property('name', 'device power node');
+            config.should.have.property('name', 'zigbee connectivity node');
             done();
         });
     });
@@ -44,12 +44,12 @@ describe('DevicePowerNode', function () {
         const fakeStatus = sandbox.fake(() => {
             done()
         });
-        sandbox.replace(DevicePowerNode.prototype,'updateStatus',fakeStatus);
+        sandbox.replace(ZigbeeConnectivityNode.prototype,'updateStatus',fakeStatus);
     
         var flow = [{
             id: "n1",
-            type: "DevicePowerNode",
-            name: "device power node",
+            type: "ZigbeeConnectivityNode",
+            name: "zigbee connectivity node",
         }];
 
         helper.load(testnodes, flow, function () {
@@ -60,73 +60,73 @@ describe('DevicePowerNode', function () {
         });
     });
 
-    it('should call status() with "green/dot/90%"', function (done) {
+    it('should call status() with "green/dot/connected"', function (done) {
         const fakeResource = sandbox.fake.returns({
             data: function() {
-                return { power_state: { battery_level: 90 } }
+                return { status: "connected" }
             }
         });
-        sandbox.replace(DevicePowerNode.prototype,'resource',fakeResource);
+        sandbox.replace(ZigbeeConnectivityNode.prototype,'resource',fakeResource);
         const fakeStatus = sandbox.fake(() => {
 
             args = fakeStatus.firstArg;
             assert.equal(args.fill,"green");
             assert.equal(args.shape,"dot");
-            assert.equal(args.text,"90%");
+            assert.equal(args.text,"connected");
 
             done()
         });
-        sandbox.replace(DevicePowerNode.prototype,'status',fakeStatus);
+        sandbox.replace(ZigbeeConnectivityNode.prototype,'status',fakeStatus);
 
         var flow = [{
             id: "n1",
-            type: "DevicePowerNode",
-            name: "device power node",
+            type: "ZigbeeConnectivityNode",
+            name: "zigbee connectivity node",
         }];
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
             n1.onUpdate({
-                power_state: { battery_level: 90 }
+                status: "connected"
             });
         });
     });
 
-    it('should call status() with "red/dot/5%"', function (done) {
+    it('should call status() with "red/dot/not connected"', function (done) {
         const fakeResource = sandbox.fake.returns({
             data: function() {
-                return { power_state: { battery_level: 5 } }
+                return { status: "not connected" }
             }
         });
-        sandbox.replace(DevicePowerNode.prototype,'resource',fakeResource);
+        sandbox.replace(ZigbeeConnectivityNode.prototype,'resource',fakeResource);
         const fakeStatus = sandbox.fake(() => {
 
             args = fakeStatus.firstArg;
             assert.equal(args.fill,"red");
             assert.equal(args.shape,"dot");
-            assert.equal(args.text,"5%");
+            assert.equal(args.text,"not connected");
 
             done()
         });
-        sandbox.replace(DevicePowerNode.prototype,'status',fakeStatus);
+        sandbox.replace(ZigbeeConnectivityNode.prototype,'status',fakeStatus);
 
         var flow = [{
             id: "n1",
-            type: "DevicePowerNode",
-            name: "device power node",
+            type: "ZigbeeConnectivityNode",
+            name: "zigbee connectivity node",
         }];
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
             n1.onUpdate({
-                power_state: { battery_level: 5 }
+                status: "connected"
             });
         });
     });
 
     it('should call status() with "grey/dot/" when resource==null', function (done) {
         const fakeResource = sandbox.fake.returns(null);
-        sandbox.replace(DevicePowerNode.prototype,'resource',fakeResource);
+        sandbox.replace(ZigbeeConnectivityNode.prototype,'resource',fakeResource);
         const fakeStatus = sandbox.fake(() => {
 
             args = fakeStatus.firstArg;
@@ -136,29 +136,29 @@ describe('DevicePowerNode', function () {
 
             done()
         });
-        sandbox.replace(DevicePowerNode.prototype,'status',fakeStatus);
+        sandbox.replace(ZigbeeConnectivityNode.prototype,'status',fakeStatus);
 
         var flow = [{
             id: "n1",
-            type: "DevicePowerNode",
-            name: "device power node",
+            type: "ZigbeeConnectivityNode",
+            name: "zigbee connectivity node",
         }];
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
             n1.onUpdate({
-                power_state: { battery_level: 90 }
+                status: "connected"
             });
         });
     });
 
-    it('should call status() with "grey/dot/" when battery_level==null', function (done) {
+    it('should call status() with "grey/dot/" when status==null', function (done) {
         const fakeResource = sandbox.fake.returns({
             data: function() {
-                return { power_state: { battery_level: null } }
+                return { status: null }
             }
         });
-        sandbox.replace(DevicePowerNode.prototype,'resource',fakeResource);
+        sandbox.replace(ZigbeeConnectivityNode.prototype,'resource',fakeResource);
         const fakeStatus = sandbox.fake(() => {
 
             args = fakeStatus.firstArg;
@@ -168,18 +168,18 @@ describe('DevicePowerNode', function () {
 
             done()
         });
-        sandbox.replace(DevicePowerNode.prototype,'status',fakeStatus);
+        sandbox.replace(ZigbeeConnectivityNode.prototype,'status',fakeStatus);
 
         var flow = [{
             id: "n1",
-            type: "DevicePowerNode",
-            name: "device power node",
+            type: "ZigbeeConnectivityNode",
+            name: "zigbee connectivity node",
         }];
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
             n1.onUpdate({
-                power_state: { battery_level: 90 }
+                status: "connected"
             });
         });
     });

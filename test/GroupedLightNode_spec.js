@@ -8,12 +8,12 @@ const testnodes = function(RED) {
     const BaseNode = require('../src/nodes/BaseNode');
     BaseNode.nodeAPI = RED;
 
-    RED.nodes.registerType("DevicePowerNode",DevicePowerNode);
+    RED.nodes.registerType("GroupedLightNode",GroupedLightNode);
 }
-const DevicePowerNode = require('../src/nodes/DevicePowerNode');
+const GroupedLightNode = require('../src/nodes/GroupedLightNode');
 const { isNull } = require("util");
 
-describe('DevicePowerNode', function () {
+describe('GroupedLightNode', function () {
     beforeEach(()=>{
         sandbox = sinon.createSandbox();
     });
@@ -26,8 +26,8 @@ describe('DevicePowerNode', function () {
     it('should load', function (done) {
         var flow = [{
             id: "n1",
-            type: "DevicePowerNode",
-            name: "device power node",
+            type: "GroupedLightNode",
+            name: "grouped light node",
         }];
 
         helper.load(testnodes, flow, function () {
@@ -35,7 +35,7 @@ describe('DevicePowerNode', function () {
             n1.should.have.property('config');
 
             var config = n1.config;
-            config.should.have.property('name', 'device power node');
+            config.should.have.property('name', 'grouped light node');
             done();
         });
     });
@@ -44,12 +44,12 @@ describe('DevicePowerNode', function () {
         const fakeStatus = sandbox.fake(() => {
             done()
         });
-        sandbox.replace(DevicePowerNode.prototype,'updateStatus',fakeStatus);
+        sandbox.replace(GroupedLightNode.prototype,'updateStatus',fakeStatus);
     
         var flow = [{
             id: "n1",
-            type: "DevicePowerNode",
-            name: "device power node",
+            type: "GroupedLightNode",
+            name: "grouped light node",
         }];
 
         helper.load(testnodes, flow, function () {
@@ -60,73 +60,73 @@ describe('DevicePowerNode', function () {
         });
     });
 
-    it('should call status() with "green/dot/90%"', function (done) {
+    it('should call status() with "yellow/dot/90%" when on==true and brightness==90', function (done) {
         const fakeResource = sandbox.fake.returns({
             data: function() {
-                return { power_state: { battery_level: 90 } }
+                return { on: { on: true }, dimming: { brightness: 90 } }
             }
         });
-        sandbox.replace(DevicePowerNode.prototype,'resource',fakeResource);
+        sandbox.replace(GroupedLightNode.prototype,'resource',fakeResource);
         const fakeStatus = sandbox.fake(() => {
 
             args = fakeStatus.firstArg;
-            assert.equal(args.fill,"green");
+            assert.equal(args.fill,"yellow");
             assert.equal(args.shape,"dot");
             assert.equal(args.text,"90%");
 
             done()
         });
-        sandbox.replace(DevicePowerNode.prototype,'status',fakeStatus);
+        sandbox.replace(GroupedLightNode.prototype,'status',fakeStatus);
 
         var flow = [{
             id: "n1",
-            type: "DevicePowerNode",
-            name: "device power node",
+            type: "GroupedLightNode",
+            name: "grouped light node",
         }];
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
             n1.onUpdate({
-                power_state: { battery_level: 90 }
+                on: { on: true }, dimming: { brightness: 90 }
             });
         });
     });
 
-    it('should call status() with "red/dot/5%"', function (done) {
+    it('should call status() with "grey/dot/off" when on==false and brightness==90', function (done) {
         const fakeResource = sandbox.fake.returns({
             data: function() {
-                return { power_state: { battery_level: 5 } }
+                return { on: { on: false }, dimming: { brightness: 90 } }
             }
         });
-        sandbox.replace(DevicePowerNode.prototype,'resource',fakeResource);
+        sandbox.replace(GroupedLightNode.prototype,'resource',fakeResource);
         const fakeStatus = sandbox.fake(() => {
 
             args = fakeStatus.firstArg;
-            assert.equal(args.fill,"red");
+            assert.equal(args.fill,"grey");
             assert.equal(args.shape,"dot");
-            assert.equal(args.text,"5%");
+            assert.equal(args.text,"off");
 
             done()
         });
-        sandbox.replace(DevicePowerNode.prototype,'status',fakeStatus);
+        sandbox.replace(GroupedLightNode.prototype,'status',fakeStatus);
 
         var flow = [{
             id: "n1",
-            type: "DevicePowerNode",
-            name: "device power node",
+            type: "GroupedLightNode",
+            name: "grouped light node",
         }];
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
             n1.onUpdate({
-                power_state: { battery_level: 5 }
+                on: { on: false }, dimming: { brightness: 90 }
             });
         });
     });
 
     it('should call status() with "grey/dot/" when resource==null', function (done) {
         const fakeResource = sandbox.fake.returns(null);
-        sandbox.replace(DevicePowerNode.prototype,'resource',fakeResource);
+        sandbox.replace(GroupedLightNode.prototype,'resource',fakeResource);
         const fakeStatus = sandbox.fake(() => {
 
             args = fakeStatus.firstArg;
@@ -136,29 +136,29 @@ describe('DevicePowerNode', function () {
 
             done()
         });
-        sandbox.replace(DevicePowerNode.prototype,'status',fakeStatus);
+        sandbox.replace(GroupedLightNode.prototype,'status',fakeStatus);
 
         var flow = [{
             id: "n1",
-            type: "DevicePowerNode",
-            name: "device power node",
+            type: "GroupedLightNode",
+            name: "grouped light node",
         }];
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
             n1.onUpdate({
-                power_state: { battery_level: 90 }
+                on: { on: true }, dimming: { brightness: 90 }
             });
         });
     });
 
-    it('should call status() with "grey/dot/" when battery_level==null', function (done) {
+    it('should call status() with "grey/dot/" when on==null', function (done) {
         const fakeResource = sandbox.fake.returns({
             data: function() {
-                return { power_state: { battery_level: null } }
+                return { on: { on: null }, dimming: { brightness: 90 } }
             }
         });
-        sandbox.replace(DevicePowerNode.prototype,'resource',fakeResource);
+        sandbox.replace(GroupedLightNode.prototype,'resource',fakeResource);
         const fakeStatus = sandbox.fake(() => {
 
             args = fakeStatus.firstArg;
@@ -168,18 +168,50 @@ describe('DevicePowerNode', function () {
 
             done()
         });
-        sandbox.replace(DevicePowerNode.prototype,'status',fakeStatus);
+        sandbox.replace(GroupedLightNode.prototype,'status',fakeStatus);
 
         var flow = [{
             id: "n1",
-            type: "DevicePowerNode",
-            name: "device power node",
+            type: "GroupedLightNode",
+            name: "grouped light node",
         }];
 
         helper.load(testnodes, flow, function () {
             var n1 = helper.getNode("n1");
             n1.onUpdate({
-                power_state: { battery_level: 90 }
+                on: { on: true }, dimming: { brightness: 90 }
+            });
+        });
+    });
+
+    it('should call status() with "yellow/dot/" when dimming==null', function (done) {
+        const fakeResource = sandbox.fake.returns({
+            data: function() {
+                return { on: { on: true }, dimming: null }
+            }
+        });
+        sandbox.replace(GroupedLightNode.prototype,'resource',fakeResource);
+        const fakeStatus = sandbox.fake(() => {
+            args = fakeStatus.firstArg;
+            
+            assert.equal(args.fill,"yellow");
+            assert.equal(args.shape,"dot");
+            assert.equal(args.text,"");
+
+            done();
+        });
+        sandbox.replace(GroupedLightNode.prototype,'status',fakeStatus);
+
+        var flow = [{
+            id: "n1",
+            type: "GroupedLightNode",
+            name: "grouped light node",
+        }];
+
+        helper.load(testnodes, flow, function () {
+            var n1 = helper.getNode("n1");
+            n1.onUpdate({
+                on: { on: true }, dimming: { brightness: 90 }
             });
         });
     });

@@ -19,7 +19,6 @@ class MotionNode extends ResourceNode {
 
     updateStatus() {
         this.#trace("updateStatus()")
-        super.updateStatus();
 
         var fill = "grey";
         var shape = "dot";

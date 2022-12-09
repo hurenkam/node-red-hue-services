@@ -23,7 +23,6 @@ describe('ButtonNode', function () {
       });
   
     it('should load', function (done) {
-        //sandbox.stub(ButtonNode.prototype,'id').callsFake(() => "id");
 
         var flow = [{
             id: "n1",
@@ -42,10 +41,13 @@ describe('ButtonNode', function () {
     });
 
     it('should call updateStatus() twice with 3s delay when onUpdate(event) is called', function (done) {
-        this.timeout(5000);
-        sandbox.stub(ButtonNode.prototype,'updateStatus')
-            .onFirstCall().callsFake(()=>{})
-            .onSecondCall().callsFake(()=>done());
+        var statuscount = 0;
+        const fakeStatus = sandbox.fake(() => {
+            if (statuscount++ > 0) {
+                done()
+            }
+        });
+        sandbox.replace(ButtonNode.prototype,'updateStatus',fakeStatus);
 
         var flow = [{
             id: "n1",
@@ -61,23 +63,30 @@ describe('ButtonNode', function () {
         });
     });
 
-    it('should call status() twice with 3s delay when onUpdate(event) is called', function (done) {
-        this.timeout(5000);
-        sandbox.stub(ButtonNode.prototype,'resource').returns({
-            data: function() {
-                return { button: { last_event: "last_event" }}
+    it('should call status() with "blue/dot/last_event" and "grey/dot/last_event"', function (done) {
+        var statuscount = 0;
+        const fakeStatus = sandbox.fake(() => {
+            var args = fakeStatus.firstArg;
+            if (statuscount++ == 0) {
+                assert.equal(args.fill,"blue");
+                assert.equal(args.shape,"dot");
+                assert.equal(args.text,"last_event");
+            } else {
+                assert.equal(args.fill,"grey");
+                assert.equal(args.shape,"dot");
+                assert.equal(args.text,"last_event");
+                done()
             }
         });
-        statuscount = 0;
-        sandbox.stub(ButtonNode.prototype,'status')
-            .onFirstCall().callsFake((fill,shape,text)=>{
-                assert.equal(fill,"blue");
-                assert.equal(shape,"dot");
-                assert.equal(text,"last_event");
-            })
-            .onSecondCall().callsFake(()=> {
-                done();
-            });
+        sandbox.replace(ButtonNode.prototype,'status',fakeStatus);
+        const fakeResource = sandbox.fake(() => { 
+            return {
+                data: function() {
+                    return { button: { last_event: "last_event" } }
+                }
+            }
+        });
+        sandbox.replace(ButtonNode.prototype,'resource',fakeResource);
 
         var flow = [{
             id: "n1",
@@ -93,19 +102,26 @@ describe('ButtonNode', function () {
         });
     });
 
-    it('should call status() twice with 3s delay when onUpdate(event) is called', function (done) {
-        this.timeout(5000);
-        sandbox.stub(ButtonNode.prototype,'resource').returns(null);
-        statuscount = 0;
-        sandbox.stub(ButtonNode.prototype,'status')
-            .onFirstCall().callsFake((fill,shape,text)=>{
-                assert.equal(fill,"blue");
-                assert.equal(shape,"dot");
-                assert.equal(text,"");
-            })
-            .onSecondCall().callsFake(()=> {
-                done();
-            });
+    it('should call status() with "blue/dot/" and "grey/dot/" when resource==null', function (done) {
+        var statuscount = 0;
+        const fakeStatus = sandbox.fake(() => {
+            var args = fakeStatus.firstArg;
+            if (statuscount++ == 0) {
+                assert.equal(args.fill,"blue");
+                assert.equal(args.shape,"dot");
+                assert.equal(args.text,"");
+            } else {
+                assert.equal(args.fill,"grey");
+                assert.equal(args.shape,"dot");
+                assert.equal(args.text,"");
+                done()
+            }
+        });
+        sandbox.replace(ButtonNode.prototype,'status',fakeStatus);
+        const fakeResource = sandbox.fake(() => { 
+            return null
+        });
+        sandbox.replace(ButtonNode.prototype,'resource',fakeResource);
 
         var flow = [{
             id: "n1",
@@ -121,22 +137,30 @@ describe('ButtonNode', function () {
         });
     });
 
-    it('should call status() twice with 3s delay when onUpdate(event) is called', function (done) {
-        this.timeout(5000);
-        sandbox.stub(ButtonNode.prototype,'resource').returns({
-            data: function() {
-                return { button: { last_event: null }}
+    it('should call status() with "blue/dot/" and "grey/dot/" when last_event==null', function (done) {
+        var statuscount = 0;
+        const fakeStatus = sandbox.fake(() => {
+            var args = fakeStatus.firstArg;
+            if (statuscount++ == 0) {
+                assert.equal(args.fill,"blue");
+                assert.equal(args.shape,"dot");
+                assert.equal(args.text,"");
+            } else {
+                assert.equal(args.fill,"grey");
+                assert.equal(args.shape,"dot");
+                assert.equal(args.text,"");
+                done()
             }
         });
-        sandbox.stub(ButtonNode.prototype,'status')
-            .onFirstCall().callsFake((fill,shape,text)=>{
-                assert.equal(fill,"blue");
-                assert.equal(shape,"dot");
-                assert.equal(text,"");
-            })
-            .onSecondCall().callsFake(()=> {
-                done();
-            });
+        sandbox.replace(ButtonNode.prototype,'status',fakeStatus);
+        const fakeResource = sandbox.fake(() => { 
+            return {
+                data: function() {
+                    return { button: { last_event: null } }
+                }
+            }
+        });
+        sandbox.replace(ButtonNode.prototype,'resource',fakeResource);
 
         var flow = [{
             id: "n1",
