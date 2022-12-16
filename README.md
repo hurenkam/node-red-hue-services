@@ -3,11 +3,21 @@ node-red palette to access hue bridge through clip v2 api
 
 ![ScreenShot](screenshots/Screenshot%20from%202022-11-29%2000-31-29.png)
 
-# Status
-(tag v0.5, 29/11/2022)
 
-This is by far not complete, but most of the devices and functionality that i regularly use
-in my home automation environment seems to work and stability is ok.
+# Status
+
+(Last update: 2022/12/16)
+This is not complete, but seems to work consistent and reliable for the services I regularly use.
+(motion/temperature/light_level/light/grouped_light/button/relative_rotary/scene).
+
+Unit tests are in place for the server side nodes.
+
+Editor/UI functionality is currently not being tested apart from my own use in the editor, so your mileage may vary.
+
+# Changelog
+
+v0.6.0: Warning! This will break existing flows because the type names have been modified to use the @hurenkam/hue-services/ prefix.
+This should address issue #1.
 
 ## Devices / Behaviors:
 - Removed for now, services should cover all the basics, devices & behaviors will be re-introduced in a later release
@@ -317,11 +327,14 @@ Log messages are typically built like this: `<loglevel>:<class>:<name or id> <lo
 currently the following classes exist (see the code). Each level of each class can be enabled
 or disabled seperately, and even per instance.
 
+If running locally, you can set the DEBUG environment variable to enable debuggin:
+`DEBUG="error:*,warn:*,info:*,trace:*" node-red`
+
 
 # Credits
 Credit where credit is due, this was inspired by the node-red-contrib-huemagic project, which stopped working for me at some point.
 That is when i decided to go and dive into this, and create my own wrapper around the hue clip v2 api.
 
-I initially licensed this code under GPLv2, but have recently changed that to Apache v2 because both node-red as well asl the huemagic extension
+I initially licensed this code under GPLv2, but have changed that to Apache v2 because both node-red as well asl the huemagic extension
 use that license, and i want this to be compatible so that in case it might be considered useful by either project, they can easily include it.
 Since Apache v2 is less restrictive than GPLv2, it imposes no limits w.r.t. the original license, the code can still be re-distributed under GPLv2.

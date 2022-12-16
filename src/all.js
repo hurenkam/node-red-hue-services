@@ -36,6 +36,7 @@ module.exports = function(RED) {
     }
 
     Object.keys(nodes).forEach((id) => {
-        RED.nodes.registerType(id,nodes[id]);
+        var typeName = "@hurenkam/hue-services/"+id
+        RED.nodes.registerType(typeName,nodes[id]);
     });
 }
