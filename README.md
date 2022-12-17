@@ -16,7 +16,9 @@ Editor/UI functionality is currently not being tested apart from my own use in t
 
 # Changelog
 
-v0.6.0: Warning! This will break existing flows because the type names have been modified to use the @hurenkam/hue-services/ prefix.
+v0.6.2: Fixes issue with services pointing to wrong bridge type and thus unable to add/edit bridge references.
+
+v0.6.0: Warning! The 0.6.x releases break existing 0.5.x flows because the type names have been modified to use the @hurenkam/hue-services/ prefix.
 This should address issue #1.
 
 ## Devices / Behaviors:
