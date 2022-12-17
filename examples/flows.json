@@ -1,0 +1,959 @@
+[
+    {
+        "id": "59b055fd5ee31bb3",
+        "type": "tab",
+        "label": "Garden Lights",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "1336a03fe24437ae",
+        "type": "tab",
+        "label": "Kitchen Cabinets",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "90381766f55e5824",
+        "type": "BridgeConfigNode",
+        "name": "MyBridge",
+        "ip": "192.168.1.41",
+        "key": "tStn4dcA-gXxP5PEWfgaoF0ShunGp8wTE1GEosqw"
+    },
+    {
+        "id": "13c1befd57dc9575",
+        "type": "BridgeConfigNode",
+        "name": "Hallway Hue v2.1",
+        "ip": "192.168.1.35",
+        "key": "20w-hoZbT6-Ulttb8lOHAcFVHEFZ-h5fuPCUXX-K"
+    },
+    {
+        "id": "d32bc70e11ac82dd",
+        "type": "change",
+        "z": "59b055fd5ee31bb3",
+        "name": "Recall",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\"recall\":{\"action\":\"active\",\"status\":\"active\"}}",
+                "tot": "json"
+            },
+            {
+                "t": "set",
+                "p": "rtypes",
+                "pt": "msg",
+                "to": "[\"scene\"]",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 350,
+        "y": 420,
+        "wires": [
+            [
+                "ab03af6c14640c87"
+            ]
+        ]
+    },
+    {
+        "id": "c4da462b4787fc37",
+        "type": "change",
+        "z": "59b055fd5ee31bb3",
+        "name": "Recall",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\"recall\":{\"action\":\"active\",\"status\":\"active\"}}",
+                "tot": "json"
+            },
+            {
+                "t": "set",
+                "p": "rtypes",
+                "pt": "msg",
+                "to": "[\"scene\"]",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 350,
+        "y": 360,
+        "wires": [
+            [
+                "a8eb6d9c8a26ec46"
+            ]
+        ]
+    },
+    {
+        "id": "fdbdec48c47608d6",
+        "type": "change",
+        "z": "59b055fd5ee31bb3",
+        "name": "Lights Off",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\"on\":{\"on\":false}}",
+                "tot": "json"
+            },
+            {
+                "t": "set",
+                "p": "rtypes",
+                "pt": "msg",
+                "to": "[\"light\",\"grouped_light\"]",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 340,
+        "y": 300,
+        "wires": [
+            [
+                "16fac7027c4ffbdf"
+            ]
+        ]
+    },
+    {
+        "id": "8061a019f67c5c9b",
+        "type": "change",
+        "z": "59b055fd5ee31bb3",
+        "name": "Lights On",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\"on\":{\"on\":true}}",
+                "tot": "json"
+            },
+            {
+                "t": "set",
+                "p": "rtypes",
+                "pt": "msg",
+                "to": "[\"light\",\"grouped_light\"]",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 340,
+        "y": 240,
+        "wires": [
+            [
+                "16fac7027c4ffbdf"
+            ]
+        ]
+    },
+    {
+        "id": "ea1e9c4c39633021",
+        "type": "switch",
+        "z": "59b055fd5ee31bb3",
+        "name": "Is Motion Detected?",
+        "property": "payload.motion.motion",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 340,
+        "y": 60,
+        "wires": [
+            [
+                "a906f14e9766131e"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "a906f14e9766131e",
+        "type": "trigger",
+        "z": "59b055fd5ee31bb3",
+        "name": "Lights on, and after 5m off.",
+        "op1": "{\"on\":{\"on\":true}}",
+        "op2": "{\"on\":{\"on\":false}}",
+        "op1type": "json",
+        "op2type": "json",
+        "duration": "5",
+        "extend": true,
+        "overrideDelay": false,
+        "units": "min",
+        "reset": "",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 340,
+        "y": 120,
+        "wires": [
+            [
+                "01e2571ab76de07a"
+            ]
+        ]
+    },
+    {
+        "id": "01e2571ab76de07a",
+        "type": "change",
+        "z": "59b055fd5ee31bb3",
+        "name": "Light | Grouped Light",
+        "rules": [
+            {
+                "t": "set",
+                "p": "rtypes",
+                "pt": "msg",
+                "to": "[\"light\",\"grouped_light\"]",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 360,
+        "y": 180,
+        "wires": [
+            [
+                "16fac7027c4ffbdf"
+            ]
+        ]
+    },
+    {
+        "id": "552ae35540db6691",
+        "type": "ButtonNode",
+        "z": "59b055fd5ee31bb3",
+        "name": "On",
+        "inputs": 1,
+        "outputs": 1,
+        "bridge": "90381766f55e5824",
+        "rtype": "button",
+        "owner": "38df30ba-bbc7-43c0-8dbe-4bd22afbabdd",
+        "uuid": "cabece5c-ab06-435c-afcd-e4e623f0ad39",
+        "x": 130,
+        "y": 240,
+        "wires": [
+            [
+                "8061a019f67c5c9b"
+            ]
+        ]
+    },
+    {
+        "id": "f5d75ef03a262c9e",
+        "type": "ButtonNode",
+        "z": "59b055fd5ee31bb3",
+        "name": "Off",
+        "inputs": 1,
+        "outputs": 1,
+        "bridge": "90381766f55e5824",
+        "rtype": "button",
+        "owner": "38df30ba-bbc7-43c0-8dbe-4bd22afbabdd",
+        "uuid": "48e316ad-3aed-4802-95fc-e6722f0d573a",
+        "x": 130,
+        "y": 300,
+        "wires": [
+            [
+                "fdbdec48c47608d6"
+            ]
+        ]
+    },
+    {
+        "id": "209e8d45c7cd868a",
+        "type": "ButtonNode",
+        "z": "59b055fd5ee31bb3",
+        "name": "Up",
+        "inputs": 1,
+        "outputs": 1,
+        "bridge": "90381766f55e5824",
+        "rtype": "button",
+        "owner": "38df30ba-bbc7-43c0-8dbe-4bd22afbabdd",
+        "uuid": "17b3b63f-2466-4ffc-9daa-5c3046f9a003",
+        "x": 130,
+        "y": 360,
+        "wires": [
+            [
+                "c4da462b4787fc37"
+            ]
+        ]
+    },
+    {
+        "id": "084962ab7fbc2b50",
+        "type": "ButtonNode",
+        "z": "59b055fd5ee31bb3",
+        "name": "Down",
+        "inputs": 1,
+        "outputs": 1,
+        "bridge": "90381766f55e5824",
+        "rtype": "button",
+        "owner": "38df30ba-bbc7-43c0-8dbe-4bd22afbabdd",
+        "uuid": "c30aa6d5-2c55-405f-a9a5-1630c232e4ab",
+        "x": 130,
+        "y": 420,
+        "wires": [
+            [
+                "d32bc70e11ac82dd"
+            ]
+        ]
+    },
+    {
+        "id": "16fac7027c4ffbdf",
+        "type": "GroupedLightNode",
+        "z": "59b055fd5ee31bb3",
+        "name": "Garden",
+        "inputs": 1,
+        "outputs": 1,
+        "bridge": "90381766f55e5824",
+        "rtype": "grouped_light",
+        "owner": "02edea9e-c4d8-4615-84bd-7056bfb481b8",
+        "uuid": "f38f9be7-1ac6-4379-b211-a58a6146c1c6",
+        "x": 620,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ce0aa0b70dcbca35",
+        "type": "MotionNode",
+        "z": "59b055fd5ee31bb3",
+        "name": "Garden",
+        "inputs": 1,
+        "outputs": 1,
+        "bridge": "90381766f55e5824",
+        "rtype": "motion",
+        "owner": "72649499-730c-4574-8752-958291eb71ba",
+        "uuid": "86248407-d67b-427f-bb9f-21356a2d3560",
+        "x": 120,
+        "y": 60,
+        "wires": [
+            [
+                "ea1e9c4c39633021"
+            ]
+        ]
+    },
+    {
+        "id": "ab03af6c14640c87",
+        "type": "SceneNode",
+        "z": "59b055fd5ee31bb3",
+        "name": "Garden Nightlight",
+        "inputs": 1,
+        "outputs": 1,
+        "bridge": "90381766f55e5824",
+        "uuid": "deca66ba-61ca-4ab3-809e-d26b274e2187",
+        "x": 590,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a8eb6d9c8a26ec46",
+        "type": "SceneNode",
+        "z": "59b055fd5ee31bb3",
+        "name": "Garden Bright",
+        "inputs": 1,
+        "outputs": 1,
+        "bridge": "90381766f55e5824",
+        "uuid": "e4719d0e-f362-45c0-b395-5a4f90b5f94b",
+        "x": 580,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1646a0607195a095",
+        "type": "DevicePowerNode",
+        "z": "59b055fd5ee31bb3",
+        "name": "Garden Motion Sensor",
+        "inputs": 1,
+        "outputs": 1,
+        "bridge": "90381766f55e5824",
+        "rtype": "device_power",
+        "owner": "72649499-730c-4574-8752-958291eb71ba",
+        "uuid": "ca6c82fa-3015-4f15-91a9-771edef389fc",
+        "x": 160,
+        "y": 600,
+        "wires": [
+            [
+                "f4cf667584fc53ee"
+            ]
+        ]
+    },
+    {
+        "id": "ee1d57164580b251",
+        "type": "TemperatureNode",
+        "z": "59b055fd5ee31bb3",
+        "name": "Garden Motion Sensor",
+        "inputs": 1,
+        "outputs": 1,
+        "bridge": "90381766f55e5824",
+        "rtype": "temperature",
+        "owner": "72649499-730c-4574-8752-958291eb71ba",
+        "uuid": "788229cf-4bed-4072-a3a0-85862a06ff62",
+        "x": 160,
+        "y": 520,
+        "wires": [
+            [
+                "9aae458dc05b091a"
+            ]
+        ]
+    },
+    {
+        "id": "93e4968cfc1ec236",
+        "type": "ZigbeeConnectivityNode",
+        "z": "59b055fd5ee31bb3",
+        "name": "Garden Motion Sensor",
+        "inputs": 1,
+        "outputs": 1,
+        "bridge": "90381766f55e5824",
+        "rtype": "zigbee_connectivity",
+        "owner": "72649499-730c-4574-8752-958291eb71ba",
+        "uuid": "feb609a6-7d35-4212-a2ef-08eda00c4eba",
+        "x": 160,
+        "y": 660,
+        "wires": [
+            [
+                "2edc276cfc0fc5df"
+            ]
+        ]
+    },
+    {
+        "id": "9aae458dc05b091a",
+        "type": "switch",
+        "z": "59b055fd5ee31bb3",
+        "name": "Cold or Hot?",
+        "property": "payload.temperature.temperature",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lt",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "btwn",
+                "v": "0",
+                "vt": "num",
+                "v2": "15",
+                "v2t": "num"
+            },
+            {
+                "t": "btwn",
+                "v": "15",
+                "vt": "num",
+                "v2": "25",
+                "v2t": "num"
+            },
+            {
+                "t": "btwn",
+                "v": "25",
+                "vt": "num",
+                "v2": "35",
+                "v2t": "num"
+            },
+            {
+                "t": "gt",
+                "v": "35",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 5,
+        "x": 370,
+        "y": 520,
+        "wires": [
+            [
+                "8f0cfd0ec1921355"
+            ],
+            [
+                "e53bb4070c203d57"
+            ],
+            [
+                "fa418e78f9120a1d"
+            ],
+            [
+                "71ae845a6d6b5642"
+            ],
+            [
+                "d93f63cbddb10b4f"
+            ]
+        ]
+    },
+    {
+        "id": "f4cf667584fc53ee",
+        "type": "switch",
+        "z": "59b055fd5ee31bb3",
+        "name": "Low Battery?",
+        "property": "payload.power_state.battery_level",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lt",
+                "v": "10",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 370,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2edc276cfc0fc5df",
+        "type": "switch",
+        "z": "59b055fd5ee31bb3",
+        "name": "Is Connected?",
+        "property": "payload.status",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "connected",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 380,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8f0cfd0ec1921355",
+        "type": "change",
+        "z": "59b055fd5ee31bb3",
+        "name": "Freezing",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "It's freezing",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 580,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e53bb4070c203d57",
+        "type": "change",
+        "z": "59b055fd5ee31bb3",
+        "name": "Cold",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "It's cold",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fa418e78f9120a1d",
+        "type": "change",
+        "z": "59b055fd5ee31bb3",
+        "name": "Nice",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "It's nice",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d93f63cbddb10b4f",
+        "type": "change",
+        "z": "59b055fd5ee31bb3",
+        "name": "Hot",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "It's hot",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "71ae845a6d6b5642",
+        "type": "change",
+        "z": "59b055fd5ee31bb3",
+        "name": "Warm",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "It's warm",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7ca000b46c6c8ae7",
+        "type": "switch",
+        "z": "1336a03fe24437ae",
+        "name": "Is It Dark?",
+        "property": "payload.light.light_level",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lt",
+                "v": "10000",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 310,
+        "y": 80,
+        "wires": [
+            [
+                "a5ebb5abe7593953"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "a5ebb5abe7593953",
+        "type": "change",
+        "z": "1336a03fe24437ae",
+        "name": "Lights On",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\"on\":{\"on\":true}}",
+                "tot": "json"
+            },
+            {
+                "t": "set",
+                "p": "rtypes",
+                "pt": "msg",
+                "to": "[\"light\",\"grouped_light\"]",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 300,
+        "y": 140,
+        "wires": [
+            [
+                "881f2b1aacca045e",
+                "62dad47cc0acc7f4"
+            ]
+        ]
+    },
+    {
+        "id": "62dad47cc0acc7f4",
+        "type": "debug",
+        "z": "1336a03fe24437ae",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "881f2b1aacca045e",
+        "type": "LightNode",
+        "z": "1336a03fe24437ae",
+        "name": "Kitchen Cabinet Lights",
+        "inputs": 1,
+        "outputs": 1,
+        "bridge": "13c1befd57dc9575",
+        "rtype": "light",
+        "owner": "bd12de8c-4215-4158-b992-b2e56c34b81a",
+        "uuid": "9c000556-b8ac-4125-960f-7cd7a3990162",
+        "x": 580,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "06c26e6c21dad049",
+        "type": "LightLevelNode",
+        "z": "1336a03fe24437ae",
+        "name": "Kitchen",
+        "inputs": 1,
+        "outputs": 1,
+        "bridge": "90381766f55e5824",
+        "rtype": "light_level",
+        "owner": "2a5db80e-28c4-48d8-b743-4ccf5f744fb1",
+        "uuid": "61d50ef2-278a-4f64-85cb-98749426fedb",
+        "x": 100,
+        "y": 80,
+        "wires": [
+            [
+                "7ca000b46c6c8ae7"
+            ]
+        ]
+    },
+    {
+        "id": "f34bddcae9b7a36f",
+        "type": "RelativeRotaryNode",
+        "z": "1336a03fe24437ae",
+        "name": "",
+        "inputs": 1,
+        "outputs": 1,
+        "bridge": "90381766f55e5824",
+        "rtype": "relative_rotary",
+        "owner": "452036c4-c383-42f7-811b-ff4d80f13f95",
+        "uuid": "ff508046-6e43-4ec1-bde5-1a9d42fe5bc8",
+        "x": 120,
+        "y": 160,
+        "wires": [
+            [
+                "4608b5100103bb5d"
+            ]
+        ]
+    },
+    {
+        "id": "4608b5100103bb5d",
+        "type": "switch",
+        "z": "1336a03fe24437ae",
+        "name": "Clockwise?",
+        "property": "relative_rotary.last_event.direction",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "clock_wise",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "counter_clock_wise",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 150,
+        "y": 220,
+        "wires": [
+            [
+                "f3987ca8dce936fe"
+            ],
+            [
+                "4896962cd8bcfc66"
+            ]
+        ]
+    },
+    {
+        "id": "f3987ca8dce936fe",
+        "type": "change",
+        "z": "1336a03fe24437ae",
+        "name": "Dim Up",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\"dimming_delta\":{\"action\":\"up\",\"brightness_delta\":25}}",
+                "tot": "json"
+            },
+            {
+                "t": "set",
+                "p": "rtypes",
+                "pt": "msg",
+                "to": "[\"light\",\"grouped_light\"]",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 340,
+        "y": 200,
+        "wires": [
+            [
+                "881f2b1aacca045e"
+            ]
+        ]
+    },
+    {
+        "id": "4896962cd8bcfc66",
+        "type": "change",
+        "z": "1336a03fe24437ae",
+        "name": "Dim Down",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\"dimming_delta\":{\"action\":\"down\",\"brightness_delta\":25}}",
+                "tot": "json"
+            },
+            {
+                "t": "set",
+                "p": "rtypes",
+                "pt": "msg",
+                "to": "[\"light\",\"grouped_light\"]",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 350,
+        "y": 240,
+        "wires": [
+            [
+                "881f2b1aacca045e"
+            ]
+        ]
+    },
+    {
+        "id": "93db12aa17a445e4",
+        "type": "switch",
+        "z": "1336a03fe24437ae",
+        "name": "Low Battery?",
+        "property": "payload.power_state.battery_level",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lt",
+                "v": "10",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 350,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d63e9e02ebbb9bfa",
+        "type": "ServiceNode",
+        "z": "1336a03fe24437ae",
+        "name": "Device Power",
+        "inputs": 1,
+        "outputs": 1,
+        "bridge": "90381766f55e5824",
+        "rtype": "device_power",
+        "owner": "2a5db80e-28c4-48d8-b743-4ccf5f744fb1",
+        "uuid": "0601b41f-44aa-45f5-90cf-6b7b3d87807c",
+        "x": 140,
+        "y": 300,
+        "wires": [
+            [
+                "93db12aa17a445e4"
+            ]
+        ]
+    }
+]

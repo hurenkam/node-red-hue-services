@@ -6,7 +6,6 @@ export class ZigbeeConnectivityUI extends ServiceUI {
         console.log("ZigbeeConnectivityUI.constructor()");
 
         this.config.color = "#E0B0FF";
-        //this.config.color = "#F0F0F0";
         this.config.icon = "font-awesome/fa-sitemap";
     }
 

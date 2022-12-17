@@ -1,27 +1,34 @@
-ServiceNode = require("./ServiceNode");
+ResourceNode = require("./ResourceNode");
 
-class MotionNode extends ServiceNode {
+class MotionNode extends ResourceNode {
+    #info;
+    #trace;
+
     constructor(config) {
         super(config);
-        console.log("MotionNode[" + this.logid() + "].constructor()");
+        this.#info = require('debug')('info').extend('MotionNode').extend("["+this.logid()+"]");
+        this.#trace = require('debug')('trace').extend('MotionNode').extend("["+this.logid()+"]");
+        this.#info("constructor()");
     }
 
     onUpdate(event) {
+        this.#trace("onUpdate(",event,")")
         this.updateStatus();
         super.onUpdate(event);
     }
 
     updateStatus() {
-        super.updateStatus();
+        this.#trace("updateStatus()")
 
         var fill = "grey";
         var shape = "dot";
         var text = "";
 
-        if (this.resource.item.motion) {
-            if (this.resource.item.motion.motion!=null) {
-                fill = (this.resource.item.motion.motion==true)? "blue" : "grey";
-                text = (this.resource.item.motion.motion==true)? "motion" : "no motion";
+        var resource = this.resource();
+        if ((resource) && (resource.data()) && (resource.data().motion)) {
+            if (resource.data().motion.motion!=null) {
+                fill = (resource.data().motion.motion==true)? "blue" : "grey";
+                text = (resource.data().motion.motion==true)? "motion" : "no motion";
             }
         }
 

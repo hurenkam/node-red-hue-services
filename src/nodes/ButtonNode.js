@@ -1,36 +1,46 @@
-ServiceNode = require("./ServiceNode");
+ResourceNode = require("./ResourceNode");
 
-class ButtonNode extends ServiceNode {
+class ButtonNode extends ResourceNode {
+    #fill;
+
+    #info;
+    #trace;
+
     constructor(config) {
         super(config);
-        console.log("ButtonNode[" + this.logid() + "].constructor()");
 
-        this.fill = "grey";
+        this.#info = require('debug')('info').extend('ButtonNode').extend("["+this.logid()+"]");
+        this.#trace = require('debug')('trace').extend('ButtonNode').extend("["+this.logid()+"]");
+        this.#info("constructor()");
+
+        this.#fill = "grey";
     }
 
     onUpdate(event) {
-        this.fill = "blue";
+        this.#trace("onUpdate(",event,")");
+        this.#fill = "blue";
         
         var instance = this;
         setTimeout(()=>{
-            instance.fill = "grey";
+            instance.#fill = "grey";
             instance.updateStatus();
-        },3000);
+        },1000);
 
         this.updateStatus();
         super.onUpdate(event);
     }
 
     updateStatus() {
-        super.updateStatus();
+        this.#trace("updateStatus()");
 
-        var fill = this.fill;
+        var fill = this.#fill;
         var shape = "dot";
         var text = "";
 
-        if (this.resource.item.button) {
-            if (this.resource.item.button.last_event!=null) {
-                text = this.resource.item.button.last_event;
+        var resource = this.resource();
+        if ((resource) && (resource.data()) && (resource.data().button)) {
+            if (resource.data().button.last_event!=null) {
+                text = resource.data().button.last_event;
             }
         }
 

@@ -1,43 +1,22 @@
 <script type="module">
 
-    import { BridgeConfigUI }         from "./src/ui/BridgeConfigUI.js";
+    import { BridgeConfigUI }         from "/src/ui/BridgeConfigUI.js";
 
-    import { DeviceUI }               from "./src/ui/DeviceUI.js";
-    import { DimmerSwitchUI }         from "./src/ui/DimmerSwitchUI.js";
-    import { LampUI }                 from "./src/ui/LampUI.js";
-    import { LutronAuroraUI }         from "./src/ui/LutronAuroraUI.js";
-    import { MotionSensorUI }         from "./src/ui/MotionSensorUI.js";
-    import { WallSwitchModuleUI }     from "./src/ui/WallSwitchModuleUI.js";
-
-    import { ServiceUI }              from "./src/ui/ServiceUI.js";
-    import { ButtonUI }               from "./src/ui/ButtonUI.js";
-    import { DevicePowerUI }          from "./src/ui/DevicePowerUI.js";
-    import { GroupedLightUI }         from "./src/ui/GroupedLightUI.js";
-    import { LightUI }                from "./src/ui/LightUI.js";
-    import { LightLevelUI }           from "./src/ui/LightLevelUI.js";
-    import { MotionUI }               from "./src/ui/MotionUI.js";
-    import { RelativeRotaryUI }       from "./src/ui/RelativeRotaryUI.js";
-    import { TemperatureUI }          from "./src/ui/TemperatureUI.js";
-    import { ZigbeeConnectivityUI }   from "./src/ui/ZigbeeConnectivityUI.js";
-
-    import { SceneUI }                from "./src/ui/SceneUI.js";
-    import { RoomUI }                 from "./src/ui/RoomUI.js";
-    import { ZoneUI }                 from "./src/ui/ZoneUI.js";
-
-    import { MotionBehaviorUI }       from "./src/ui/MotionBehaviorUI.js";
-    import { SceneCyclerUI }          from "./src/ui/SceneCyclerUI.js";
+    import { ButtonUI }               from "/src/ui/ButtonUI.js";
+    import { DevicePowerUI }          from "/src/ui/DevicePowerUI.js";
+    import { GroupedLightUI }         from "/src/ui/GroupedLightUI.js";
+    import { LightUI }                from "/src/ui/LightUI.js";
+    import { LightLevelUI }           from "/src/ui/LightLevelUI.js";
+    import { MotionUI }               from "/src/ui/MotionUI.js";
+    import { RelativeRotaryUI }       from "/src/ui/RelativeRotaryUI.js";
+    import { TemperatureUI }          from "/src/ui/TemperatureUI.js";
+    import { SceneUI }                from "/src/ui/SceneUI.js";
+    import { ServiceUI }              from "/src/ui/ServiceUI.js";
+    import { ZigbeeConnectivityUI }   from "/src/ui/ZigbeeConnectivityUI.js";
 
     var nodes = {
         "BridgeConfigNode": BridgeConfigUI,
 
-        "DeviceNode": DeviceUI,
-        "DimmerSwitchNode": DimmerSwitchUI,
-        "LampNode": LampUI,
-        "LutronAuroraNode": LutronAuroraUI,
-        "MotionSensorNode": MotionSensorUI,
-        "WallSwitchModuleNode": WallSwitchModuleUI,
-
-        "ZigbeeConnectivityNode": ZigbeeConnectivityUI,
         "ButtonNode": ButtonUI,
         "DevicePowerNode": DevicePowerUI,
         "GroupedLightNode": GroupedLightUI,
@@ -48,32 +27,26 @@
         "ServiceNode": ServiceUI,
         "SceneNode": SceneUI,
         "RelativeRotaryNode": RelativeRotaryUI,
-        "RoomNode": RoomUI,
-        "ZoneNode": ZoneUI,
-
-        "MotionBehaviorNode": MotionBehaviorUI,
-        "SceneCyclerNode": SceneCyclerUI,
+        "ZigbeeConnectivityNode": ZigbeeConnectivityUI,
     }
 
     Object.keys(nodes).forEach((id) => {
-        var idUI = id.replace("Node","UI");
-        var idHelp = id.replace("Node","Help");
         var node = new nodes[id]();
-        console.log(id,idUI,idHelp,new nodes[id]().config);
+        var typeName = "@hurenkam/hue-services/"+id
 
         var template = document.createElement("script");
         template.setAttribute("type","text/html");
-        template.setAttribute("data-template-name",id);
+        template.setAttribute("data-template-name",typeName);
         template.innerHTML = node.ui();
         document.documentElement.appendChild(template);
 
         var help = document.createElement("script");
         help.setAttribute("type","text/markdown");
-        help.setAttribute("data-help-name",id);
+        help.setAttribute("data-help-name",typeName);
         help.innerHTML = node.manual();
         document.documentElement.appendChild(help);
 
-        RED.nodes.registerType(id,node.config);
+        RED.nodes.registerType(typeName,node.config);
     });
 
 </script>

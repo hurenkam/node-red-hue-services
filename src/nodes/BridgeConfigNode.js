@@ -4,31 +4,90 @@ const ClipApi = require('../clip/ClipApi');
 const BaseNode = require('./BaseNode');
 const axios = require('axios');
 const https = require('https');
-const { resourceLimits } = require('worker_threads');
+
+const _error = require('debug')('error').extend('BridgeConfigNode');
+const _warn  = require('debug')('warn').extend('BridgeConfigNode');
+const _info  = require('debug')('info').extend('BridgeConfigNode');
+const _trace = require('debug')('trace').extend('BridgeConfigNode');
 
 class BridgeConfigNode extends BaseNode {
+    #onClose;
+    #onClipError;
+    #clip;
+
+    #error;
+    #warn;
+    #info;
+    #trace;
+
+    static bridges () { return bridges; }
+
     constructor(config) {
         super(config);
         BaseNode.nodeAPI.nodes.createNode(this, config);
-        console.log("BridgeConfigNode[" + this.logid() + "].constructor()")
+
+        this.#error = _error.extend("["+this.logid()+"]");
+        this.#warn  = _warn. extend("["+this.logid()+"]");
+        this.#info  = _info. extend("["+this.logid()+"]");
+        this.#trace = _trace.extend("["+this.logid()+"]");
+
+        this.#info("constructor()");
         var instance = this;
 
-        this.clip = new ClipApi(config.ip,config.key,config.name);
         bridges[this.id] = { id: this.id, name: config.name, instance: this };
+        this.#clip = this._constructClip(config.ip,config.key,config.name);
 
-        this.on('close', function () {
-            console.log("BridgeConfigNode[" + this.logid() + "].on('close')");
+        this.#onClose = function() {
+            try {
+                instance.destructor();
+            } catch (error) {
+                instance.#error(error.message,error.stack);
+            }
+        }
+        this.on('close', this.#onClose);
+    }
 
-            this.clip.destructor();
-            this.clip = null;
-        });
+    destructor() {
+        this._destructClip();
+        super.destructor();
+    }
+
+    _constructClip(ip,key,name) {
+        var instance = this;
+        this.#onClipError = function(event) {
+            instance.#error("onClipError()",error);
+        }
+
+        var clip = new ClipApi(ip,key,name);
+        clip.on('error',this.#onClipError);
+        return clip;
+    }
+
+    _destructClip() {
+        this.#clip.destructor();
+        this.#clip = null;
+    }
+
+    clip() {
+        return this.#clip;
+    }
+
+    requestStartup(resource) {
+        if (this.clip()) {
+            this.clip().requestStartup(resource);
+        }
+    }
+
+    /* istanbul ignore next */
+    static async _axios(request) {
+        return axios(request);
     }
 
     static async DiscoverBridges() {
-        console.log("BridgeConfigNode.DiscoverBridges()");
+        _info("DiscoverBridges()");
         var result = [];
 
-        var response = await axios({
+        var response = await BridgeConfigNode._axios({
             "method": "GET",
             "url": "https://discovery.meethue.com",
             "headers": { "Content-Type": "application/json; charset=utf-8" },
@@ -36,7 +95,7 @@ class BridgeConfigNode extends BaseNode {
         });
 
         const promises = response.data.map(async element => {
-            const config = await axios({
+            const config = await BridgeConfigNode._axios({
                 "method": "GET",
                 "url": "https://" + element.internalipaddress + "/api/config",
                 "headers": { "Content-Type": "application/json; charset=utf-8" },
@@ -55,7 +114,7 @@ class BridgeConfigNode extends BaseNode {
     }
 
     static async AcquireApplicationKey(ip) {
-        console.log("BridgeConfigNode.AcquireApplicationKey("+ip+")");
+        _info("AcquireApplicationKey("+ip+")");
         return new Promise(function (resolve, reject) {
             var id = "BridgeConfig (" + Math.floor((Math.random() * 100) + 1) + ")";
             var request = {
@@ -66,9 +125,9 @@ class BridgeConfigNode extends BaseNode {
                 "httpsAgent": new https.Agent({ rejectUnauthorized: false })
             }
 
-            axios(request)
+            BridgeConfigNode._axios(request)
             .then(function (response) {
-                console.log("BridgeConfigNode.AcquireApplicationKey("+ip+")", response.data);
+                _trace("AcquireApplicationKey("+ip+")", response.data);
                 if (Object.keys(response.data[0]).includes("success")) {
                     resolve(response.data[0].success.username);
                 } else {
@@ -81,98 +140,5 @@ class BridgeConfigNode extends BaseNode {
         });
     }
 }
-
-BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/DiscoverBridges', async function (req, res, next) {
-    console.log("BridgeConfigNode/DiscoverBridges");
-    var options = [];
-
-    BridgeConfigNode.DiscoverBridges()
-    .then(function(data) {
-        if (data) {
-            data.forEach((element) => {
-                options.push({ label: element.name, value: element.internalipaddress })
-            });
-        }
-        res.end(JSON.stringify(Object(options)));
-    })
-    .catch(function(error) {
-        console.log("BridgeConfigNode/DiscoverBridges  Error:",error);
-        res.end(JSON.stringify(Object(options)));
-    });
-});
-
-BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/AcquireApplicationKey', async function (req, res, next) {
-    console.log("/BridgeConfigNode/AcquireApplicationKey");
-
-    if (!req.query.ip) {
-        return res.status(500).send("Missing bridge ip.");
-    }
-    else {
-        BridgeConfigNode.AcquireApplicationKey(req.query.ip)
-        .then(function(data) {
-            console.log("BridgeConfigNode.constructor()  Key:",data);
-            res.end(JSON.stringify(Object({ key: data })));
-        })
-        .catch(function(error) {
-            console.log("BridgeConfigNode.constructor()  Error:",error);
-            res.end(JSON.stringify(Object({ error: error })));
-        });
-    }
-});
-
-BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetBridgeOptions', async function (req, res, next) {
-    console.log("/BridgeConfigNode/GetBridgeOptions");
-    var options = [];
-
-    Object.keys(bridges).forEach((key) => {
-        options.push({ label: bridges[key].name, value: bridges[key].id });
-    });
-
-    res.end(JSON.stringify(Object(options)));
-});
-
-BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedServicesById', async function (req, res, next) {
-    console.log("/BridgeConfigNode/GetSortedServicesById");
-    var clip = bridges[req.query.bridge_id].instance.clip;
-    var services = clip.getSortedServicesById(req.query.uuid,req.query.rtype);
-    var options = [];
-    services.forEach((service) => {
-        options.push({ 
-            value: service.rid(), 
-            label: service.typeName() 
-        });
-    });
-    res.end(JSON.stringify(Object(options)));
-});
-
-BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedResourceOptions', async function (req, res, next) {
-    console.log("/BridgeConfigNode/GetSortedResourceOptions");
-    var clip = bridges[req.query.bridge_id].instance.clip;
-    var options = clip.getSortedResourceOptions(req.query.type, req.query.models);
-    res.end(JSON.stringify(Object(options)));
-});
-
-BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedTypeOptions', async function (req, res, next) {
-    console.log("BridgeConfigNode/GetSortedTypeOptions");
-    var clip = bridges[req.query.bridge_id].instance.clip;
-    var options = clip.getSortedTypeOptions();
-    res.end(JSON.stringify(Object(options)));
-});
-
-
-BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedOwnerOptions', async function (req, res, next) {
-    console.log("/BridgeConfigNode/GetSortedOwnerOptions");
-    var clip = bridges[req.query.bridge_id].instance.clip;
-    var options = clip.getSortedOwnerOptions(req.query.rtype);
-    res.end(JSON.stringify(Object(options)));
-});
-
-BaseNode.nodeAPI.httpAdmin.get('/BridgeConfigNode/GetSortedServiceOptions', async function (req, res, next) {
-    console.log("/BridgeConfigNode/GetSortedServiceOptions");
-    console.log(req.query);
-    var clip = bridges[req.query.bridge_id].instance.clip;
-    var options = clip.getSortedServiceOptions(req.query.owner,req.query.rtype);
-    res.end(JSON.stringify(Object(options)));
-});
 
 module.exports = BridgeConfigNode;

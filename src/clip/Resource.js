@@ -1,22 +1,45 @@
 const events = require('events');
 
-class Resource extends events.EventEmitter {
-    constructor(item,clip) {
-        super();
-        this.item = item;
-        this.clip = clip;
-        console.log("Resource["+this.id()+"].constructor()");
+const _error = require('debug')('error').extend('Resource');
+const _warn  = require('debug')('warn').extend('Resource');
+const _info  = require('debug')('info').extend('Resource');
+const _trace = require('debug')('trace').extend('Resource');
 
-        var instance = this;
-        if (this.item.owner) {
-            setTimeout(function () {
-                if (Object.keys(instance.clip.resources).includes(instance.item.owner.rid)) {
-                    instance.onOwnerAvailable(instance.item.owner.rid,instance.clip.resources[instance.item.owner.rid]);
-                } else {
-                    console.log("Resource[" + instance.id() + "].constructor(): Service "+instance.item.owner.rid+" not yet available.");
-                }
-            },100);
-        }
+class Resource extends events.EventEmitter {
+    #clip;
+    #data;
+
+    #error;
+    #warn;
+    #info;
+    #trace;
+
+    constructor(data,clip) {
+        super();
+        this.#data = data;
+        this.#clip = clip;
+
+        this.#error = _error.extend("["+this.id()+"]");
+        this.#warn  = _warn. extend("["+this.id()+"]");
+        this.#info  = _info. extend("["+this.id()+"]");
+        this.#trace = _trace.extend("["+this.id()+"]");
+
+        this.#info("constructor()");
+    }
+
+    destructor() {
+        this.#info("destructor()");
+        this.removeAllListeners();
+        this.#clip = null;
+        this.#data = null;
+    }
+
+    clip() {
+        return this.#clip;
+    }
+
+    data() {
+        return this.#data;
     }
 
     id() {
@@ -26,19 +49,29 @@ class Resource extends events.EventEmitter {
     }
 
     rid() {
-        return this.item.id;
+        return this.data().id;
     }
 
     rtype() {
-        return this.item.type;
+        return this.data().type;
+    }
+
+    owner() {
+        var result = null;
+
+        if (this.data().owner) {
+            result = this.clip().getResource(this.data().owner.rid);
+        }
+
+        return result;
     }
 
     name() {
-        if ((this.item.metadata) && (this.item.metadata.name))
-            return this.item.metadata.name;
+        if ((this.data().metadata) && (this.data().metadata.name))
+            return this.data().metadata.name;
 
-        if ((this.owner) && (this.owner.name())) {
-            return this.owner.name();
+        if ((this.owner()) && (this.owner().name())) {
+            return this.owner().name();
         }
 
         return null;
@@ -46,47 +79,51 @@ class Resource extends events.EventEmitter {
 
     typeName() {
         var result = this.rtype();
-        if ((this.item.metadata) && (this.item.metadata.control_id))
-            result += this.item.metadata.control_id;
+        if ((this.#data.metadata) && (this.#data.metadata.control_id))
+            result += this.#data.metadata.control_id;
         return result;
     }
 
-    destructor() {
-        console.log("Resource["+this.id()+"].destructor()");
-        this.removeAllListeners();
-        this.clip = null;
-        this.item = null;
+    services() {
+        this.#info("services()");
+        var result = {};
+        if ((this.data()) && (this.data().services))
+        {
+            this.data().services.forEach(service => {
+                this.#trace("services()  service:",service);
+                var resource = this.clip().getResource(service.rid);
+                if (resource) {
+                    result[service.rid] = resource;
+                }
+            });
+        }
+        return result;
     }
 
     get() {
-        console.log("Resource["+this.id()+"].get()");
-        return clip.get(this.rtype(),this.rid());
+        this.#trace("get()");
+        return this.clip().get(this.rtype(),this.rid());
     }
 
     put(data) {
-        console.log("Resource["+this.id()+"].put()");
-        this.clip.put(this.rtype(),this.rid(), data);
-    }
-
-    onOwnerAvailable(rid,service) {
-        //console.log("ServiceListResource["+this.id()+"].onServiceAvailable("+rid+")");
-        this.owner = service;
+        this.#trace("put(",data,")");
+        this.clip().put(this.rtype(),this.rid(), data);
     }
 
     onEvent(event) {
-        //console.log("Resource["+this.id()+"].onEvent()");
+        this.#trace("onEvent()",event);
         this.updateStatus(event);
         this.emit('update',event);
     }
 
     updateStatus(event) {
-        //console.log("Resource["+this.id()+"].updateStatus()");
+        this.#trace("updateStatus()",event);
         const blacklist = ["id", "id_v1", "owner", "type"];
 
         var instance = this;
         Object.keys(event).forEach((key) => {
             if (!blacklist.includes(key)) {
-                instance.item[key] = event[key];
+                instance.#data[key] = event[key];
             }
         });
     }

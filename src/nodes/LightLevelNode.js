@@ -1,27 +1,34 @@
-ServiceNode = require("./ServiceNode");
+ResourceNode = require("./ResourceNode");
 
-class LightLevelNode extends ServiceNode {
+class LightLevelNode extends ResourceNode {
+    #info;
+    #trace;
+
     constructor(config) {
         super(config);
-        console.log("LightLevelNode[" + this.logid() + "].constructor()");
+        this.#info = require('debug')('info').extend('LightLevelNode').extend("["+this.logid()+"]");
+        this.#trace = require('debug')('trace').extend('LightLevelNode').extend("["+this.logid()+"]");
+        this.#info("constructor()");
     }
 
     onUpdate(event) {
+        this.#trace("onUpdate(",event,")");
         this.updateStatus();
         super.onUpdate(event);
     }
 
     updateStatus() {
-        super.updateStatus();
+        this.#trace("updateStatus()");
 
         var fill = "grey";
         var shape = "dot";
         var text = "";
 
-        if (this.resource.item.light) {
-            if (this.resource.item.light.light_level!=null) {
+        var resource = this.resource();
+        if ((resource) && (resource.data()) && (resource.data().light)) {
+            if (resource.data().light.light_level!=null) {
                 fill = "green";
-                text = ""+this.resource.item.light.light_level;
+                text = ""+resource.data().light.light_level;
             }
         }
 

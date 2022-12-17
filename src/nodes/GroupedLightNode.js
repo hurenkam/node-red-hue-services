@@ -1,33 +1,40 @@
-ServiceNode = require("./ServiceNode");
+ResourceNode = require("./ResourceNode");
 
-class GroupedLightNode extends ServiceNode {
+class GroupedLightNode extends ResourceNode {
+    #info;
+    #trace;
+
     constructor(config) {
         super(config);
-        console.log("GroupedLightNode[" + this.logid() + "].constructor()");
+        this.#info = require('debug')('info').extend('GroupedLightNode').extend("["+this.logid()+"]");
+        this.#trace = require('debug')('trace').extend('GroupedLightNode').extend("["+this.logid()+"]");
+        this.#info("constructor()");
     }
 
     onUpdate(event) {
+        this.#trace("onUpdate(",event,")");
         this.updateStatus();
         super.onUpdate(event);
     }
 
     updateStatus() {
-        super.updateStatus();
+        this.#trace("updateStatus()");
 
         var fill = "grey";
         var shape = "dot";
         var text = "";
 
-        if (this.resource.item.on) {
-            if (this.resource.item.on.on==true) {
+        var resource = this.resource();
+        if ((resource) && (resource.data()) && (resource.data().on)) {
+            if (resource.data().on.on==true) {
                 fill = "yellow";
 
-                if (this.resource.item.dimming) {
-                    text = this.resource.item.dimming.brightness+"%";
+                if (resource.data().dimming) {
+                    text = resource.data().dimming.brightness+"%";
                 }
 
-            } else if (this.resource.item.on.on==false) {
-                fill = "blue";
+            } else if (resource.data().on.on==false) {
+                fill = "grey";
                 text = "off";
             }
         }

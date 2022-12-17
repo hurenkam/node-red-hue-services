@@ -6,7 +6,6 @@ export class GroupedLightUI extends ServiceUI {
         console.log("GroupedLightUI.constructor()");
 
         this.config.color = "#FFFFA8";
-        //this.config.color = "#E7E7AE";
         this.config.icon = "light.svg";
     }
 

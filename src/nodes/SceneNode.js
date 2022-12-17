@@ -1,9 +1,12 @@
-ResourceNode = require("./ResourceNode");
+ServiceNode = require("./ServiceNode");
 
-class SceneNode extends ResourceNode {
+class SceneNode extends ServiceNode {
+    #info;
+
     constructor(config) {
         super(config,"scene");
-        console.log("SceneNode[" + this.logid() + "].constructor()");
+        this.#info = require('debug')('info').extend('SceneNode').extend("["+this.logid()+"]");
+        this.#info("constructor()");
     }
 }
 

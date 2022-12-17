@@ -1,30 +1,48 @@
+const _error = require('debug')('error').extend('BaseNode');
+const _warn  = require('debug')('warn').extend('BaseNode');
+const _info  = require('debug')('info').extend('BaseNode');
+const _trace = require('debug')('trace').extend('BaseNode');
+
 class BaseNode {
     static nodeAPI = null;
+    #onInput;
+    #onClose;
+
+    #error;
+    #warn;
+    #info;
+    #trace;
 
     constructor(config) {
         this.config = config;
-        console.log("BaseNode[" + this.logid() + "].constructor()");
+        
+        this.#error = _error.extend("["+this.logid()+"]");
+        this.#warn  = _warn. extend("["+this.logid()+"]");
+        this.#info  = _info. extend("["+this.logid()+"]");
+        this.#trace = _trace.extend("["+this.logid()+"]");
+
+        this.#info("constructor()");
         BaseNode.nodeAPI.nodes.createNode(this,config);
         var instance = this;
 
-        this._onInput = function (msg) {
+        this.#onInput = function (msg) {
             try {
                 instance.onInput(msg);
             } catch (error) {
-                console.log(error);
+                this.#error(error.message,error.stack);
             }
         }
     
-        this._onClose = function () {
+        this.#onClose = function () {
             try {
-                instance.onClose();
+                instance.destructor();
             } catch (error) {
-                console.log(error);
+                this.#error(error.message,error.stack);
             }
         }
     
-        this.on('input', this._onInput);
-        this.on('close', this._onClose);
+        this.on('input', this.#onInput);
+        this.on('close', this.#onClose);
     }
 
     logid() {
@@ -32,18 +50,22 @@ class BaseNode {
     }
 
     getStatusFill() {
+        this.#trace("getStatusFill()");
         return null;
     }
 
     getStatusText() {
+        this.#trace("getStatusText()");
         return null;
     }
 
     getStatusShape() {
+        this.#trace("getStatusShape()");
         return null;
     }
 
     updateStatus() {
+        this.#trace("updateStatus()");
         try {
             var fill =  this.getStatusFill();
             var shape = this.getStatusShape();
@@ -58,19 +80,18 @@ class BaseNode {
                 text:  text
             });
         } catch (error) {
-            console.log(error);
+            this.#error(error.message,error.stack);
         }
     }
 
     onInput(msg) {
-        //console.log("BaseNode[" + this.logid() + "].onInput(",msg,")");
+        this.#trace("onInput(",msg,")");
     }
 
-    onClose() {
-        console.log("BaseNode[" + this.logid() + "].onClose()");
-        this.off('input',this._onInput);
-        this.off('close',this._onClose);
-        //this.config = null;
+    destructor() {
+        this.#info("destructor()");
+        this.off('input',this.#onInput);
+        this.off('close',this.#onClose);
     }
 }
 

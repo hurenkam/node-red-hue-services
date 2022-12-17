@@ -1,27 +1,34 @@
-ServiceNode = require("./ServiceNode");
+ResourceNode = require("./ResourceNode");
 
-class TemperatureNode extends ServiceNode {
+class TemperatureNode extends ResourceNode {
+    #info;
+    #trace;
+
     constructor(config) {
         super(config);
-        console.log("TemperatureNode[" + this.logid() + "].constructor()");
+        this.#info = require('debug')('info').extend('TemperatureNode').extend("["+this.logid()+"]");
+        this.#trace = require('debug')('trace').extend('TemperatureNode').extend("["+this.logid()+"]");
+        this.#info("constructor()");
     }
 
     onUpdate(event) {
+        this.#trace("onUpdate(",event,")");
         this.updateStatus();
         super.onUpdate(event);
     }
 
     updateStatus() {
-        super.updateStatus();
+        this.#trace("updateStatus()");
 
         var fill = "grey";
         var shape = "dot";
         var text = "";
 
-        if (this.resource.item.temperature) {
-            if (this.resource.item.temperature.temperature!=null) {
+        var resource = this.resource();
+        if ((resource) && (resource.data()) && (resource.data().temperature)) {
+            if (resource.data().temperature.temperature!=null) {
                 fill = "green";
-                text = ""+this.resource.item.temperature.temperature+"c";
+                text = ""+resource.data().temperature.temperature+"c";
             }
         }
 

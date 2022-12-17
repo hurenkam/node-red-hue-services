@@ -1,76 +1,94 @@
-Resource = require("../clip/Resource");
 BaseNode = require("./BaseNode");
 
+const _error = require('debug')('error').extend('ResourceNode');
+const _warn  = require('debug')('warn').extend('ResourceNode');
+const _info  = require('debug')('info').extend('ResourceNode');
+const _trace = require('debug')('trace').extend('ResourceNode');
+
 class ResourceNode extends BaseNode {
+    #onUpdate;
+    #resource;
+
+    #error;
+    #warn;
+    #info;
+    #trace;
+
     constructor(config) {
         super(config);
-        console.log("ResourceNode[" + this.logid() + "].constructor()");
 
-        var instance = this;
-        this.clip = BaseNode.nodeAPI.nodes.getNode(config.bridge).clip;
-        //this.clip.on('started',() => {
-        //    instance.onClipStarted();
-        //});
-        setTimeout(()=> {
-            instance.onClipStarted();
-        },5000);
-    }
+        this.#error = _error.extend("["+this.logid()+"]");
+        this.#warn  = _warn. extend("["+this.logid()+"]");
+        this.#info  = _info. extend("["+this.logid()+"]");
+        this.#trace = _trace.extend("["+this.logid()+"]");
 
-    onClipStarted() {
-        console.log("ResourceNode[" + this.logid() + "].onStartup()");
-        this.resource = this.clip.resources[this.config.uuid];
-        if (!this.resource) {
-            console.log("ResourceNode[" + this.logid() + "].onStartup(): Unable to lookup resource instance for uuid",this.config.uuid);
-        } else {
-            this.onStartup();
+        this.#info("constructor()");
+        if (this.bridge()) {
+            this.bridge().requestStartup(this);
         }
     }
 
-    onStartup() {
-        console.log("ResourceNode[" + this.logid() + "].onStartup()");
-        var instance = this;
-        
-        this._onUpdate = function(event) {
-            try {
-                instance.onUpdate(event);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        this.resource.on('update',this._onUpdate);
+    start(resource) {
+        if (resource==null)
+            return;
 
+        this.#info("start()");
+        this.#resource = resource;
+
+        var instance = this;
+        this.#onUpdate = function(event) {
+            instance.onUpdate(event);
+        }
+
+        this.resource().on('update',this.#onUpdate);
         this.updateStatus();
     }
 
+    destructor() {
+        this.#info("destructor()");
+        this.removeAllListeners();
+        this.#resource = null;
+        super.destructor();
+    }
+
+    resource() {
+        return this.#resource;
+    }
+
+    rid() {
+        return this.config.uuid;
+    }
+
+    bridge() {
+        return BaseNode.nodeAPI.nodes.getNode(this.config.bridge);
+    }
+
     onUpdate(event) {
-        console.log("ResourceNode["+this.logid()+"].onUpdate()");
+        this.#trace("onUpdate()");
         this.send({ payload: event });
     }
 
     onInput(msg) {
-        //console.log("ResourceNode[" + this.logid() + "].onInput(",msg,")");
+        var resource = this.resource();
+        if (!resource) {
+            this.#trace("onInput(): Resource not found",this.rid());
+        }
 
         if (msg.rtypes) {
-            if ((this.resource) && (msg.rtypes.includes(this.resource.rtype()))) {
-                console.log("ResourceNode[" + this.logid() + "].onInput(",msg.payload,")");
-                this.resource.put(msg.payload);
+            if ((resource) && (msg.rtypes.includes(resource.rtype()))) {
+                this.#trace("onInput(",msg.payload,")");
+                resource.put(msg.payload);
             }
         }
 
         if (msg.rids) {
-            if ((this.resource) && (msg.rids.includes(this.resource.rid()))) {
-                console.log("ResourceNode[" + this.logid() + "].onInput(",msg.payload,")");
-                this.resource.put(msg.payload);
+            if ((resource) && (msg.rids.includes(resource.rid()))) {
+                this.#trace("onInput(",msg.payload,")");
+                resource.put(msg.payload);
             }
         }
 
         super.onInput(msg);
-    }
-
-    onClose() {
-        console.log("ResourceNode[" + this.logid() + "].onClose()");
-        this.clip = null;
-        super.onClose();
     }
 }
 

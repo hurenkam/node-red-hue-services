@@ -1,7 +1,9 @@
 export class BaseUI {
+    #category;
+
     constructor(label="Base", category="base") {
         console.log("BaseUI.constructor()");
-        this.category = category;
+        this.#category = category;
 
         var instance = this;
         this.config = {
@@ -19,8 +21,6 @@ export class BaseUI {
             oneditsave:    function() { instance.onEditSave(this) },
             oneditcancel:  function() { instance.onEditCancel(this) },
         }
-
-        this.help = this.buildHelp();
     }
 
     buildHelp() {
@@ -42,7 +42,7 @@ export class BaseUI {
 
     uiTextInput(id,label) {
         console.log("BaseUI.uiTextInput("+id+")");
-        var prefix = (this.category=="config")? "node-config-input-" : "node-input-";
+        var prefix = (this.#category=="config")? "node-config-input-" : "node-input-";
 
         var item = document.createElement("div");
         item.setAttribute("class","form-row");
@@ -55,7 +55,7 @@ export class BaseUI {
 
     uiNumberInput(id,label) {
         console.log("BaseUI.uiNumberInput("+id+")");
-        var prefix = (this.category=="config")? "node-config-input-" : "node-input-";
+        var prefix = (this.#category=="config")? "node-config-input-" : "node-input-";
 
         var item = document.createElement("div");
         item.setAttribute("class","form-row");
@@ -68,7 +68,7 @@ export class BaseUI {
 
     uiCheckboxInput(id,label) {
         console.log("BaseUI.checkboxInput("+id+")");
-        var prefix = (this.category=="config")? "node-config-input-" : "node-input-";
+        var prefix = (this.#category=="config")? "node-config-input-" : "node-input-";
 
         var item = document.createElement("div");
         item.setAttribute("class","form-row");
@@ -87,7 +87,7 @@ export class BaseUI {
 
     uiSelectInput(id,label) {
         console.log("BaseUI.uiSelectInput("+id+")");
-        var prefix = (this.category=="config")? "node-config-input-" : "node-input-";
+        var prefix = (this.#category=="config")? "node-config-input-" : "node-input-";
 
         var item = document.createElement("div");
         item.setAttribute("class","form-row");
@@ -107,12 +107,13 @@ export class BaseUI {
     
     manual() {
         var text = "";
-        Object.keys(this.help).forEach((key)=>{
-            if ((this.help[key]) && (this.help[key]!="")) {
+        var help = this.buildHelp();
+        Object.keys(help).forEach((key)=>{
+            if ((help[key]) && (help[key]!="")) {
                 if (key != "intro") {
                     text += "\n### " + key + "\n";
                 }
-                text += this.help[key];
+                text += help[key];
             }
         });
         return text;
