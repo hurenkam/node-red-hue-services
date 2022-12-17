@@ -49,7 +49,7 @@ This should address issue #1.
 - ~~Unit Tests for Nodes~~
 - Unit Tests for UI
 
-## Postponed until after 0.5.x release
+## Postponed until after 0.6.x release
 - Improve 'smart' modes for Switch and Motion devices
 - Improve the generic device node (which allows using as of yet unsupported devices)
 - Support more devices
