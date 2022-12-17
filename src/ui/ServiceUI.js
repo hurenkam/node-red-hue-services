@@ -6,7 +6,7 @@ export class ServiceUI extends BaseUI {
         console.log("ServiceUI.constructor(",label,category,rtype,")");
 
         this.config.defaults.name =     { value:"" };
-        this.config.defaults.bridge =   { type: "BridgeConfigNode", required: true };
+        this.config.defaults.bridge =   { type: "@hurenkam/hue-services/BridgeConfigNode", required: true };
         this.config.defaults.rtype =    { value:rtype, required: true };
         this.config.defaults.owner =    { value:"", required: true };
         this.config.defaults.uuid =     { value:"", required: true };
