@@ -104,6 +104,38 @@ describe('Resource Node', function () {
         });
     });
 
+    it('should call onStartup() when start() is called and startevent() returns true', function (done) {
+        var flow = [{
+            id: "n1",
+            type: "ResourceNode",
+        }];
+
+        const fakeRequestStartup = sandbox.fake(() => {
+            return { requestStartup: function(resource) {} };
+        });
+        const fakeStartevent = sandbox.fake(() => {
+            return true;
+        });
+        const fakeOnStartup = sandbox.fake(() => {
+            done();
+        });
+        sandbox.replace(ResourceNode.prototype,'bridge',fakeRequestStartup);
+        sandbox.replace(ResourceNode.prototype,'startevent',fakeStartevent);
+        sandbox.replace(ResourceNode.prototype,'onStartup',fakeOnStartup);
+
+        helper.load(testnodes, flow, function () {
+            var n1 = helper.getNode("n1");
+            n1.start({
+                on: function(event,callback) {
+                    assert.equal(event,'update');
+                },
+                data: function(event,callback) {
+                    return { brightness: 100 };
+                }
+            });
+        });
+    });
+
     it('should return resource provided in start(resource) call when resource() is called', function (done) {
         var flow = [{
             id: "n1",
@@ -152,6 +184,27 @@ describe('Resource Node', function () {
 
     // Todo:
     // - bridge()
+
+    it('should call send() when onStartup(event) is called', function (done) {
+        var uuid = "c9f1b449-d9de-41c6-8bd4-46368eedd447";
+        var flow = [{
+            id: "n1",
+            type: "ResourceNode",
+            wires: [["n2"]]
+        },{
+            id: "n2",
+            type: "helper"
+        }];
+
+        helper.load(testnodes, flow, function () {
+            var n1 = helper.getNode("n1");
+            var n2 = helper.getNode("n2");
+            n2.on("input", function (msg) {
+                done();
+            });
+            n1.onStartup({ name: "event" });
+        });
+    });
 
     it('should call send() when onUpdate(event) is called', function (done) {
         var uuid = "c9f1b449-d9de-41c6-8bd4-46368eedd447";

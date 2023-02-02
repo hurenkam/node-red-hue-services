@@ -5,11 +5,12 @@ export class ServiceUI extends BaseUI {
         super(label,category);
         console.log("ServiceUI.constructor(",label,category,rtype,")");
 
-        this.config.defaults.name =     { value:"" };
-        this.config.defaults.bridge =   { type: "@hurenkam/hue-services/BridgeConfigNode", required: true };
-        this.config.defaults.rtype =    { value:rtype, required: true };
-        this.config.defaults.owner =    { value:"", required: true };
-        this.config.defaults.uuid =     { value:"", required: true };
+        this.config.defaults.name =       { value:"" };
+        this.config.defaults.bridge =     { type: "@hurenkam/hue-services/BridgeConfigNode", required: true };
+        this.config.defaults.rtype =      { value:rtype, required: true };
+        this.config.defaults.owner =      { value:"", required: true };
+        this.config.defaults.uuid =       { value:"", required: true };
+        this.config.defaults.startevent = { value: false };
 
         this.config.inputs = 1;
         this.config.color = "#EEEEEE";
@@ -35,6 +36,8 @@ this field is hidden, and the one choice is automatically selected. \n\n\
 If not, then it offers you a choice of either filling in the UUID of the service \
 to be selected, or you can select one from the list which is offered. \
 \n\n\
+#### Send current state event at startup\n\
+When this flag is enabled the node will send an event at startup with its initial state.\n\
 ";
         return help;
     }
@@ -47,6 +50,7 @@ to be selected, or you can select one from the list which is offered. \
         text += this.uiSelectInput("rtype","Type");
         text += this.uiSelectInput("owner","Owner");
         text += this.uiSelectInput("uuid","UUID");
+        text += this.uiCheckboxInput("startevent","Send current state event at startup");
         return text;
     }
 
