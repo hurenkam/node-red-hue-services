@@ -8,9 +8,10 @@ export class ResourceUI extends BaseUI {
         super(label,category);
         console.log("ResourceUI.constructor()");
 
-        this.config.defaults.name =     { value:"" };
-        this.config.defaults.bridge =   { type: "@hurenkam/hue-services/BridgeConfigNode", required: true };
-        this.config.defaults.uuid =     { value:"", required: true };
+        this.config.defaults.name =       { value:"" };
+        this.config.defaults.bridge =     { type: "@hurenkam/hue-services/BridgeConfigNode", required: true };
+        this.config.defaults.uuid =       { value:"", required: true };
+        this.config.defaults.startevent = { value: false };
 
         this.config.inputs = 1;
         this.config.color = "#EEEEEE";
@@ -29,6 +30,8 @@ Select the hue bridge for your device or resource.\n\n\
 Select the device or service by UUID, you can toggle between search \
 and manual input. The search will query the bridge for suitable devices \
 and present them as a selection list.\n\n\
+#### Send current state event at startup\n\
+When this flag is enabled the node will send an event at startup with its initial state.\n\
 ";
         return help;
     }
@@ -38,6 +41,7 @@ and present them as a selection list.\n\n\
         console.log("ResourceUI.ui()");
         text += this.uiTextInput("bridge","Bridge");
         text += this.uiSelectInput("uuid","UUID");
+        text += this.uiCheckboxInput("startevent","Send current state event at startup");
         return text;
     }
 

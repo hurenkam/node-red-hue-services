@@ -40,6 +40,10 @@ class ResourceNode extends BaseNode {
             instance.onUpdate(event);
         }
 
+        if (this.startevent()==true) {
+            this.onStartup(resource.data())
+        }
+
         this.resource().on('update',this.#onUpdate);
         this.updateStatus();
     }
@@ -59,8 +63,17 @@ class ResourceNode extends BaseNode {
         return this.config.uuid;
     }
 
+    startevent() {
+        return this.config.startevent;
+    }
+
     bridge() {
         return BaseNode.nodeAPI.nodes.getNode(this.config.bridge);
+    }
+
+    onStartup(event) {
+        this.#trace("onStartup()");
+        this.send({ payload: event });
     }
 
     onUpdate(event) {
