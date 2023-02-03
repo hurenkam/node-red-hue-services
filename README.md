@@ -15,6 +15,8 @@ Unit tests are in place for the server side nodes.
 Editor/UI functionality is currently not being tested apart from my own use in the editor, so your mileage may vary.
 
 # Changelog
+v0.6.4: Fix checkbox to work with Safari
+
 v0.6.3: Added option for nodes to generate a status event on startup (see issue #3)
 
 v0.6.2: Fixes issue with services pointing to wrong bridge type and thus unable to add/edit bridge references.
