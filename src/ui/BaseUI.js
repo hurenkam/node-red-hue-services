@@ -75,9 +75,7 @@ export class BaseUI {
         item.setAttribute("id","node-container-" + id);
         item.innerHTML = '\
             <div style="display: inline-flex; width: calc(100% - 105px)">\
-                <div id="input-select-'+ id +'" style="flex-grow: 1;">\
-                    <input type="checkbox" id="' + prefix + id +'" style="flex: 15px;">\
-                </div>\
+                <input type="checkbox" id="' + prefix + id +'" style="flex: 15px;">\
                 <span style="width: 100%; margin-left: 10px;">\
                     '+ label +'\
                 </span>\
