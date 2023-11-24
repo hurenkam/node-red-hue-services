@@ -48,7 +48,12 @@ This should address issue #1.
 - ~~Upload package to node-red library~~
 - ~~Unit Tests for Clip~~
 - ~~Unit Tests for Nodes~~
+- Geofencing
+- Contact sensor
+- Camera
+- Smart Scenes
 - Unit Tests for UI
+
 
 ## Postponed until after 0.6.x release
 - Improve 'smart' modes for Switch and Motion devices
