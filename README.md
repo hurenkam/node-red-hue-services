@@ -17,6 +17,8 @@ Editor/UI functionality is currently not being tested apart from my own use in t
 # Changelog
 v0.6.5: Added nodes for camera and contact sensor. Improved generic service usability.
 
+v0.6.4: Fix checkbox to work with Safari
+
 v0.6.3: Added option for nodes to generate a status event on startup (see issue #3)
 
 v0.6.2: Fixes issue with services pointing to wrong bridge type and thus unable to add/edit bridge references.
