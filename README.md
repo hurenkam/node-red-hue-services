@@ -6,15 +6,17 @@ node-red palette to access hue bridge through clip v2 api
 
 # Status
 
-(Last update: 2022/12/16)
+(Last update: 2025/12/20)
 This is not complete, but seems to work consistent and reliable for the services I regularly use.
-(motion/temperature/light_level/light/grouped_light/button/relative_rotary/scene).
+(motion/temperature/light_level/light/grouped_light/button/relative_rotary/scene/contact/camera_motion).
 
 Unit tests are in place for the server side nodes.
 
 Editor/UI functionality is currently not being tested apart from my own use in the editor, so your mileage may vary.
 
 # Changelog
+v0.6.4: Added nodes for camera and contact sensor. Improved generic service usability.
+
 v0.6.3: Added option for nodes to generate a status event on startup (see issue #3)
 
 v0.6.2: Fixes issue with services pointing to wrong bridge type and thus unable to add/edit bridge references.
