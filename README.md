@@ -30,6 +30,8 @@ This should address issue #1.
 ## Services:
 - Generic Service, in case you need some service that is not supported below, you can use this.
 - Button
+- Camera Motion
+- Contact
 - Device Power
 - Grouped Light
 - Light
@@ -50,19 +52,19 @@ This should address issue #1.
 - ~~Upload package to node-red library~~
 - ~~Unit Tests for Clip~~
 - ~~Unit Tests for Nodes~~
+- ~~Contact sensor~~
+- ~~Camera~~
 - Geofencing
-- Contact sensor
-- Camera
 - Smart Scenes
 - Unit Tests for UI
 
 
 ## Postponed until after 0.6.x release
 - Improve 'smart' modes for Switch and Motion devices
-- Improve the generic device node (which allows using as of yet unsupported devices)
+- ~~Improve the generic device node (which allows using as of yet unsupported devices)~~
 - Support more devices
-  - smart button (should be easy to do, but i don't have one to test)
-  - tap dial switch (should be similar to a lutron aurora, but i don't have one to test)
+  - ~~smart button (should be easy to do, but i don't have one to test)~~
+  - ~~tap dial switch (should be similar to a lutron aurora, but i don't have one to test)~~
 
 # Use
 Using these nodes requires a bit of knowledge on the clip v2 api, as i designed this palette
