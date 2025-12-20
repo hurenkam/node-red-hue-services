@@ -24,33 +24,6 @@ class ClipApi extends events.EventEmitter {
     #info;
     #trace;
 
-    #factory =  {
-        "behavior_script": Resource,
-        "behavior_instance": Resource,
-        "bridge": Resource,
-        "bridge_home": Resource,
-        "button": Resource,
-        "device": Resource,
-        "device_power": Resource,
-        "entertainment": Resource,
-        "entertainment_configuration": Resource,
-        "geolocation": Resource,
-        "grouped_light": Resource,
-        "homekit": Resource,
-        "light": Resource,
-        "light_level": Resource,
-        "matter": Resource,
-        "motion": Resource,
-        "relative_rotary": Resource,
-        "room": Resource,
-        "scene": Resource,
-        "temperature": Resource,
-        "zgp_connectivity": Resource,
-        "zigbee_connectivity": Resource,
-        "zigbee_device_discovery": Resource,
-        "zone": Resource
-    };
-
     constructor(ip,key,name) {
         super();
 
@@ -145,13 +118,9 @@ class ClipApi extends events.EventEmitter {
         response.data.forEach((item) => {
             this.#trace("constructor()  found resource:", item);
 
-            if (Object.keys(this.#factory).includes(item.type)) {
-                if (!this._isResourceRegistered(item.id)) {
-                    var resource = new this.#factory[item.type](item,this);
-                    this._registerResource(resource);
-                }
-            } else {
-                this.#warn("constructor(): Missing factory for type", item.type);
+            if (!this._isResourceRegistered(item.id)) {
+                var resource = new Resource(item,this);
+                this._registerResource(resource);
             }
         });
 

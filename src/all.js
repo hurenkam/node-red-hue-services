@@ -7,6 +7,8 @@ module.exports = function(RED) {
     const BridgeConfigNode = require('./nodes/BridgeConfigNode');
 
     const ButtonNode = require('./nodes/ButtonNode');
+    const CameraMotionNode = require('./nodes/CameraMotionNode');
+    const ContactNode = require('./nodes/ContactNode');
     const DevicePowerNode = require('./nodes/DevicePowerNode');
     const GroupedLightNode = require('./nodes/GroupedLightNode');
     const LightNode = require('./nodes/LightNode');
@@ -23,6 +25,8 @@ module.exports = function(RED) {
         "BridgeConfigNode": BridgeConfigNode,
 
         "ButtonNode": ButtonNode,
+        "CameraMotionNode": CameraMotionNode,
+        "ContactNode": ContactNode,
         "DevicePowerNode": DevicePowerNode,
         "GroupedLightNode": GroupedLightNode,
         "LightNode": LightNode,
