@@ -81,6 +81,7 @@ class RestApi {
             var local = this;
 
             var request = this.#requestQ.shift();
+            this.#info("_handleRequest() url: " + request.url + " method: " + request.method + " data: " + request.data);
             this.#request(request.url, request.method, request.data)
             .then(async (result) => {
                 await local.#limiter.removeTokens(1,()=>{});
@@ -105,33 +106,49 @@ class RestApi {
     get(url) {
         this.#trace("get(" + url + ")");
         var local = this;
-        return new Promise(function (resolve, reject) {
-            local.#requestQ.push({ url: url, method: "GET", data: null, resolve: resolve, reject: reject });
-        });
+        
+        try {
+            return new Promise((resolve, reject) => {
+                local.#requestQ.push({ url: url, method: "GET", data: null, resolve: resolve, reject: reject });
+            });
+        } catch (error) {
+            return;
+        };
     }
 
     put(url, data) {
         this.#trace("put(" + url + ")");
         var local = this;
-        return new Promise(function (resolve, reject) {
+
+        let promise = new Promise((resolve, reject) => {
             local.#requestQ.push({ url: url, method: "PUT", data: data, resolve: resolve, reject: reject });
         });
+
+        promise.then(result => { return result; }, error => { return; });
     }
 
     post(url, data) {
         this.#trace(".post(" + url + ")");
         var local = this;
-        return new Promise(function (resolve, reject) {
-            local.#requestQ.push({ url: url, method: "POST", data: data, resolve: resolve, reject: reject });
-        });
+        try {
+            return new Promise((resolve, reject) => {
+                local.#requestQ.push({ url: url, method: "POST", data: data, resolve: resolve, reject: reject });
+            });
+        } catch (error) {
+            return;
+        }
     }
 
     delete(url, data) {
         this.#trace(".delete(" + url + ")");
         var local = this;
-        return new Promise(function (resolve, reject) {
-            local.#requestQ.push({ url: url, method: "DELETE", data: data, resolve: resolve, reject: reject });
-        });
+        try {
+            return new Promise((resolve, reject) => {
+                local.#requestQ.push({ url: url, method: "DELETE", data: data, resolve: resolve, reject: reject });
+            });
+        } catch (error) {
+            return;
+        }
     }
 }
 
