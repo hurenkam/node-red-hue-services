@@ -91,11 +91,21 @@ class ResourceNode extends BaseNode {
         }
 
         if (msg.rtypes && msg.rtypes.includes(resource.rtype())) {
-            resource.put(msg.payload);
+            resource.put(msg.payload).then(result => { 
+                return; 
+            }, error => { 
+                this.warn("ResourceNode::onInput()  error: " + error);
+                return; 
+            });
         }
 
         if (msg.rids && msg.rids.includes(resource.rid())) {
-            resource.put(msg.payload);
+            resource.put(msg.payload).then(result => { 
+                return; 
+            }, error => { 
+                this.warn("ResourceNode::onInput()  error: " + error);
+                return; 
+            });
         }
     }
 }

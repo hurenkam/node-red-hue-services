@@ -107,7 +107,7 @@ class Resource extends events.EventEmitter {
 
     put(data) {
         this.#trace("put(",data,")");
-        this.clip().put(this.rtype(),this.rid(), data);
+        return this.clip().put(this.rtype(),this.rid(), data);
     }
 
     onEvent(event) {

@@ -106,14 +106,12 @@ class RestApi {
     get(url) {
         this.#trace("get(" + url + ")");
         var local = this;
-        
-        try {
-            return new Promise((resolve, reject) => {
-                local.#requestQ.push({ url: url, method: "GET", data: null, resolve: resolve, reject: reject });
-            });
-        } catch (error) {
-            return;
-        };
+
+        let promise = new Promise((resolve, reject) => {
+            local.#requestQ.push({ url: url, method: "GET", data: null, resolve: resolve, reject: reject });
+        });
+
+        return promise;
     }
 
     put(url, data) {
@@ -124,31 +122,29 @@ class RestApi {
             local.#requestQ.push({ url: url, method: "PUT", data: data, resolve: resolve, reject: reject });
         });
 
-        promise.then(result => { return result; }, error => { return; });
+        return promise;
     }
 
     post(url, data) {
         this.#trace(".post(" + url + ")");
         var local = this;
-        try {
-            return new Promise((resolve, reject) => {
-                local.#requestQ.push({ url: url, method: "POST", data: data, resolve: resolve, reject: reject });
-            });
-        } catch (error) {
-            return;
-        }
+
+        let promise = new Promise((resolve, reject) => {
+            local.#requestQ.push({ url: url, method: "POST", data: data, resolve: resolve, reject: reject });
+        });
+
+        return promise;
     }
 
     delete(url, data) {
         this.#trace(".delete(" + url + ")");
         var local = this;
-        try {
-            return new Promise((resolve, reject) => {
-                local.#requestQ.push({ url: url, method: "DELETE", data: data, resolve: resolve, reject: reject });
-            });
-        } catch (error) {
-            return;
-        }
+
+        let promise = new Promise((resolve, reject) => {
+            local.#requestQ.push({ url: url, method: "DELETE", data: data, resolve: resolve, reject: reject });
+        });
+
+        return promise;
     }
 }
 
