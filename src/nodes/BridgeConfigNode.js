@@ -119,7 +119,7 @@ class BridgeConfigNode extends BaseNode {
             var id = "BridgeConfig (" + Math.floor((Math.random() * 100) + 1) + ")";
             var request = {
                 "method": "POST",
-                "url": "http://" + ip + "/api",
+                "url": "https://" + ip + "/api",
                 "headers": { "Content-Type": "application/json; charset=utf-8" },
                 "data": { "devicetype": id },
                 "httpsAgent": new https.Agent({ rejectUnauthorized: false })
