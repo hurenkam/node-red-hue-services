@@ -1,6 +1,6 @@
 {
   "name": "@hurenkam/hue-services",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "description": "Custom node-red nodes for interfacing with philips hue devices",
   "author": "Mark Hurenkamp",
   "license": "Apache 2.0",
