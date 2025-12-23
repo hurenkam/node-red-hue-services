@@ -82,26 +82,21 @@ class ResourceNode extends BaseNode {
     }
 
     onInput(msg) {
+        super.onInput(msg);
+
         var resource = this.resource();
         if (!resource) {
             this.#trace("onInput(): Resource not found",this.rid());
+            return;
         }
 
-        if (msg.rtypes) {
-            if ((resource) && (msg.rtypes.includes(resource.rtype()))) {
-                this.#trace("onInput(",msg.payload,")");
-                resource.put(msg.payload);
-            }
+        if (msg.rtypes && msg.rtypes.includes(resource.rtype())) {
+            resource.put(msg.payload);
         }
 
-        if (msg.rids) {
-            if ((resource) && (msg.rids.includes(resource.rid()))) {
-                this.#trace("onInput(",msg.payload,")");
-                resource.put(msg.payload);
-            }
+        if (msg.rids && msg.rids.includes(resource.rid())) {
+            resource.put(msg.payload);
         }
-
-        super.onInput(msg);
     }
 }
 
