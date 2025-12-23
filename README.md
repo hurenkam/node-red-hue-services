@@ -15,6 +15,8 @@ Unit tests are in place for the server side nodes.
 Editor/UI functionality is currently not being tested apart from my own use in the editor, so your mileage may vary.
 
 # Changelog
+v0.6.6: Support bridge v3 acquire key; better error handling on put requests.
+
 v0.6.5: Added nodes for camera and contact sensor. Improved generic service usability.
 
 v0.6.4: Fix checkbox to work with Safari
