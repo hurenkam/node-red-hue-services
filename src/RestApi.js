@@ -91,7 +91,10 @@ class RestApi {
             .catch((error) => {
                 this.#error("_handleRequest(" + request.url + ") error: ");
                 this.#error(error);
-                request.reject();
+                var info = {};
+                info.error = error;
+                info.request = request;
+                request.reject(info);
 
                 // back off for a few seconds, just in case we ran into a 429 error.
                 local.#timeout = setTimeout(local.#handleRequest.bind(local), 5000);

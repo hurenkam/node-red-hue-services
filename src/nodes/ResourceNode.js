@@ -93,8 +93,10 @@ class ResourceNode extends BaseNode {
         if (msg.rtypes && msg.rtypes.includes(resource.rtype())) {
             resource.put(msg.payload).then(result => { 
                 return; 
-            }, error => { 
-                this.warn("ResourceNode::onInput()  error: " + error);
+            }, info => {
+                var error = info.error;
+                var request = info.request; 
+                this.error("ResourceNode::onInput() request: "+JSON.stringify(request)+" error: " + error);
                 return; 
             });
         }
@@ -102,8 +104,10 @@ class ResourceNode extends BaseNode {
         if (msg.rids && msg.rids.includes(resource.rid())) {
             resource.put(msg.payload).then(result => { 
                 return; 
-            }, error => { 
-                this.warn("ResourceNode::onInput()  error: " + error);
+            }, info => {
+                var error = info.error;
+                var request = info.request; 
+                this.error("ResourceNode::onInput() request: "+JSON.stringify(request)+" error: " + error);
                 return; 
             });
         }
