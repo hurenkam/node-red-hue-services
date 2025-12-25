@@ -26,7 +26,8 @@
     "README.md",
     "LICENSE",
     "package.json",
-    "src"
+    "src",
+    "examples"
   ],
   "node-red": {
     "version": ">=2.0.0",
