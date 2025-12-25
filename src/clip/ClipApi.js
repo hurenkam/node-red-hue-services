@@ -315,18 +315,20 @@ class ClipApi extends events.EventEmitter {
 
         var options = [];
         var owner = this.#resources[uuid];
-        var services = owner.services();
-        Object.values(services).forEach((service) => {
-            if (service.rtype() == rtype) {
-                options.push({ value: service.rid(), label: service.typeName() });
-            }
-        });
+        if (owner && owner.services) {
+            var services = owner.services();
+            Object.values(services).forEach((service) => {
+                if (service.rtype() == rtype) {
+                    options.push({ value: service.rid(), label: service.typeName() });
+                }
+            });
 
-        options.sort(function (a, b) {
-            if (a.label > b.label) return 1;
-            if (a.label < b.label) return -1;
-            return 0;
-        });
+            options.sort(function (a, b) {
+                if (a.label > b.label) return 1;
+                if (a.label < b.label) return -1;
+                return 0;
+            });
+        };
 
         this.#trace("getSortedServiceOptions("+ uuid + "," + rtype + ") options:",options);
         return options;
