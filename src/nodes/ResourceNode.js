@@ -1,3 +1,4 @@
+/*
 BaseNode = require("./BaseNode");
 
 const _error = require('debug')('error').extend('ResourceNode');
@@ -115,3 +116,4 @@ class ResourceNode extends BaseNode {
 }
 
 module.exports = ResourceNode;
+*/

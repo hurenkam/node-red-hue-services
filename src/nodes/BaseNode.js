@@ -1,3 +1,4 @@
+/*
 const _error = require('debug')('error').extend('BaseNode');
 const _warn  = require('debug')('warn').extend('BaseNode');
 const _info  = require('debug')('info').extend('BaseNode');
@@ -96,3 +97,4 @@ class BaseNode {
 }
 
 module.exports = BaseNode;
+*/

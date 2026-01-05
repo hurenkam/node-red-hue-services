@@ -1,3 +1,4 @@
+/*
 var bridges = {};
 
 const ClipApi = require('../clip/ClipApi');
@@ -78,7 +79,7 @@ class BridgeConfigNode extends BaseNode {
         }
     }
 
-    /* istanbul ignore next */
+    // istanbul ignore next
     static async _axios(request) {
         return axios(request);
     }
@@ -142,3 +143,4 @@ class BridgeConfigNode extends BaseNode {
 }
 
 module.exports = BridgeConfigNode;
+*/

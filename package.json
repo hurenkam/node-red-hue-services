@@ -1,6 +1,6 @@
 {
-  "name": "@hurenkam/hue-services",
-  "version": "0.6.7",
+  "name": "@hurenkam/node-red-hue-services",
+  "version": "0.7.0",
   "description": "Custom node-red nodes for interfacing with philips hue devices",
   "author": "Mark Hurenkamp",
   "license": "Apache 2.0",
@@ -32,10 +32,10 @@
   "node-red": {
     "version": ">=2.0.0",
     "nodes": {
-      "files": "src/files.js",
+      "all": "src/all.js",
       "debug": "src/debug.js",
-      "hue": "src/hue.js",
-      "all": "src/all.js"
+      "files": "src/files.js",
+      "hue": "src/hue.js"
     }
   },
   "engines": {
@@ -43,9 +43,10 @@
   },
   "dependencies": {
     "axios": "^1.1.3",
-    "debug": "^4.3.4",
+    "debug": "^4.4.3",
     "eventsource": "^2.0.2",
-    "limiter": "^2.1.0"
+    "limiter": "^2.1.0",
+    "@hurenkam/node-red-hue-base": "0.7.0"
   },
   "publishConfig": {
     "access": "public"

@@ -1,6 +1,7 @@
-ServiceNode = require("./ServiceNode");
+const base = require("@hurenkam/node-red-hue-base");
+const ResourceNode = base.ResourceNode;
 
-class SceneNode extends ServiceNode {
+class SceneNode extends ResourceNode {
     #info;
 
     constructor(config) {

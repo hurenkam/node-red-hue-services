@@ -1,4 +1,5 @@
-ResourceNode = require("./ResourceNode");
+const base = require("@hurenkam/node-red-hue-base");
+const ResourceNode = base.ResourceNode;
 
 class ZigbeeConnectivityNode extends ResourceNode {
     #info;

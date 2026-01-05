@@ -1,3 +1,4 @@
+/*
 ResourceNode = require("./ResourceNode");
 
 class ServiceNode extends ResourceNode {
@@ -11,3 +12,4 @@ class ServiceNode extends ResourceNode {
 }
 
 module.exports = ServiceNode;
+*/
