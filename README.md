@@ -6,33 +6,33 @@ node-red palette to access hue bridge through clip v2 api
 
 # Status
 
-(Last update: 2025/12/20)
+(Last update: 2026/jan/06)
 This is not complete, but seems to work consistent and reliable for the services I regularly use.
 (motion/temperature/light_level/light/grouped_light/button/relative_rotary/scene/contact/camera_motion).
 
 Unit tests are in place for the server side nodes.
 
-Editor/UI functionality is currently not being tested apart from my own use in the editor, so your mileage may vary.
+Editor/UI functionality is currently not being tested apart from my own use in the editor, so your mileage may vary. If something seems to be broken, then please submit an issue.
 
-# Changelog
-v0.6.6: Support bridge v3 acquire key; better error handling on put requests.
+## Dependencies
+ - debug: ^4.4.3
+ - [@hurenkam/node-red-hue-base](https://github.com/hurenkam/node-red-hue-base): ^0.7.0
 
-v0.6.5: Added nodes for camera and contact sensor. Improved generic service usability.
+## Changelog
+#### v0.7.0: Split the package into functionally separate parts:
+ - [@hurenkam/npm-utils](https://github.com/hurenkam/npm-utils): New utility package which contains finite state machine base classes.
+ - [@hurenkam/npm-hue-clip-v2](https://github.com/hurenkam/npm-hue-clip-v2): Contains the classes that deal with interfacing with the bridge using clip v2, and can be used outside of node-red as well.
+ - [@hurenkam/node-red-hue-base](https://github.com/hurenkam/node-red-hue-base): Contains the `BridgeConfig` node and the `Service` node, these are the basic node-red nodes that enable interacting with any clip v2 service (depends on [@hurenkam/npm-hue-clip-v2](https://github.com/hurenkam/npm-hue-clip-v2))
+ - [@hurenkam/node-red-hue-services](https://github.com/hurenkam/node-red-hue-services): This is mostly an eye-candy package, and contains specialized nodes for many known service types, with separate colors and type specific status feedback (depends on [@hurenkam/node-red-hue-base](https://github.com/hurenkam/node-red-hue-base)).
+ - [@hurenkam/node-red-hue-behavior](https://github.com/hurenkam/node-red-hue-behavior): This is a new package with nodes that can do more complex automation using messages from/to services as defined in node-red-hue-services. Note that it does not depend on this package specifically, as the dependency is on the message level only (thus could be triggered/used by logic outside this package as well). It does depend on [@hurenkam/npm-utils](https://github.com/hurenkam/npm-utils).
 
-v0.6.4: Fix checkbox to work with Safari
+    ##### Warning! The 0.7.0 release breaks existing 0.6.x and 0.5.x flows because the type names have been modified to use the @hurenkam/node-red-hue-services/ prefix.
 
-v0.6.3: Added option for nodes to generate a status event on startup (see issue #3)
-
-v0.6.2: Fixes issue with services pointing to wrong bridge type and thus unable to add/edit bridge references.
-
-v0.6.0: Warning! The 0.6.x releases break existing 0.5.x flows because the type names have been modified to use the @hurenkam/hue-services/ prefix.
-This should address issue #1.
 
 ## Devices / Behaviors:
-- Removed for now, services should cover all the basics, devices & behaviors will be re-introduced in a later release
+- Removed for now, services should cover all the basics, devices & behaviors will be re-introduced in a later release as separate packages.
 
 ## Services:
-- Generic Service, in case you need some service that is not supported below, you can use this.
 - Button
 - Camera Motion
 - Contact
@@ -47,36 +47,14 @@ This should address issue #1.
 - Zigbee Connectivity
 
 ## Todo
-- ~~Bridge discovery and automatic key generation has not yet been implemented. Currently the~~
-  ~~bridge needs to be configured manually with an ip address and known key.~~
-- ~~Provide better low level support for simple resources as 'grouped_light' or 'light'.~~
-- ~~Provide a generic sevice node (to allow using as of yet unsupported services)~~
-- ~~Use scope, this is probably required if i want to upload this as a package.~~
-- ~~Fix packaging, now I'm using a symlink to point to my *UI.js files, this needs a proper solution.~~
-- ~~Upload package to node-red library~~
-- ~~Unit Tests for Clip~~
-- ~~Unit Tests for Nodes~~
-- ~~Contact sensor~~
-- ~~Camera~~
+- Entertainment
 - Geofencing
-- Smart Scenes
 - Unit Tests for UI
 
-
-## Postponed until after 0.6.x release
-- Improve 'smart' modes for Switch and Motion devices
-- ~~Improve the generic device node (which allows using as of yet unsupported devices)~~
-- Support more devices
-  - ~~smart button (should be easy to do, but i don't have one to test)~~
-  - ~~tap dial switch (should be similar to a lutron aurora, but i don't have one to test)~~
-
 # Use
-Using these nodes requires a bit of knowledge on the clip v2 api, as i designed this palette
-to offer an easy low level interface towards clip.
+Using these nodes requires a bit of knowledge on the clip v2 api, as i designed this palette to offer an easy low level interface towards clip.
 
-The basic principle of the nodes is that you select the proper id on the bridge, then clip events
-associated with that resource id will come out as `msg.payload`, and whatever `msg.payload` is piped in
-at the input will be sent as a put request to the clip v2 interface.
+The basic principle of the nodes is that you select the proper id on the bridge, then clip events associated with that resource id will come out as `msg.payload`, and whatever `msg.payload` is piped in at the input will be sent as a put request to the clip v2 interface.
 (See here: https://developers.meethue.com/develop/hue-api-v2 )
 
 The following command will for instance switch a light, room or zone on:
@@ -87,217 +65,81 @@ And the following command wil set the brightness to 50%:
 
 `{ "rtypes": ["light", "grouped_light"], "payload": { "dimming": { "brightness": 50 } } }`
 
-Do note that to address a node, you must either provide an msg.rids array that contains the rid
-of the resource you wish to address, or an msg.rtypes array that contains the rtype of the resource
-you wish to address.
+Do note that to address a node, you must either provide an msg.rids array that contains the rid of the resource you wish to address, or an msg.rtypes array that contains the rtype of the resource you wish to address.
 
 # Design
-
-## Incoming Event
-```mermaid
-sequenceDiagram
-    actor Bridge
-    Bridge ->> ClipApi: message
-    ClipApi ->> Resource: onEvent
-    Resource ->> ResourceNode: update(event)
-    ResourceNode ->> Output: msg.payload = event
-```
-
-## Outgoing Message
-```mermaid
-sequenceDiagram
-    actor Bridge
-    Input ->> ResourceNode: msg.payload, msg.rtypes | msg.rids
-    ResourceNode ->> Resource: put msg.payload
-    Resource ->> ClipApi: put rid, data
-    ClipApi ->> RestApi: put /clip/v2/rid data
-    RestApi ->> Bridge: put
-```
 
 ## Class Diagram
 ```mermaid
 classDiagram
+namespace npm_hue_clip_v2 {
+    class Resource {}
+}
+namespace node_red_hue_base {
+    class ResourceNode {}
+}
+namespace node_red_hue_services {
+    class ButtonNode {
+        +constructor(config)
+        +onUpdate(event)
+        +updateStatus()
+    }
 
-class BaseNode {
-    +config
-    #onInput
-    #onClose
+    class DevicePowerNode {
+        +constructor(config)
+        +onUpdate(event)
+        +updateStatus()
+    }
 
-    +constructor(config)
-    +logid()
-    +getStatusFill()
-    +getStatusText()
-    +getStatusShape()
-    +updateStatus()
-    +onInput(msg)
-    +destructor()
+    class GroupedLightNode {
+        +constructor(config)
+        +onUpdate(event)
+        +updateStatus()
+    }
+
+    class LightLevelNode {
+        +constructor(config)
+        +onUpdate(event)
+        +updateStatus()
+    }
+
+    class LightNode {
+        +constructor(config)
+        +onUpdate(event)
+        +updateStatus()
+    }
+
+    class MotionNode {
+        +constructor(config)
+        +onUpdate(event)
+        +updateStatus()
+    }
+
+    class RelativeRotaryNode {
+        +constructor(config)
+        +onUpdate(event)
+        +updateStatus()
+    }
+
+    class SceneNode {
+        +constructor(config)
+    }
+
+    class TemperatureNode {
+        +constructor(config)
+        +onUpdate(event)
+        +updateStatus()
+    }
+
+    class ZigbeeConnectivityNode {
+        +constructor(config)
+        +onUpdate(event)
+        +updateStatus()
+    }
 }
 
-class ResourceNode {
-    #onUpdate
-    #resource
-    
-    +constructor(config)
-    +start(resource)
-    +resource()
-    +rid()
-    +bridge()
-    +onUpdate(event)
-    +onInput(msg)
-    +destructor()
-}
+Resource <-- ResourceNode
 
-class ServiceNode {
-    +constructor(config)
-}
-
-class BridgeConfigNode {
-    #onClose
-    #onClipError
-    #clip
-    
-    +constructor(config)
-    #initClip()
-    #uninitClip()
-    +onClipError(error)
-    +clip()
-    +requestStartup(resource)
-    +destructor()
-    
-    +DiscoverBridges()$
-    +AcquireApplicationKey(ip)$
-}
-
-class ClipApi {
-    #restApi
-    #resources
-    #startQ
-    #isStarted
-    #name
-    #ip
-    #key
-    
-    +constructor()
-    +requestStartup(resource)
-    +getResource(rid)
-    +get(rtype,rid)
-    +put(rtype,rid,data)
-    +post(rtype,rid,data)
-    +delete(rtype,rid)
-    #isResourceRegistered(rid)
-    #registerResource(resource)
-    #unregisterResource(resource)
-    +getSortedServicesById(rid)
-    +getSortedResourcesByTypeAndModel(type,models)
-    +getSortedResourceOptions(type,models)
-    +getSortedTypeOptions()
-    +getSortedOwnerOptions()
-    +getSortedServiceOptions()
-    +destructor()
-}
-
-class RestApi {
-    #ip
-    #headers
-    #requestQ
-    #timeout
-    #limiter
-    
-    +constructor(name,ip,throttle,headers)
-    #request(url,method,data)
-    #handleRequest()
-    +get(url)
-    +put(url,data)
-    +post(url,data)
-    +delete(url)
-    +destructor()
-}
-
-class Resource {
-    #clip
-    #item
-    
-    +constructor(item,clip)
-    +clip()
-    +item()
-    +id()
-    +rid()
-    +rtype()
-    +owner()
-    +name()
-    +typeName()
-    +services()
-    +get()
-    +put(data)
-    +onEvent(event)
-    +updateStatus(event)
-    +destructor()
-}
-
-class ButtonNode {
-    +constructor(config)
-    +onUpdate(event)
-    +updateStatus()
-}
-
-class DevicePowerNode {
-    +constructor(config)
-    +onUpdate(event)
-    +updateStatus()
-}
-
-class GroupedLightNode {
-    +constructor(config)
-    +onUpdate(event)
-    +updateStatus()
-}
-
-class LightLevelNode {
-    +constructor(config)
-    +onUpdate(event)
-    +updateStatus()
-}
-
-class LightNode {
-    +constructor(config)
-    +onUpdate(event)
-    +updateStatus()
-}
-
-class MotionNode {
-    +constructor(config)
-    +onUpdate(event)
-    +updateStatus()
-}
-
-class RelativeRotaryNode {
-    +constructor(config)
-    +onUpdate(event)
-    +updateStatus()
-}
-
-class SceneNode {
-    +constructor(config)
-}
-
-class TemperatureNode {
-    +constructor(config)
-    +onUpdate(event)
-    +updateStatus()
-}
-
-class ZigbeeConnectivityNode {
-    +constructor(config)
-    +onUpdate(event)
-    +updateStatus()
-}
-
-direction LR
-BaseNode <|-- BridgeConfigNode
-BaseNode <|-- ResourceNode
-ResourceNode ..> BridgeConfigNode
-ResourceNode --> Resource
-ResourceNode <|-- ServiceNode
 ResourceNode <|-- ButtonNode
 ResourceNode <|-- DevicePowerNode
 ResourceNode <|-- GroupedLightNode
@@ -308,10 +150,6 @@ ResourceNode <|-- RelativeRotaryNode
 ResourceNode <|-- SceneNode
 ResourceNode <|-- TemperatureNode
 ResourceNode <|-- ZigbeeConnectivityNode
-
-BridgeConfigNode --> ClipApi
-ClipApi --> RestApi
-ClipApi *-- Resource
 
 ```
 
@@ -345,12 +183,3 @@ or disabled seperately, and even per instance.
 
 If running locally, you can set the DEBUG environment variable to enable debuggin:
 `DEBUG="error:*,warn:*,info:*,trace:*" node-red`
-
-
-# Credits
-Credit where credit is due, this was inspired by the node-red-contrib-huemagic project, which stopped working for me at some point.
-That is when i decided to go and dive into this, and create my own wrapper around the hue clip v2 api.
-
-I initially licensed this code under GPLv2, but have changed that to Apache v2 because both node-red as well asl the huemagic extension
-use that license, and i want this to be compatible so that in case it might be considered useful by either project, they can easily include it.
-Since Apache v2 is less restrictive than GPLv2, it imposes no limits w.r.t. the original license, the code can still be re-distributed under GPLv2.
