@@ -27,23 +27,22 @@
     "LICENSE",
     "package.json",
     "src",
-    "examples"
+    "examples",
+    "resources"
   ],
   "node-red": {
     "version": ">=2.0.0",
     "nodes": {
       "all": "src/all.js",
-      "debug": "src/debug.js",
-      "files": "src/files.js",
-      "hue": "src/hue.js"
+      "debug": "src/debug.js"
     }
   },
   "engines": {
     "node": ">=12.0.0"
   },
   "dependencies": {
-    "debug": "^4.4.3",
-    "@hurenkam/node-red-hue-base": "0.7.0"
+    "@hurenkam/node-red-hue-base": "0.7.0",
+    "debug": "^4.4.3"
   },
   "publishConfig": {
     "access": "public"
