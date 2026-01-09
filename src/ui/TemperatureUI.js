@@ -1,4 +1,4 @@
-import { ServiceUI } from "./ServiceUI.js"
+import { ServiceUI } from "/resources/@hurenkam/node-red-hue-base/ServiceUI.js";
 
 export class TemperatureUI extends ServiceUI {
     constructor() {

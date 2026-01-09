@@ -1,4 +1,4 @@
-import { BaseUI } from "./BaseUI.js";
+import { BaseUI } from "/resources/@hurenkam/node-red-hue-base/BaseUI.js";
 
 export class ResourceUI extends BaseUI {
     #rtype;

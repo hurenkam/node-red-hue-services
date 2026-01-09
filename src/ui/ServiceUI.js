@@ -1,4 +1,5 @@
-import { BaseUI } from "./BaseUI.js";
+/*
+import { BaseUI } from "/resources/@hurenkam/node-red-hue-base/BaseUI.js";
 
 export class ServiceUI extends BaseUI {
     constructor(label="Service",category="hue services",rtype="") {
@@ -263,3 +264,4 @@ When this flag is enabled the node will send an event at startup with its initia
         this.showServiceSelectionIfThereIsChoice();
     }
 }
+*/

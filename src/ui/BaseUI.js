@@ -1,3 +1,4 @@
+/*
 export class BaseUI {
     #category;
 
@@ -129,3 +130,4 @@ export class BaseUI {
         console.log("BaseUI.onEditCancel()");
     }
 }
+*/
