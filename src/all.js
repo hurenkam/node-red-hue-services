@@ -1,7 +1,11 @@
+const base = require("@hurenkam/node-red-hue-base");
+const BaseNode = base.BaseNode;
+
 module.exports = function(RED) {
     "use strict";
 
     var info = require('debug')('info').extend('node-red-hue-services').extend('all.js');
+    BaseNode.nodeAPI = RED;
 
     const ButtonNode = require('./nodes/ButtonNode');
     const CameraMotionNode = require('./nodes/CameraMotionNode');
