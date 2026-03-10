@@ -10,8 +10,8 @@ class ButtonNode extends ResourceNode {
     constructor(config) {
         super(config);
 
-        this.#info = require('debug')('info').extend('ButtonNode').extend("["+this.logid()+"]");
-        this.#trace = require('debug')('trace').extend('ButtonNode').extend("["+this.logid()+"]");
+        this.#info = require('debug')('info').extend('node-red-hue-services').extend('ButtonNode').extend("["+this.logid()+"]");
+        this.#trace = require('debug')('trace').extend('node-red-hue-services').extend('ButtonNode').extend("["+this.logid()+"]");
         this.#info("constructor()");
 
         this.#fill = "grey";

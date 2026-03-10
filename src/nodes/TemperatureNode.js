@@ -7,8 +7,8 @@ class TemperatureNode extends ResourceNode {
 
     constructor(config) {
         super(config);
-        this.#info = require('debug')('info').extend('TemperatureNode').extend("["+this.logid()+"]");
-        this.#trace = require('debug')('trace').extend('TemperatureNode').extend("["+this.logid()+"]");
+        this.#info = require('debug')('info').extend('node-red-hue-services').extend('TemperatureNode').extend("["+this.logid()+"]");
+        this.#trace = require('debug')('trace').extend('node-red-hue-services').extend('TemperatureNode').extend("["+this.logid()+"]");
         this.#info("constructor()");
     }
 

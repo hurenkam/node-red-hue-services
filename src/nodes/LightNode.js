@@ -7,8 +7,8 @@ class LightNode extends ResourceNode {
 
     constructor(config) {
         super(config);
-        this.#info = require('debug')('info').extend('LightNode').extend("["+this.logid()+"]");
-        this.#trace = require('debug')('trace').extend('LightNode').extend("["+this.logid()+"]");
+        this.#info = require('debug')('info').extend('node-red-hue-services').extend('LightNode').extend("["+this.logid()+"]");
+        this.#trace = require('debug')('trace').extend('node-red-hue-services').extend('LightNode').extend("["+this.logid()+"]");
         this.#info("constructor()");
     }
 

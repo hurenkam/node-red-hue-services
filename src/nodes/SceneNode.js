@@ -6,7 +6,7 @@ class SceneNode extends ResourceNode {
 
     constructor(config) {
         super(config,"scene");
-        this.#info = require('debug')('info').extend('SceneNode').extend("["+this.logid()+"]");
+        this.#info = require('debug')('info').extend('node-red-hue-services').extend('SceneNode').extend("["+this.logid()+"]");
         this.#info("constructor()");
     }
 }

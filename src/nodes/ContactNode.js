@@ -10,8 +10,8 @@ class ContactNode extends ResourceNode {
     constructor(config) {
         super(config);
 
-        this.#info = require('debug')('info').extend('ContactNode').extend("["+this.logid()+"]");
-        this.#trace = require('debug')('trace').extend('ContactNode').extend("["+this.logid()+"]");
+        this.#info = require('debug')('info').extend('node-red-hue-services').extend('ContactNode').extend("["+this.logid()+"]");
+        this.#trace = require('debug')('trace').extend('node-red-hue-services').extend('ContactNode').extend("["+this.logid()+"]");
         this.#info("constructor()");
 
         this.#fill = "grey";

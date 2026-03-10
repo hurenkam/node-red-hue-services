@@ -7,8 +7,8 @@ class DevicePowerNode extends ResourceNode {
 
     constructor(config) {
         super(config);
-        this.#info = require('debug')('info').extend('DevicePowerNode').extend("["+this.logid()+"]");
-        this.#trace = require('debug')('trace').extend('DevicePowerNode').extend("["+this.logid()+"]");
+        this.#info = require('debug')('info').extend('node-red-hue-services').extend('DevicePowerNode').extend("["+this.logid()+"]");
+        this.#trace = require('debug')('trace').extend('node-red-hue-services').extend('DevicePowerNode').extend("["+this.logid()+"]");
         this.#info("constructor()");
     }
 
